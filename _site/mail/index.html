@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Jaosonzhuo" />
+    <title>临时邮箱地址获取脚本</title>
+    <meta name="name" content="Jaosonzhuo's Blog" />
+    <meta name="description" content="临时邮箱地址获取脚本" />
+    <meta name="keywords" content= "Python" />
+    <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Jaosonzhuo" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/mystyle.css" />
+    <script src="http://libs.baidu.com/jquery/1.7.1/jquery.min.js"></script>
+    
+    
+
+  </head>
+  <body>
+    <div id="container">
+
+    <aside id="sidebar" class="alignleft">
+        <div class="navigationBar">
+            <a href="/">Jasonzhuo's Blog</a>
+        </div>
+
+        <nav class="widget" id="menu">
+            <ul>
+              <li class="cell"><a class="next" href="/">Home</a></li>
+              <li class="cell"><a class="next" href="/categories/">Archives</a></li>
+              <li class="cell"><a class="next" href="/about/">About</a></li>
+              <li class="cell"><a class="next" href="/search/">Search</a></li>
+            </ul>
+        </nav>
+
+        <div class="widget weibo">
+            <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=2385225700&verifier=0cad5c7b&dpc=1"></iframe>   
+        </div>
+
+
+        <div class="widget gostats">
+            <h3 class="title">访问统计</h3>
+
+            <div class="entry">
+                <!-- GoStats Simple HTML Based Code -->
+                <a target="_blank" title="访客计数器" href="http://gostats.cn"><img alt="访客计数器" 
+                src="http://c3.gostats.cn/bin/count/a_390451/t_4/i_102/z_1/show_visitors/counter.png" 
+                style="border-width:0" /></a>
+                <!-- End GoStats Simple HTML Based Code -->
+            </div>
+        </div>
+
+        <!-- <table class="widget ad" border="">
+            <tbody>
+                <tr>
+                    <td class="icon">
+                        <a href="/evermark"><img src="http://esoftmobile.com//evermark/icon.png"></a>                  
+                    </td>
+                    <td class="title">
+                        <a href="/evermark">Evermark</a>
+                    </td>
+                    <td class="button">
+                        <a target="_blank" href="https://itunes.apple.com/cn/app/evermark/id728159144?mt=8">下载</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>  -->
+
+        <div class="widget tagcloud">
+            <h3 class="title">Tags</h3>
+            <div class="entry">
+                <div id='tag_cloud'>
+                    
+                    <a href="/tags/#Python" title="Python" rel="1">Python</a>
+                    
+                </div>
+            </div>
+
+            <script src="/media/js/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script> 
+            <script language="javascript">
+            $.fn.tagcloud.defaults = {
+                size: {start: 1, end: 2, unit: 'em'}
+            };
+
+            $(function () {
+                $('#tag_cloud a').tagcloud();
+            });
+            </script>
+        </div>
+
+        <footer id="footer" class="inner">
+            <div class="copyright">
+            <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="https://github.com/jason-zhuo" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2014 <a href="/about/">Jaosonzhuo</a>
+             </div>
+             <!-- <div class="copyright">
+                <script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fcbf651a0c9c199e73857441cc83b3884' type='text/javascript'%3E%3C/script%3E"));
+                </script>
+             </div> -->
+        </footer>
+
+    </aside>
+
+    <div id="hidden-navigationBar" class="navigationBar">
+      <a href="/">Cubernet's Blog</a>
+    </div>
+
+    <div id="main-col" class="alignright">
+        <div id="wrapper">   
+    
+         <article class="post">
+<div class="post-content">
+
+
+
+
+<header>
+    <h1 class="title">临时邮箱地址获取脚本</h1>
+    <section class="meta">
+<span class="time">
+  <time datetime="2013-05-23">2013-05-23</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#子在川上曰：我在写代码【动手动脚篇】" title="子在川上曰：我在写代码【动手动脚篇】">子在川上曰：我在写代码【动手动脚篇】</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Python" title="Python">Python</a>&nbsp;
+  
+</span>
+
+
+</section>    
+</header>
+
+<div class="entry">
+
+  <p><img src="/assets/images/2013-05-23-mail.jpeg" alt="image" /></p>
+
+<p>临时邮箱——注册非重要资源专用
+现在注册各种论坛、网站的时候都要填邮箱地址，注册完之后经常会发现不久之后垃圾邮件就塞满了你的邮箱。如何摆脱垃圾邮件的骚扰？找一个临时邮箱或一次性邮箱不失为一个很不错的方法。</p>
+
+<p>另外，当你需要注册许多马甲账号的时候，还需要马上获取到许多临时邮箱地址，下面这段python脚本帮你实现。</p>
+
+<!-- more -->
+
+
+
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="lineno"> 1</span> <span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="lineno"> 2</span> <span class="kn">import</span> <span class="nn">urllib</span>
+<span class="lineno"> 3</span> <span class="kn">import</span> <span class="nn">json</span>
+<span class="lineno"> 4</span> <span class="kn">import</span> <span class="nn">cookielib</span>
+<span class="lineno"> 5</span>  
+<span class="lineno"> 6</span> <span class="k">def</span> <span class="nf">getRandomMail</span><span class="p">():</span>
+<span class="lineno"> 7</span> <span class="n">posturl</span> <span class="o">=</span> <span class="s">&quot;http://mail.bccto.me/renew.php&quot;</span>
+<span class="lineno"> 8</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="lineno"> 9</span> <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">posturl</span><span class="p">)</span>
+<span class="lineno">10</span> <span class="n">data</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="lineno">11</span> <span class="c">#enable cookie</span>
+<span class="lineno">12</span> <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">())</span>
+<span class="lineno">13</span> <span class="n">response</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="lineno">14</span> <span class="k">return</span>  <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">())[</span><span class="s">&#39;mail&#39;</span><span class="p">]</span></code></pre></div>
+
+
+
+
+
+  <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
+  <span>Posted by <a style="color:#9f9f9f;" href="http://weibo.com/luxaole"><strong>Cubernet</strong></a> - 2013-05-23</span><br>
+  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://cubernet.cn"><strong>Cubernet's Blog</strong></a></span>
+  </p>
+</div>
+
+<footer>
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_renren"></a>
+  <a href="http://www.jiathis.com/share?uid=1976264" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1976264" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+</footer>
+</div>
+</article>
+
+<section class="pageselect">
+<br/>
+<span class="pre-span">  
+  <a  href="" >已经是第一篇 </a>
+</span>
+<span class="next-span">
+  <a href="">已经是最后一篇</a>
+</span>
+<span class="mobile-pre-span">  
+  <a  href="" >已经是第一篇 </a>
+</span>
+<span class="mobile-next-span">
+  <a href="">已经是最后一篇</a>
+</span>
+</section>
+<section id="comment">
+	<div class="ujian-hook"></div>
+	<script type="text/javascript">var ujian_config = {num:8,lkrc:0,target:1,itemTitle:'如果我的文字对你有帮助，请点击支持：',picSize:84,textHeight:45,mouseoverColor:'#F31313',hoverTextColor:'#FFFFFF'};</script>
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1954501"></script>
+</section>
+
+
+
+	
+	<section id="comment">
+  		<h1 class="title">评论</h1>
+		
+	<!-- UY BEGIN -->
+	<div id="uyan_frame"></div>
+	<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1954501"></script>
+	<!-- UY END -->
+	</section>
+
+
+  
+        
+        </div>
+    </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+---
+title: 首页
+layout: page
+---
+
+
+{% for post in paginator.posts %}
+    <article class="post">
+    <div class="post-content">
+      <header>
+      <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
+        <time datetime="{{ post.date | date:"%Y-%m-%d" }}"><a href="{{ post.url }}">{{ post.date | date:"%Y-%m-%d" }}</a></time>     
+      </header>
+
+      <div class="entry">
+        {{ post.excerpt }}
+      </div>
+
+      <footer> 
+          <div class="alignleft">
+              <a href="{{ post.url }}#more" class="more-link">Read More</a>
+          </div>
+          <div class="clearfix"></div>
+      </footer>
+    </div>
+    </article>
+{% endfor %}
+
+
+
+
+<nav id="pagination">
+
+  {% if paginator.previous_page %}
+    {% if paginator.previous_page == 1 %}
+      <a class="alignleft prev" href="/">前页</a>
+    {% else %}
+      <a class="alignleft prev" href="/page{{paginator.previous_page}}">前页</a>
+    {% endif %}
+  {% endif %}
+
+
+  {% if paginator.next_page %}
+    <a class="alignright next" href="/page{{paginator.next_page}}">后页</a> 
+  {% endif %}
+</nav>
+

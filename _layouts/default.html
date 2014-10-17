@@ -1,0 +1,125 @@
+{% if page.title == "趣图" %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd>
+{% else %}
+<!DOCTYPE html>
+{% endif %}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="{{ site.author }}" />
+    <title>{% if page.path == 'index.html' %}{{ site.name }}{% else %}{% unless page.id %}{{ site.name }} - {% endunless %}{{ page.title }}{% endif %}</title>
+    <meta name="name" content="{{ site.name }}" />
+    <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}" />
+    <meta name="keywords" content= "{% if page.tags %}{{ page.tags | join:',' }}{% endif %}" />
+    <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="{{ site.author }}" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/mystyle.css" />
+    <script src="http://libs.baidu.com/jquery/1.7.1/jquery.min.js"></script>
+    
+    {% if page.music.size == 1 %}
+    <script type="text/javascript" src="/media/js/jquery.jplayer.min.js"></script>
+    {% endif %}
+
+  </head>
+  <body>
+    <div id="container">
+
+    <aside id="sidebar" class="alignleft">
+        <div class="navigationBar">
+            <a href="/">Jasonzhuo's Blog</a>
+        </div>
+
+        <nav class="widget" id="menu">
+            <ul>
+              <li class="cell"><a class="next" href="/">Home</a></li>
+              <li class="cell"><a class="next" href="/categories/">Archives</a></li>
+              <li class="cell"><a class="next" href="/about/">About</a></li>
+              <li class="cell"><a class="next" href="/search/">Search</a></li>
+            </ul>
+        </nav>
+
+        <div class="widget weibo">
+            <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=2385225700&verifier=0cad5c7b&dpc=1"></iframe>   
+        </div>
+
+
+        <div class="widget gostats">
+            <h3 class="title">访问统计</h3>
+
+            <div class="entry">
+                <!-- GoStats Simple HTML Based Code -->
+                <a target="_blank" title="访客计数器" href="http://gostats.cn"><img alt="访客计数器" 
+                src="http://c3.gostats.cn/bin/count/a_390451/t_4/i_102/z_1/show_visitors/counter.png" 
+                style="border-width:0" /></a>
+                <!-- End GoStats Simple HTML Based Code -->
+            </div>
+        </div>
+
+        <!-- <table class="widget ad" border="">
+            <tbody>
+                <tr>
+                    <td class="icon">
+                        <a href="/evermark"><img src="http://esoftmobile.com//evermark/icon.png"></a>                  
+                    </td>
+                    <td class="title">
+                        <a href="/evermark">Evermark</a>
+                    </td>
+                    <td class="button">
+                        <a target="_blank" href="https://itunes.apple.com/cn/app/evermark/id728159144?mt=8">下载</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>  -->
+
+        <div class="widget tagcloud">
+            <h3 class="title">Tags</h3>
+            <div class="entry">
+                <div id='tag_cloud'>
+                    {% for tag in site.tags %}
+                    <a href="/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">{{ tag[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <script src="/media/js/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script> 
+            <script language="javascript">
+            $.fn.tagcloud.defaults = {
+                size: {start: 1, end: 2, unit: 'em'}
+            };
+
+            $(function () {
+                $('#tag_cloud a').tagcloud();
+            });
+            </script>
+        </div>
+
+        <footer id="footer" class="inner">
+            <div class="copyright">
+            <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="https://github.com/jason-zhuo" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> {{site.time | date:"%Y"}} <a href="/about/">{{ site.author }}</a>
+             </div>
+             <!-- <div class="copyright">
+                <script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fcbf651a0c9c199e73857441cc83b3884' type='text/javascript'%3E%3C/script%3E"));
+                </script>
+             </div> -->
+        </footer>
+
+    </aside>
+
+    <div id="hidden-navigationBar" class="navigationBar">
+      <a href="/">Cubernet's Blog</a>
+    </div>
+
+    <div id="main-col" class="alignright">
+        <div id="wrapper">   
+    
+         {{ content }}  
+        
+        </div>
+    </div>
+
+    </div>
+  </body>
+</html>

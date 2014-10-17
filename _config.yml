@@ -1,0 +1,26 @@
+markdown: rdiscount
+
+permalink: /:title/
+
+url: http://Jasonzhuo.cn
+
+name: Jaosonzhuo's Blog
+author: Jaosonzhuo
+description: "的博客"
+
+qq: 460782675
+email: zhongiu.zhuo@gmail.com
+
+youyan: cubernetgithub
+weibo: luxaole
+github: Jaosonzhuo
+
+pygments: true
+
+excerpt_separator: <!-- more -->
+
+paginate: 8
+
+about: "About me。"
+
+

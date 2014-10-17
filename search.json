@@ -1,0 +1,12 @@
+---
+---
+[
+	{% for post in site.posts %}
+		{
+		  "title"    : "{{ post.title | escape }}",
+		  "categories" : "{{ post.categories | jion:','}}",
+		  "url"     : "{{ post.url }}",
+		  "date"     : "{{ post.date  | date: ' %Y年%d月%m日' }}"
+		} {% if forloop.last %}{% else %},{% endif %}
+	{% endfor %}
+]

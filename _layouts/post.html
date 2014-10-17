@@ -1,0 +1,120 @@
+---
+layout: default
+---
+<article class="post">
+<div class="post-content">
+
+
+
+
+<header>
+    <h1 class="title">{{ page.title }}</h1>
+    <section class="meta">
+<span class="time">
+  <time datetime="{{ page.date | date:"%Y-%m-%d" }}">{{ page.date | date:"%Y-%m-%d" }}</time>
+</span>
+{% if page.categories.size != 0 %}
+ | 
+<span class="categories">
+  分类
+  {% for cat in page.categories %}
+  <a href="/categories/#{{ cat }}" title="{{ cat }}">{{ cat }}</a>&nbsp;
+  {% endfor %}
+</span>
+{% endif %}
+{% if page.tags.size != 0 %}
+ | 
+<span class="tags">
+  标签
+  {% for tag in page.tags %}
+  <a href="/tags/#{{ tag }}" title="{{ tag }}">{{ tag }}</a>&nbsp;
+  {% endfor %}
+</span>
+{% endif %}
+{% if page.music.size == 1 %}
+| 
+<span class="tags">
+  背景音乐
+
+
+<div id="jquery_jplayer_1" class="jp-jplayer"></div>
+<div id="jp_container_1" class="jp-audio">
+    <div class="jp-type-single">
+        <div class="jp-gui jp-interface">
+            <ul class="jp-controls">
+                <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+                <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+            </ul>                      
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $("#jquery_jplayer_1").jPlayer({
+        ready: function(event) {
+            $(this).jPlayer("setMedia", {
+              {% for mus in page.music %}
+              mp3: "/assets/music/{{ mus }}",
+              {% endfor %}              
+            });
+        },
+        supplied: "mp3"
+    });
+});                                      
+</script>
+</span>
+
+{% endif %}
+</section>    
+</header>
+
+<div class="entry">
+
+  {{ content }}
+
+  <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
+  <span>Posted by <a style="color:#9f9f9f;" href="http://weibo.com/luxaole"><strong>Cubernet</strong></a> - {{ page.date | date:"%Y-%m-%d" }}</span><br>
+  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://cubernet.cn"><strong>Cubernet's Blog</strong></a></span>
+  </p>
+</div>
+
+<footer>
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_renren"></a>
+  <a href="http://www.jiathis.com/share?uid=1976264" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1976264" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+</footer>
+</div>
+</article>
+
+<section class="pageselect">
+<br/>
+<span class="pre-span">  
+  <a {% if page.next %} href="{{ page.next.url }}" class="pageNav"{% unless page.next %} class="pageNavInvalid" {% endunless %} >上一篇&nbsp;-&nbsp;{{ page.next.title }} {% else %} href="" >已经是第一篇{% endif %} </a>
+</span>
+<span class="next-span">
+  <a {% if page.previous %} href="{{ page.previous.url }}" class="pageNav" {% unless page.previous %} class="pageNavInvalid" {% endunless %} >下一篇&nbsp;-&nbsp;{{ page.previous.title }} {% else %}href="">已经是最后一篇{% endif %}</a>
+</span>
+<span class="mobile-pre-span">  
+  <a {% if page.next %} href="{{ page.next.url }}" class="pageNav"{% unless page.next %} class="pageNavInvalid" {% endunless %} >上一篇{% else %} href="" >已经是第一篇{% endif %} </a>
+</span>
+<span class="mobile-next-span">
+  <a {% if page.previous %} href="{{ page.previous.url }}" class="pageNav" {% unless page.previous %} class="pageNavInvalid" {% endunless %} >下一篇{% else %}href="">已经是最后一篇{% endif %}</a>
+</span>
+</section>
+{% include ads.md %}
+{% include comments.md %}
