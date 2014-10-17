@@ -25,7 +25,7 @@
 	<div id="disqus_thread"></div>
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'cubernet'; // required: replace example with your forum shortname
+        var disqus_shortname = 'zzl'; // required: replace example with your forum shortname
 
         /* * * DON'T EDIT BELOW THIS LINE * * */
         (function() {
@@ -37,7 +37,7 @@
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
     <script type="text/javascript">
-    var disqus_shortname = 'cubernet';
+    var disqus_shortname = 'zzl';
 
     (function () {
         var s = document.createElement('script'); s.async = true;
@@ -55,8 +55,8 @@
   		<h1 class="title">评论</h1>
 	{% endif %}	
 	<!-- UY BEGIN -->
-	<div id="uyan_frame"></div>
-	<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1954501"></script>
-	<!-- UY END -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
+<!-- UY END -->
 	</section>
 {% endif %}
