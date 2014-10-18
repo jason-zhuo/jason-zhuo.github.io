@@ -1,50 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>http://Jasonzhuo.cn</loc>
+        <loc>http://jason-zhuo.github.io/</loc>
     </url>
     
     
     <url>
-        <loc>http://Jasonzhuo.cn/404.html</loc>
+        <loc>http://jason-zhuo.github.io//404.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/feed/index.html</loc>
+        <loc>http://jason-zhuo.github.io//feed/index.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/index.html</loc>
+        <loc>http://jason-zhuo.github.io//index.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/categories/index.html</loc>
+        <loc>http://jason-zhuo.github.io//categories/index.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/about/index.html</loc>
+        <loc>http://jason-zhuo.github.io//about/index.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/search/index.html</loc>
+        <loc>http://jason-zhuo.github.io//search/index.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/tags/index.html</loc>
+        <loc>http://jason-zhuo.github.io//tags/index.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/tags/index%E5%89%AF%E6%9C%AC.html</loc>
+        <loc>http://jason-zhuo.github.io//tags/index%E5%89%AF%E6%9C%AC.html</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/search.json</loc>
+        <loc>http://jason-zhuo.github.io//search.json</loc>
     </url>
     
     <url>
-        <loc>http://Jasonzhuo.cn/sitemap.xml</loc>
+        <loc>http://jason-zhuo.github.io//sitemap.xml</loc>
     </url>
     
 
+    
+    <url>
+        <loc>http://jason-zhuo.github.io//hello-world/</loc>
+    </url>
     
 </urlset>

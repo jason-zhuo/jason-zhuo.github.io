@@ -2,18 +2,15 @@ markdown: rdiscount
 
 permalink: /:title/
 
-url: http://Jasonzhuo.cn
+url: http://jason-zhuo.github.io/
 
 name: Jaosonzhuo's Blog
 author: Jaosonzhuo
-description: "的博客"
+description: "Jasonzhuo的博客"
 
-qq: 460782675
 email: zhongiu.zhuo@gmail.com
 
-youyan: cubernetgithub
-weibo: luxaole
-github: Jaosonzhuo
+github: jaoson-zhuo
 
 pygments: true
 
@@ -22,5 +19,3 @@ excerpt_separator: <!-- more -->
 paginate: 8
 
 about: "About me。"
-
-
