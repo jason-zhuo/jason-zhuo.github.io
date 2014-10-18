@@ -1,9 +1,11 @@
 ---
 layout: post
+keywords: blog
 title: "Hello world"
 description: "my first post"
 categories: [New stuff]
 tags: [Hello world]
+group: archive
 music: []
 
 ---
