@@ -55,8 +55,8 @@
   		<h1 class="title">评论</h1>
 	{% endif %}	
 	<!-- UY BEGIN -->
-<div id="uyan_frame"></div>
-<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
-<!-- UY END -->
+	<div id="uyan_frame"></div>
+	<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
+	<!-- UY END -->
 	</section>
 {% endif %}
