@@ -45,3 +45,6 @@ exit 0
 chmod +x Publish.sh
 ./Publish.sh
 {% endhighlight %}
+效果图：
+
+![image](/assets/images/2014-10-19-AutoblogRes.png)
