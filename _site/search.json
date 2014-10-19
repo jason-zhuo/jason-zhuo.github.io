@@ -1,6 +1,13 @@
 [
 	
 		{
+		  "title"    : "Auto Blog Post",
+		  "categories" : "blogbuilding",
+		  "url"     : "/AutoBlogpost/",
+		  "date"     : " 2014年19月10日"
+		} ,
+	
+		{
 		  "title"    : "Hello world",
 		  "categories" : "new stuff",
 		  "url"     : "/hello-world/",

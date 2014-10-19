@@ -7,8 +7,54 @@
     <title>Jaosonzhuo's Blog</title>
     <link href="http://jason-zhuo.github.io//feed/" rel="self" />
     <link href="http://jason-zhuo.github.io/" />
-    <lastBuildDate>2014-10-19T22:42:04+08:00</lastBuildDate>
+    <lastBuildDate>2014-10-19T23:55:42+08:00</lastBuildDate>
     <webMaster>zhongiu.zhuo@gmail.com</webMaster>
+    
+    <item>
+      <title>Auto Blog Post</title>
+      <link href="http://jason-zhuo.github.io//AutoBlogpost/"/>
+      <pubDate>2014-10-19T00:00:00+08:00</pubDate>
+      <author>Jaosonzhuo</author>
+      <guid>http://jason-zhuo.github.io//AutoBlogpost</guid>
+      <content:encoded><![CDATA[<p><img src="/assets/images/2014-10-19-bash_logo.jpg" alt="image" /></p>
+
+<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。为了省事，自己根据Bash语言写了一个自动发表已经撰写好的Blog。</p>
+
+<!-- more -->
+
+
+<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。</p>
+
+<blockquote><p>Shell脚本语言(Shell Script)，Shell脚本与Windows/Dos下的批处理相似，也就是用各类命令预先放入到一个文件中，方便一次性执行的一个程序文件，主要是方便管理员进行设置或者管理用的。但是它比Windows下的批处理更强大，比用其他编程程序编辑的程序效率更高，毕竟它使用了Linux/Unix下的命令。——百度百科</p></blockquote>
+
+<p>Shell脚本语言为实现自动化提供了良好帮助，真不愧为胶水语言，确实省事了很多。
+下面展示了我如何利用脚本语言来一键发表提交撰写好的博客内容。脚本内容比较简单，基本逻辑是先输入提交本次提交的评注，然后脚本会自动删除你在本地Git仓库中删除的文件，不然无法提交到远程Git库中，最后3个命令基本上都和网上的教程差不多。代码虽然很简单，但是还是有一定作用。</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno"> 1</span> <span class="nb">echo</span> -n <span class="s2">&quot;Enter comment:&quot;</span>
+<span class="lineno"> 2</span> <span class="nb">read  </span>comment
+<span class="lineno"> 3</span> <span class="nv">files</span><span class="o">=</span><span class="sb">`</span>git status <span class="p">|</span> grep deleted <span class="p">|</span> awk <span class="s1">&#39;{print \$2}&#39;</span><span class="sb">`</span>
+<span class="lineno"> 4</span> <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${files}&quot;</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+<span class="lineno"> 5</span>    <span class="nb">echo</span> <span class="s2">&quot;nothing to remove&quot;</span>
+<span class="lineno"> 6</span>  <span class="k">else</span>
+<span class="lineno"> 7</span>         <span class="k">for</span> var in <span class="nv">$files</span>
+<span class="lineno"> 8</span>         <span class="k">do</span>
+<span class="lineno"> 9</span>             <span class="c">#echo $var</span>
+<span class="lineno">10</span>             git rm --cached <span class="nv">$var</span>
+<span class="lineno">11</span>         <span class="k">done</span>
+<span class="lineno">12</span> <span class="k">fi</span>
+<span class="lineno">13</span> git add .
+<span class="lineno">14</span> git commit -m <span class="s2">&quot;$comment&quot;</span>
+<span class="lineno">15</span> git push origin master
+<span class="lineno">16</span> <span class="nb">exit </span>0</code></pre></div>
+
+
+<p>给予该脚本可执行权限后，直接执行./Publish.sh即可轻松提交到远程Git仓库啦~</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">chmod +x Publish.sh
+./Publish.sh</code></pre></div>
+
+]]></content:encoded>
+    </item>
     
     <item>
       <title>Hello world</title>

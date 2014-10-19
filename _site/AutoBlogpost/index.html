@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="Jaosonzhuo" />
-    <title>Hello world</title>
+    <title>Auto Blog Post</title>
     <meta name="name" content="Jaosonzhuo's Blog" />
-    <meta name="description" content="my first post" />
-    <meta name="keywords" content= "Hello world" />
+    <meta name="description" content="Auto blog post shell script" />
+    <meta name="keywords" content= "Linux,Bash" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="Jaosonzhuo" type="application/atom+xml" />
@@ -122,17 +122,17 @@ style="border-width:0" /></a>
 
 
 <header>
-    <h1 class="title">Hello world</h1>
+    <h1 class="title">Auto Blog Post</h1>
     <section class="meta">
 <span class="time">
-  <time datetime="2014-10-18">2014-10-18</time>
+  <time datetime="2014-10-19">2014-10-19</time>
 </span>
 
  | 
 <span class="categories">
   分类
   
-  <a href="/categories/#new stuff" title="new stuff">new stuff</a>&nbsp;
+  <a href="/categories/#blogbuilding" title="blogbuilding">blogbuilding</a>&nbsp;
   
 </span>
 
@@ -141,7 +141,9 @@ style="border-width:0" /></a>
 <span class="tags">
   标签
   
-  <a href="/tags/#Hello world" title="Hello world">Hello world</a>&nbsp;
+  <a href="/tags/#Linux" title="Linux">Linux</a>&nbsp;
+  
+  <a href="/tags/#Bash" title="Bash">Bash</a>&nbsp;
   
 </span>
 
@@ -151,28 +153,47 @@ style="border-width:0" /></a>
 
 <div class="entry">
 
-  <p><img src="/assets/images/2014-10-18-hello_world.jpg" alt="image" /></p>
+  <p><img src="/assets/images/2014-10-19-bash_logo.jpg" alt="image" /></p>
 
-<p>几经折腾，我的个人博客终于首次上线啦。我的博客主要记录我平时的一些想法和技术总结。在飞速发展的年代里，闭门造车会让人乐不思蜀，不识时务。因此，我希望把我的一些想法和技术和大家探讨。</p>
+<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。为了省事，自己根据Bash语言写了一个自动发表已经撰写好的Blog。</p>
 
 <!-- more -->
 
 
-<p>早在之前就有搭建自己博客的想法，因为很多企业和学校在招聘的时候都提到了个人主页这一项。个人主页的确能够帮我们更好地展示自己。但由于自己怕麻烦，嫌太折腾一直没有时间来细心搭建自己的博客。现在，终于在NSTL实验室刘博士的耐心指导下顺利完成自己博客的搭建。在此特别鸣谢NSTL实验室刘博士。</p>
+<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。</p>
 
-<p>我的博客还没有购买域名，不过我感觉我的博客地址还算不错啦，io结尾确实还挺新鲜的。以后再考虑购买域名这件事吧。</p>
+<blockquote><p>Shell脚本语言(Shell Script)，Shell脚本与Windows/Dos下的批处理相似，也就是用各类命令预先放入到一个文件中，方便一次性执行的一个程序文件，主要是方便管理员进行设置或者管理用的。但是它比Windows下的批处理更强大，比用其他编程程序编辑的程序效率更高，毕竟它使用了Linux/Unix下的命令。——百度百科</p></blockquote>
 
-<p>博客的主要目的还是出于技术交流，学术交流的目的，因为做学术如果缺少了交流，总感觉还没入门，更别提发表创新性学术论文了。博客同时也会偶尔记录一下生活中的美好经历，以免遗忘。</p>
+<p>Shell脚本语言为实现自动化提供了良好帮助，真不愧为胶水语言，确实省事了很多。
+下面展示了我如何利用脚本语言来一键发表提交撰写好的博客内容。脚本内容比较简单，基本逻辑是先输入提交本次提交的评注，然后脚本会自动删除你在本地Git仓库中删除的文件，不然无法提交到远程Git库中，最后3个命令基本上都和网上的教程差不多。代码虽然很简单，但是还是有一定作用。</p>
 
-<p>最后引用一下名言吧，以此勉励自己：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno"> 1</span> <span class="nb">echo</span> -n <span class="s2">&quot;Enter comment:&quot;</span>
+<span class="lineno"> 2</span> <span class="nb">read  </span>comment
+<span class="lineno"> 3</span> <span class="nv">files</span><span class="o">=</span><span class="sb">`</span>git status <span class="p">|</span> grep deleted <span class="p">|</span> awk <span class="s1">&#39;{print \$2}&#39;</span><span class="sb">`</span>
+<span class="lineno"> 4</span> <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${files}&quot;</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+<span class="lineno"> 5</span>    <span class="nb">echo</span> <span class="s2">&quot;nothing to remove&quot;</span>
+<span class="lineno"> 6</span>  <span class="k">else</span>
+<span class="lineno"> 7</span>         <span class="k">for</span> var in <span class="nv">$files</span>
+<span class="lineno"> 8</span>         <span class="k">do</span>
+<span class="lineno"> 9</span>             <span class="c">#echo $var</span>
+<span class="lineno">10</span>             git rm --cached <span class="nv">$var</span>
+<span class="lineno">11</span>         <span class="k">done</span>
+<span class="lineno">12</span> <span class="k">fi</span>
+<span class="lineno">13</span> git add .
+<span class="lineno">14</span> git commit -m <span class="s2">&quot;$comment&quot;</span>
+<span class="lineno">15</span> git push origin master
+<span class="lineno">16</span> <span class="nb">exit </span>0</code></pre></div>
 
-<blockquote><p>"Let the wind of freedom blow 让自由之风劲吹"</p></blockquote>
 
-<p>这句传自16世纪德国人类学家修顿的名言，自被斯坦福确立为校训之日起，一直鼓舞着学者大胆创新，勇于实现自己的想法。</p>
+<p>给予该脚本可执行权限后，直接执行./Publish.sh即可轻松提交到远程Git仓库啦~</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">chmod +x Publish.sh
+./Publish.sh</code></pre></div>
+
 
 
   <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
-  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2014-10-18</span><br>
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2014-10-19</span><br>
   <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io"><strong>Jasonzhuo's Blog</strong></a></span>
   </p>
 </div>
@@ -202,16 +223,16 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="/AutoBlogpost/" class="pageNav" >上一篇&nbsp;-&nbsp;Auto Blog Post  </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="next-span">
-  <a href="">已经是最后一篇</a>
+  <a  href="/hello-world/" class="pageNav"  >下一篇&nbsp;-&nbsp;Hello world </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="/AutoBlogpost/" class="pageNav" >上一篇 </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="mobile-next-span">
-  <a href="">已经是最后一篇</a>
+  <a  href="/hello-world/" class="pageNav"  >下一篇</a>
 </span>
 </section>
 
