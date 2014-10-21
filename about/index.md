@@ -10,14 +10,18 @@ comments: yes
 <article class="page"> 
   <div class="post-content">
   <div class="entry">
-程序猿一只。 	
-热爱编程，开源爱好者。		
-喜欢干净整洁的代码，轻微代码洁癖。
-  <hr>
+在读程序猿一只。 	
+
+爱好算法设计，爱生活。
+
+主攻方向：网络安全，匿名通信，网络追踪溯源
+
+喜欢方向：人工智能，机器学习，大数据分析
+<hr>
 
 ####联系方式：        
 
-个人邮箱: [zhongliu.zhuo@gmail.com](mailto:zhongliu.zhuo@gmail.com)     
+个人邮箱: [jason_zhuo@iclould.com](mailto:jason_zhuo@iclould.com)     
 新浪微博: [灵犀一点00](http://weibo.com/zhongliuzhuo316/)
 github : [jason-zhuo](https://github.com/jason-zhuo) 
     </div>
