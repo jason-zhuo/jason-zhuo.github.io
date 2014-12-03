@@ -1,6 +1,13 @@
 [
 	
 		{
+		  "title"    : "Big data Algorithm Report",
+		  "categories" : "report",
+		  "url"     : "/BigDatareport/",
+		  "date"     : " 2014年01月12日"
+		} ,
+	
+		{
 		  "title"    : "Matlab2014b Install",
 		  "categories" : "new stuff",
 		  "url"     : "/matlab2014b-install/",

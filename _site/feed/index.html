@@ -7,8 +7,68 @@
     <title>Jaosonzhuo's Blog</title>
     <link href="http://jason-zhuo.github.io//feed/" rel="self" />
     <link href="http://jason-zhuo.github.io/" />
-    <lastBuildDate>2014-11-18T17:19:14+08:00</lastBuildDate>
+    <lastBuildDate>2014-12-04T00:07:58+08:00</lastBuildDate>
     <webMaster>zhongiu.zhuo@gmail.com</webMaster>
+    
+    <item>
+      <title>Big data Algorithm Report</title>
+      <link href="http://jason-zhuo.github.io//BigDatareport/"/>
+      <pubDate>2014-12-01T00:00:00+08:00</pubDate>
+      <author>Jaosonzhuo</author>
+      <guid>http://jason-zhuo.github.io//BigDatareport</guid>
+      <content:encoded><![CDATA[<p><img src="/assets/images/2014-12-1-Bigdata.jpg" alt="image" />
+这篇主要讲的是周末听大数据讲座的听后感。</p>
+
+<!-- more -->
+
+
+<p>大数据时代，我们每个人都在谈论大数据，每个人都可以说自己在研究大数据。但是真正懂大数据的还是只有真正的大神们。大数据设计的概念太大了，就和云计算差不多，涵盖的面也非常广泛，可以说是上到天文下到地理，从宏观的天体运动到微观的分子结构，简直无所不包。</p>
+
+<p>报告上半场是9点到12点，下半场是14点到18点。我听了上半场的上半部分和整个下半场。听完报告感觉都快虚脱了。。。各种听不懂，各种高大上~ 能听懂的都是前面几页PPT。真实台上一分钟，台下十年功啊！台上PPT的每一个图或者一个表，虽然只展示了不到1分钟，但其背后的付出都是可想而知的。我还发现大牛们的一个普遍规律，就是讲着讲着就冒一句英语，而且语速还不慢。简直让我们摸不着头脑。</p>
+
+<h4>大数据的4V特点:</h4>
+
+<p><img src="/assets/images/2014-12-1-big4.jpg" alt="image" /></p>
+
+<p>这四个特点好像很多老师来做报告都要讲，不过都是简单地提了一下。</p>
+
+<h4>报告简单回忆</h4>
+
+<h5>1.Collective attention and Collective allocation</h5>
+
+<p>报告首先是由沈华伟老师给我们带来的Collective attention and Collective allocation. Collective attention主要是衡量一篇论文到底能获得多大关注度。Collective allocation是说的有些诺贝尔颁奖的时候，有些情况是颁发给论文的第1作者，但也有些情况是颁发给论文的第3或者第4作者。这个资源分配的问题就是Collective allocation问题，其主要思想是结合每个作者在该领域的引用文章的影响进行合理分配。</p>
+
+<h5>2. A query-based algorithm framework for dynamic data analysis</h5>
+
+<p>刘兴武老师介绍了一下动态处理大规模数据的方法。主要思想是用基于查询的方法来处理动态数据。</p>
+
+<h5>3.融合空间认知学的空间数据库研究</h5>
+
+<p>邵杰老师介绍了如何利用空间认知学上的研究思路来进行数据研究。空间认知学包括了地理学和认知心理学。传统的寻路算法都是考虑的是最近邻，最短路径等，然而，现在我们需要寻找最易到达邻。这一点还是很有研究意义的。</p>
+
+<h5>4.Learn to Hash for Big Data</h5>
+
+<p>李武军老师介绍了如何用Hash函数来处理数据。在大数据的前提下，Hash函数可以降维，提高处理效率，节约存储空间。李老师主要介绍了监督Hash学习方法，非监督Hash学习和多模态Hash学习方法。Hash学习和最近邻检索有着密切关系。</p>
+
+<h5>5.Big-data Machine Learning</h5>
+
+<p>林智仁老师给我们带来的是关于分布式的机器学习方法。林老师的讲解深入浅出，相对容易理解一些。林老师还形象地描述了做大数据的人，形容的相当形象。</p>
+
+<p><img src="/assets/images/2014-12-01-live.png" alt="image" /></p>
+
+<blockquote><p>Big data is like teenage sex, everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so everyone claims they are doing it.</p></blockquote>
+
+<p>传统的机器学习都是单机的，在处理大数据时效率很低，训练时间长，不能够让模型随着新增样本的变化而相应变化。考虑提高效率的方法，有（1）买一个超大RAM （2）Disk-level 机器学习 （3）GPU计算 （4）分布式机器学习。但是林老师也说了，不是所有的都可以用分布式来解决问题。分布式还会带来很多问题，例如同步，通信时间。原来的Ph.D学生都主要研究训练计算时间如何提高上去了，很少有人研究过在大数据情况下，如何快速载入大数据。</p>
+
+<h5>5.用物理观点看图挖掘问题</h5>
+
+<p>好不容易到了最后，本以为周涛老师会以幽默风趣的谈吐和深入浅出的讲解结束本次报告。但是，恰恰相反，到了很多人已经筋疲力尽的时候，周涛老师讲了他是如何用物理学上的方法解决网络链路预测问题的。他所提出的模型似乎很强大，比原来的牛文章里面的还要好。不过我没听懂，PPT上各种公式弄得我晕头转向。但是，周涛老师提到了用统计物理的方法来研究计算机问题，挺有启发的。</p>
+
+<h5>6.秘书问题与在线算法</h5>
+
+<p>孙晓明老师介绍了秘书问题和在线算法相关工作。在通常情况下，数据都是一个接着一个到达的，正如秘书来面试一样，是一个接着一个和面试官面试的。面试官如何在这种情况下选择最优的秘书，是在线算法需要解决的工作。秘书问题是多对一的问题，online matching是多对多的问题。这些问题有关动态分配和动态取最优解，比较有意思。</p>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>Matlab2014b Install</title>

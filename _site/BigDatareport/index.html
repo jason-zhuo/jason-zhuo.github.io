@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="Jaosonzhuo" />
-    <title>Auto Blog Post</title>
+    <title>Big data Algorithm Report</title>
     <meta name="name" content="Jaosonzhuo's Blog" />
-    <meta name="description" content="Auto blog post shell script" />
-    <meta name="keywords" content= "Linux,Bash" />
+    <meta name="description" content="Bigdata&Algorithm" />
+    <meta name="keywords" content= "Bigdata" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="Jaosonzhuo" type="application/atom+xml" />
@@ -126,17 +126,17 @@ style="border-width:0" /></a>
 
 
 <header>
-    <h1 class="title">Auto Blog Post</h1>
+    <h1 class="title">Big data Algorithm Report</h1>
     <section class="meta">
 <span class="time">
-  <time datetime="2014-10-19">2014-10-19</time>
+  <time datetime="2014-12-01">2014-12-01</time>
 </span>
 
  | 
 <span class="categories">
   分类
   
-  <a href="/categories/#blogbuilding" title="blogbuilding">blogbuilding</a>&nbsp;
+  <a href="/categories/#report" title="report">report</a>&nbsp;
   
 </span>
 
@@ -145,9 +145,7 @@ style="border-width:0" /></a>
 <span class="tags">
   标签
   
-  <a href="/tags/#Linux" title="Linux">Linux</a>&nbsp;
-  
-  <a href="/tags/#Bash" title="Bash">Bash</a>&nbsp;
+  <a href="/tags/#Bigdata" title="Bigdata">Bigdata</a>&nbsp;
   
 </span>
 
@@ -157,51 +155,61 @@ style="border-width:0" /></a>
 
 <div class="entry">
 
-  <p><img src="/assets/images/2014-10-19-bash_logo.jpg" alt="image" /></p>
-
-<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。为了省事，自己根据Bash语言写了一个自动发表已经撰写好的Blog。</p>
+  <p><img src="/assets/images/2014-12-1-Bigdata.jpg" alt="image" />
+这篇主要讲的是周末听大数据讲座的听后感。</p>
 
 <!-- more -->
 
 
-<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。</p>
+<p>大数据时代，我们每个人都在谈论大数据，每个人都可以说自己在研究大数据。但是真正懂大数据的还是只有真正的大神们。大数据设计的概念太大了，就和云计算差不多，涵盖的面也非常广泛，可以说是上到天文下到地理，从宏观的天体运动到微观的分子结构，简直无所不包。</p>
 
-<blockquote><p>Shell脚本语言(Shell Script)，Shell脚本与Windows/Dos下的批处理相似，也就是用各类命令预先放入到一个文件中，方便一次性执行的一个程序文件，主要是方便管理员进行设置或者管理用的。但是它比Windows下的批处理更强大，比用其他编程程序编辑的程序效率更高，毕竟它使用了Linux/Unix下的命令。——百度百科</p></blockquote>
+<p>报告上半场是9点到12点，下半场是14点到18点。我听了上半场的上半部分和整个下半场。听完报告感觉都快虚脱了。。。各种听不懂，各种高大上~ 能听懂的都是前面几页PPT。真实台上一分钟，台下十年功啊！台上PPT的每一个图或者一个表，虽然只展示了不到1分钟，但其背后的付出都是可想而知的。我还发现大牛们的一个普遍规律，就是讲着讲着就冒一句英语，而且语速还不慢。简直让我们摸不着头脑。</p>
 
-<p>Shell脚本语言为实现自动化提供了良好帮助，真不愧为胶水语言，确实省事了很多。
-下面展示了我如何利用脚本语言来一键发表提交撰写好的博客内容。脚本内容比较简单，基本逻辑是先输入提交本次提交的评注，然后脚本会自动删除你在本地Git仓库中删除的文件，不然无法提交到远程Git库中。其中“--cached”表示只删除本地git仓库的文件内容，本地的文件还没有删除，所以--cached可以考虑去掉。最后3个命令基本上都和网上的教程差不多。代码虽然很简单，但是还是有一定作用。</p>
+<h4>大数据的4V特点:</h4>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno"> 1</span> <span class="nb">echo</span> -n <span class="s2">&quot;Enter comment:&quot;</span>
-<span class="lineno"> 2</span> <span class="nb">read  </span>comment
-<span class="lineno"> 3</span> <span class="nv">files</span><span class="o">=</span><span class="sb">`</span>git status <span class="p">|</span> grep deleted <span class="p">|</span> awk <span class="s1">&#39;{print \$2}&#39;</span><span class="sb">`</span>
-<span class="lineno"> 4</span> <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${files}&quot;</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-<span class="lineno"> 5</span>    <span class="nb">echo</span> <span class="s2">&quot;nothing to remove&quot;</span>
-<span class="lineno"> 6</span>  <span class="k">else</span>
-<span class="lineno"> 7</span>         <span class="k">for</span> var in <span class="nv">$files</span>
-<span class="lineno"> 8</span>         <span class="k">do</span>
-<span class="lineno"> 9</span>             <span class="c">#echo $var</span>
-<span class="lineno">10</span>             git rm --cached <span class="nv">$var</span>
-<span class="lineno">11</span>         <span class="k">done</span>
-<span class="lineno">12</span> <span class="k">fi</span>
-<span class="lineno">13</span> git add .
-<span class="lineno">14</span> git commit -m <span class="s2">&quot;$comment&quot;</span>
-<span class="lineno">15</span> git push origin master
-<span class="lineno">16</span> <span class="nb">exit </span>0</code></pre></div>
+<p><img src="/assets/images/2014-12-1-big4.jpg" alt="image" /></p>
 
+<p>这四个特点好像很多老师来做报告都要讲，不过都是简单地提了一下。</p>
 
-<p>给予该脚本可执行权限后，直接执行./Publish.sh即可轻松提交到远程Git仓库啦~</p>
+<h4>报告简单回忆</h4>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">chmod +x Publish.sh
-./Publish.sh</code></pre></div>
+<h5>1.Collective attention and Collective allocation</h5>
 
+<p>报告首先是由沈华伟老师给我们带来的Collective attention and Collective allocation. Collective attention主要是衡量一篇论文到底能获得多大关注度。Collective allocation是说的有些诺贝尔颁奖的时候，有些情况是颁发给论文的第1作者，但也有些情况是颁发给论文的第3或者第4作者。这个资源分配的问题就是Collective allocation问题，其主要思想是结合每个作者在该领域的引用文章的影响进行合理分配。</p>
 
-<p>效果图：</p>
+<h5>2. A query-based algorithm framework for dynamic data analysis</h5>
 
-<p><img src="/assets/images/2014-10-19-AutoblogRes.png" alt="image" /></p>
+<p>刘兴武老师介绍了一下动态处理大规模数据的方法。主要思想是用基于查询的方法来处理动态数据。</p>
+
+<h5>3.融合空间认知学的空间数据库研究</h5>
+
+<p>邵杰老师介绍了如何利用空间认知学上的研究思路来进行数据研究。空间认知学包括了地理学和认知心理学。传统的寻路算法都是考虑的是最近邻，最短路径等，然而，现在我们需要寻找最易到达邻。这一点还是很有研究意义的。</p>
+
+<h5>4.Learn to Hash for Big Data</h5>
+
+<p>李武军老师介绍了如何用Hash函数来处理数据。在大数据的前提下，Hash函数可以降维，提高处理效率，节约存储空间。李老师主要介绍了监督Hash学习方法，非监督Hash学习和多模态Hash学习方法。Hash学习和最近邻检索有着密切关系。</p>
+
+<h5>5.Big-data Machine Learning</h5>
+
+<p>林智仁老师给我们带来的是关于分布式的机器学习方法。林老师的讲解深入浅出，相对容易理解一些。林老师还形象地描述了做大数据的人，形容的相当形象。</p>
+
+<p><img src="/assets/images/2014-12-01-live.png" alt="image" /></p>
+
+<blockquote><p>Big data is like teenage sex, everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so everyone claims they are doing it.</p></blockquote>
+
+<p>传统的机器学习都是单机的，在处理大数据时效率很低，训练时间长，不能够让模型随着新增样本的变化而相应变化。考虑提高效率的方法，有（1）买一个超大RAM （2）Disk-level 机器学习 （3）GPU计算 （4）分布式机器学习。但是林老师也说了，不是所有的都可以用分布式来解决问题。分布式还会带来很多问题，例如同步，通信时间。原来的Ph.D学生都主要研究训练计算时间如何提高上去了，很少有人研究过在大数据情况下，如何快速载入大数据。</p>
+
+<h5>5.用物理观点看图挖掘问题</h5>
+
+<p>好不容易到了最后，本以为周涛老师会以幽默风趣的谈吐和深入浅出的讲解结束本次报告。但是，恰恰相反，到了很多人已经筋疲力尽的时候，周涛老师讲了他是如何用物理学上的方法解决网络链路预测问题的。他所提出的模型似乎很强大，比原来的牛文章里面的还要好。不过我没听懂，PPT上各种公式弄得我晕头转向。但是，周涛老师提到了用统计物理的方法来研究计算机问题，挺有启发的。</p>
+
+<h5>6.秘书问题与在线算法</h5>
+
+<p>孙晓明老师介绍了秘书问题和在线算法相关工作。在通常情况下，数据都是一个接着一个到达的，正如秘书来面试一样，是一个接着一个和面试官面试的。面试官如何在这种情况下选择最优的秘书，是在线算法需要解决的工作。秘书问题是多对一的问题，online matching是多对多的问题。这些问题有关动态分配和动态取最优解，比较有意思。</p>
 
 
   <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
-  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2014-10-19</span><br>
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2014-12-01</span><br>
   <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io"><strong>Jasonzhuo's Blog</strong></a></span>
   </p>
 </div>
@@ -231,16 +239,16 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="/matlab2014b-install/" class="pageNav" >上一篇&nbsp;-&nbsp;Matlab2014b Install  </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="next-span">
-  <a  href="/hello-world/" class="pageNav"  >下一篇&nbsp;-&nbsp;Hello world </a>
+  <a  href="/matlab2014b-install/" class="pageNav"  >下一篇&nbsp;-&nbsp;Matlab2014b Install </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="/matlab2014b-install/" class="pageNav" >上一篇 </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="mobile-next-span">
-  <a  href="/hello-world/" class="pageNav"  >下一篇</a>
+  <a  href="/matlab2014b-install/" class="pageNav"  >下一篇</a>
 </span>
 </section>
 
