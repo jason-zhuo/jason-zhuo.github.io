@@ -15,7 +15,9 @@
     <link href="/feed/" rel="alternate" title="Jaosonzhuo" type="application/atom+xml" />
     <link rel="stylesheet" href="/media/css/mystyle.css" />
     <script src="http://libs.baidu.com/jquery/1.7.1/jquery.min.js"></script>
-    
+    <script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
     
 
   </head>
@@ -84,6 +86,8 @@ style="border-width:0" /></a>
                     
                     <a href="/tags/#Bigdata" title="Bigdata" rel="1">Bigdata</a>
                     
+                    <a href="/tags/#Math equation" title="Math equation" rel="1">Math equation</a>
+                    
                 </div>
             </div>
 
@@ -102,7 +106,7 @@ style="border-width:0" /></a>
         <footer id="footer" class="inner">
             <div class="copyright">
             <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="https://github.com/jason-zhuo" target="_blank" title="项目主页">GitHub</a>
-             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2014 <a href="/about/">Jaosonzhuo</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2015 <a href="/about/">Jaosonzhuo</a>
              </div>
              <!-- <div class="copyright">
                 <script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fcbf651a0c9c199e73857441cc83b3884' type='text/javascript'%3E%3C/script%3E"));
@@ -120,6 +124,53 @@ style="border-width:0" /></a>
         <div id="wrapper">   
     
          
+    <article class="post">
+    <div class="post-content">
+      <header>
+      <h1 class="title"><a href="/hello-world-again/">hello world again</a></h1>
+        <time datetime="2015-04-15"><a href="/hello-world-again/">2015-04-15</a></time>     
+      </header>
+
+      <div class="entry">
+        <p>时隔了这么久没写过博客，感觉有点对不起起初建立博客的初衷。于是想把我的博客给恢复起来。今天尝试了向我的博客里面添加数学公式的方法：</p>
+
+<h3>添加行内公式</h3>
+
+<pre><code>\\(公式\\)
+</code></pre>
+
+<h3>添加行间公式</h3>
+
+<pre><code>$$公式$$
+</code></pre>
+
+<p>例如行间公式：\(\sum_{i\to 2}^i\)</p>
+
+<p>$$\sum_{i\to 2}^i$$</p>
+
+<p>具体来说实现比较简单：
+如果用Mou渲染Math公式，尝试在<strong>default.html</strong>加上如下js，表示让Mou去加载Mathjax的脚本</p>
+
+<p>尝试了直接在mou编辑过程中加入如下代码：
+<img src="/assets/images/2015-04-16-mathequa.png" alt="image" /></p>
+
+<p>加入之后倒是可以一边编辑一边看到编辑结果，但是容易造成Mou在渲染过程中的卡顿，不推荐这样使用。</p>
+
+<p>编辑完成之后，在上传之前可以进行检查，把上述图中的代码加入就可以进行检查了。</p>
+
+<p>在此庆祝我的博客复活啦，以后就可以写写高大上的数学公式了~ 就这样了，碎觉碎觉，累死累活！</p>
+
+      </div>
+
+      <footer> 
+          <div class="alignleft">
+              <a href="/hello-world-again/#more" class="more-link">Read More</a>
+          </div>
+          <div class="clearfix"></div>
+      </footer>
+    </div>
+    </article>
+
     <article class="post">
     <div class="post-content">
       <header>

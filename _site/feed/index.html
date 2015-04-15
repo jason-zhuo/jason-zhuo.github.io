@@ -7,8 +7,44 @@
     <title>Jaosonzhuo's Blog</title>
     <link href="http://jason-zhuo.github.io//feed/" rel="self" />
     <link href="http://jason-zhuo.github.io/" />
-    <lastBuildDate>2014-12-04T00:07:58+08:00</lastBuildDate>
+    <lastBuildDate>2015-04-16T00:23:03+08:00</lastBuildDate>
     <webMaster>zhongiu.zhuo@gmail.com</webMaster>
+    
+    <item>
+      <title>hello world again</title>
+      <link href="http://jason-zhuo.github.io//hello-world-again/"/>
+      <pubDate>2015-04-15T00:00:00+08:00</pubDate>
+      <author>Jaosonzhuo</author>
+      <guid>http://jason-zhuo.github.io//hello-world-again</guid>
+      <content:encoded><![CDATA[<p>时隔了这么久没写过博客，感觉有点对不起起初建立博客的初衷。于是想把我的博客给恢复起来。今天尝试了向我的博客里面添加数学公式的方法：</p>
+
+<h3>添加行内公式</h3>
+
+<pre><code>\\(公式\\)
+</code></pre>
+
+<h3>添加行间公式</h3>
+
+<pre><code>$$公式$$
+</code></pre>
+
+<p>例如行间公式：\(\sum_{i\to 2}^i\)</p>
+
+<p>$$\sum_{i\to 2}^i$$</p>
+
+<p>具体来说实现比较简单：
+如果用Mou渲染Math公式，尝试在<strong>default.html</strong>加上如下js，表示让Mou去加载Mathjax的脚本</p>
+
+<p>尝试了直接在mou编辑过程中加入如下代码：
+<img src="/assets/images/2015-04-16-mathequa.png" alt="image" /></p>
+
+<p>加入之后倒是可以一边编辑一边看到编辑结果，但是容易造成Mou在渲染过程中的卡顿，不推荐这样使用。</p>
+
+<p>编辑完成之后，在上传之前可以进行检查，把上述图中的代码加入就可以进行检查了。</p>
+
+<p>在此庆祝我的博客复活啦，以后就可以写写高大上的数学公式了~ 就这样了，碎觉碎觉，累死累活！</p>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>Big data Algorithm Report</title>
