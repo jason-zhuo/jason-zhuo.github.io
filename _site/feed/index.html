@@ -7,7 +7,7 @@
     <title>Jaosonzhuo's Blog</title>
     <link href="http://jason-zhuo.github.io//feed/" rel="self" />
     <link href="http://jason-zhuo.github.io/" />
-    <lastBuildDate>2015-04-16T00:23:03+08:00</lastBuildDate>
+    <lastBuildDate>2015-04-17T00:43:44+08:00</lastBuildDate>
     <webMaster>zhongiu.zhuo@gmail.com</webMaster>
     
     <item>
@@ -16,7 +16,12 @@
       <pubDate>2015-04-15T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
       <guid>http://jason-zhuo.github.io//hello-world-again</guid>
-      <content:encoded><![CDATA[<p>时隔了这么久没写过博客，感觉有点对不起起初建立博客的初衷。于是想把我的博客给恢复起来。今天尝试了向我的博客里面添加数学公式的方法：</p>
+      <content:encoded><![CDATA[<p>I'm back!</p>
+
+<!-- more -->
+
+
+<p>时隔了这么久没写过博客，感觉有点对不起起初建立博客的初衷。于是想把我的博客给恢复起来。今天尝试了向我的博客里面添加数学公式的方法：</p>
 
 <h3>添加行内公式</h3>
 
@@ -35,7 +40,11 @@
 <p>具体来说实现比较简单：
 如果用Mou渲染Math公式，尝试在<strong>default.html</strong>加上如下js，表示让Mou去加载Mathjax的脚本</p>
 
-<p>尝试了直接在mou编辑过程中加入如下代码：
+<p><code>&lt;script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
+&lt;/script&gt;</code></p>
+
+<p>在试过上面的方法后，我还尝试了直接在mou编辑过程中加入上述代码：
 <img src="/assets/images/2015-04-16-mathequa.png" alt="image" /></p>
 
 <p>加入之后倒是可以一边编辑一边看到编辑结果，但是容易造成Mou在渲染过程中的卡顿，不推荐这样使用。</p>
