@@ -7,7 +7,7 @@ tags: [Big data]
 music: []
 
 ---
-To be continued...
+Bigdata training course. To be continued...
 <!-- more -->
 ###Spark Streaming 
 
