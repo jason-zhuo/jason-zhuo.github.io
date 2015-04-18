@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="Jaosonzhuo" />
-    <title>Jaosonzhuo's Blog - 标签</title>
+    <title>Structure Risk Minimization,SRM</title>
     <meta name="name" content="Jaosonzhuo's Blog" />
-    <meta name="description" content="Jasonzhuo的博客" />
-    <meta name="keywords" content= "" />
+    <meta name="description" content="" />
+    <meta name="keywords" content= "SRM,Machine learning" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="Jaosonzhuo" type="application/atom+xml" />
@@ -130,216 +130,142 @@ style="border-width:0" /></a>
     <div id="main-col" class="alignright">
         <div id="wrapper">   
     
-         
-
-<h2 class="archive-title" id="Hello world">Hello world</h2>
-
-
-<div class="archive">
-
-<article class="post">
+         <article class="post">
 <div class="post-content">
+
+
+
+
 <header>
-<h1 class="title">
-<a href="/hello-world/">Hello world</a>
-</h1>
-<time datetime="2014-10-18">
-<a href="/hello-world/">2014-10-18</a>
-</time>
+    <h1 class="title">Structure Risk Minimization,SRM</h1>
+    <section class="meta">
+<span class="time">
+  <time datetime="2015-04-18">2015-04-18</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#machine learning" title="machine learning">machine learning</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#SRM" title="SRM">SRM</a>&nbsp;
+  
+  <a href="/tags/#Machine learning" title="Machine learning">Machine learning</a>&nbsp;
+  
+</span>
+
+
+</section>    
 </header>
+
+<div class="entry">
+
+  <p><img src="/assets/images/2015-04-18-StatML.png" alt="image" />
+本周学术交流，张老师给我们介绍了结构风险最小化原理，这篇博客对交流内容进行了精炼和总结。</p>
+
+<!-- more -->
+
+
+<h2>结构风险最小化</h2>
+
+<hr />
+
+<p>基于数据的机器学习有2个方法，第1个是经典的统计估计方法，通过训练样本来估计参数值，代表是R.A Fisher 的统计理论（线性回归）。但我们经常做的预测真的<strong>靠谱</strong>吗？答案是，不靠谱，因为我们在做预测的时候，引入了一个很强的假设条件———样本集要满足独立同分布条件（iid-independent identically distribulted）。</p>
+
+<p>第2个方法是V.Vapnik等人提出的统计学习理论。该理论也被称作VC理论，最重要的概念就是VC维。VC维~函数复杂度~是一个正整数（也叫做函数容量）。函数复杂度越大，预测效果越差。</p>
+
+<p>$$R_{exp}=\int L(y,f)p(x,y)dxdy \leq \frac{1}{m} \sum_i^{m} {(y_i-f(x_i))}^2 +\psi(\frac{V(f)}{m})$$</p>
+
+<p>其中\(V(f)\)就是函数VC维，m为样本个数。上式表明在样本一定的情况下，VC维越高，期望风险越大。</p>
+
+<p>统计学习理论-结构风险最小化SRM:<br/>
+        $$期望风险&lt;=经验风险 + 置信度$$</p>
+
+<p>这里简单介绍一下Vladimir Vapnik。Vladimir Vapnik是俄国人，1936年出生。1964年，他于莫斯科的控制科学学院获得博士学位。毕业后，他一直在该校工作直到1990年，这期间他作为不多（估计在国内可能有点那个），但是1991加入贝尔实验室之后，他在1995年发明了SVM。从此，他就出名了，2006年当上了美国科学院院士。
+<img src="/assets/smilies/16.gif" alt="image" /></p>
+
+<blockquote><p>所谓的结构风险最小化就是在保证分类精度（经验风险）的同时，降低学习机器的 VC 维，可以使学习机器在整个样本集上的期望风险得到控制。</p></blockquote>
+
+<p>见图：
+<img src="http://img.my.csdn.net/uploads/201105/29/0_1306659245j5ZS.gif" alt="image" /></p>
+
+<p>张老师随后介绍了SVM中最著名的核方法。将低维度转化到高维度，计算复杂度却和低维度差不多。这太牛了，佩服Mercer。张老师补充到，这个是1911年提出来的（当时清王朝刚被推翻，国内可能无人潜心科研吧），之后Mercer的论文成为了睡美人，直到后来被Vapnik发现。</p>
+
+<p><strong>核函数</strong></p>
+
+<p>$$&lt;\psi(x),\psi(y)>=k(x,y)$$</p>
+
+<p>核函数的作用</p>
+
+<p>$$R^{n} \to H^{\infty}$$
+(H为Hilbert空间)</p>
+
+<p>非线性问题<strong>一定</strong>能够线性化</p>
+
+
+  <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2015-04-18</span><br>
+  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io"><strong>Jasonzhuo's Blog</strong></a></span>
+  </p>
+</div>
+
+<footer>
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_renren"></a>
+  <a href="http://www.jiathis.com/share?uid=1976264" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1976264" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+</footer>
 </div>
 </article>
 
-</div>
-
-
-
-
-<h2 class="archive-title" id="Linux">Linux</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/AutoBlogpost/">Auto Blog Post</a>
-</h1>
-<time datetime="2014-10-19">
-<a href="/AutoBlogpost/">2014-10-19</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Bash">Bash</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/AutoBlogpost/">Auto Blog Post</a>
-</h1>
-<time datetime="2014-10-19">
-<a href="/AutoBlogpost/">2014-10-19</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Matlab">Matlab</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/matlab2014b-install/">Matlab2014b Install</a>
-</h1>
-<time datetime="2014-11-18">
-<a href="/matlab2014b-install/">2014-11-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Bigdata">Bigdata</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/BigDatareport/">Big data Algorithm Report</a>
-</h1>
-<time datetime="2014-12-01">
-<a href="/BigDatareport/">2014-12-01</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Math equation">Math equation</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/hello-world-again/">hello world again</a>
-</h1>
-<time datetime="2015-04-15">
-<a href="/hello-world-again/">2015-04-15</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Big data">Big data</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/big-data-course/">Big data Short notes</a>
-</h1>
-<time datetime="2015-04-18">
-<a href="/big-data-course/">2015-04-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="SRM">SRM</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/structure-risk-minimizationsrm/">Structure Risk Minimization,SRM</a>
-</h1>
-<time datetime="2015-04-18">
-<a href="/structure-risk-minimizationsrm/">2015-04-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Machine learning">Machine learning</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/structure-risk-minimizationsrm/">Structure Risk Minimization,SRM</a>
-</h1>
-<time datetime="2015-04-18">
-<a href="/structure-risk-minimizationsrm/">2015-04-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-
+<section class="pageselect">
+<br/>
+<span class="pre-span">  
+  <a  href="" >已经是第一篇 </a>
+</span>
+<span class="next-span">
+  <a  href="/big-data-course/" class="pageNav"  >下一篇&nbsp;-&nbsp;Big data Short notes </a>
+</span>
+<span class="mobile-pre-span">  
+  <a  href="" >已经是第一篇 </a>
+</span>
+<span class="mobile-next-span">
+  <a  href="/big-data-course/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+
+
+	
+	<section id="comment">
+  		<h1 class="title">评论</h1>
+		
+	<!-- UY BEGIN -->
+	<div id="uyan_frame"></div>
+	<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
+	<!-- UY END -->
+	</section>
 
 
   

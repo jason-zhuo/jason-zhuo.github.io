@@ -1,6 +1,20 @@
 [
 	
 		{
+		  "title"    : "Structure Risk Minimization,SRM",
+		  "categories" : "machine learning",
+		  "url"     : "/structure-risk-minimizationsrm/",
+		  "date"     : " 2015年18月04日"
+		} ,
+	
+		{
+		  "title"    : "Big data Short notes",
+		  "categories" : "big data",
+		  "url"     : "/big-data-course/",
+		  "date"     : " 2015年18月04日"
+		} ,
+	
+		{
 		  "title"    : "hello world again",
 		  "categories" : "machine learning",
 		  "url"     : "/hello-world-again/",

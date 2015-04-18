@@ -7,8 +7,98 @@
     <title>Jaosonzhuo's Blog</title>
     <link href="http://jason-zhuo.github.io//feed/" rel="self" />
     <link href="http://jason-zhuo.github.io/" />
-    <lastBuildDate>2015-04-17T00:43:44+08:00</lastBuildDate>
+    <lastBuildDate>2015-04-18T22:30:20+08:00</lastBuildDate>
     <webMaster>zhongiu.zhuo@gmail.com</webMaster>
+    
+    <item>
+      <title>Structure Risk Minimization,SRM</title>
+      <link href="http://jason-zhuo.github.io//structure-risk-minimizationsrm/"/>
+      <pubDate>2015-04-18T00:00:00+08:00</pubDate>
+      <author>Jaosonzhuo</author>
+      <guid>http://jason-zhuo.github.io//structure-risk-minimizationsrm</guid>
+      <content:encoded><![CDATA[<p><img src="/assets/images/2015-04-18-StatML.png" alt="image" />
+本周学术交流，张老师给我们介绍了结构风险最小化原理，这篇博客对交流内容进行了精炼和总结。</p>
+
+<!-- more -->
+
+
+<h2>结构风险最小化</h2>
+
+<hr />
+
+<p>基于数据的机器学习有2个方法，第1个是经典的统计估计方法，通过训练样本来估计参数值，代表是R.A Fisher 的统计理论（线性回归）。但我们经常做的预测真的<strong>靠谱</strong>吗？答案是，不靠谱，因为我们在做预测的时候，引入了一个很强的假设条件———样本集要满足独立同分布条件（iid-independent identically distribulted）。</p>
+
+<p>第2个方法是V.Vapnik等人提出的统计学习理论。该理论也被称作VC理论，最重要的概念就是VC维。VC维~函数复杂度~是一个正整数（也叫做函数容量）。函数复杂度越大，预测效果越差。</p>
+
+<p>$$R_{exp}=\int L(y,f)p(x,y)dxdy \leq \frac{1}{m} \sum_i^{m} {(y_i-f(x_i))}^2 +\psi(\frac{V(f)}{m})$$</p>
+
+<p>其中\(V(f)\)就是函数VC维，m为样本个数。上式表明在样本一定的情况下，VC维越高，期望风险越大。</p>
+
+<p>统计学习理论-结构风险最小化SRM:<br/>
+        $$期望风险&lt;=经验风险 + 置信度$$</p>
+
+<p>这里简单介绍一下Vladimir Vapnik。Vladimir Vapnik是俄国人，1936年出生。1964年，他于莫斯科的控制科学学院获得博士学位。毕业后，他一直在该校工作直到1990年，这期间他作为不多（估计在国内可能有点那个），但是1991加入贝尔实验室之后，他在1995年发明了SVM。从此，他就出名了，2006年当上了美国科学院院士。
+<img src="/assets/smilies/16.gif" alt="image" /></p>
+
+<blockquote><p>所谓的结构风险最小化就是在保证分类精度（经验风险）的同时，降低学习机器的 VC 维，可以使学习机器在整个样本集上的期望风险得到控制。</p></blockquote>
+
+<p>见图：
+<img src="http://img.my.csdn.net/uploads/201105/29/0_1306659245j5ZS.gif" alt="image" /></p>
+
+<p>张老师随后介绍了SVM中最著名的核方法。将低维度转化到高维度，计算复杂度却和低维度差不多。这太牛了，佩服Mercer。张老师补充到，这个是1911年提出来的（当时清王朝刚被推翻，国内可能无人潜心科研吧），之后Mercer的论文成为了睡美人，直到后来被Vapnik发现。</p>
+
+<p><strong>核函数</strong></p>
+
+<p>$$&lt;\psi(x),\psi(y)>=k(x,y)$$</p>
+
+<p>核函数的作用</p>
+
+<p>$$R^{n} \to H^{\infty}$$
+(H为Hilbert空间)</p>
+
+<p>非线性问题<strong>一定</strong>能够线性化</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Big data Short notes</title>
+      <link href="http://jason-zhuo.github.io//big-data-course/"/>
+      <pubDate>2015-04-18T00:00:00+08:00</pubDate>
+      <author>Jaosonzhuo</author>
+      <guid>http://jason-zhuo.github.io//big-data-course</guid>
+      <content:encoded><![CDATA[<p>Bigdata培训课程，听了一天，感觉听不大懂，工程细节上的东西太多了，而且自己这方面也刚刚起步，因此本文就稍微记一下我比较感兴趣的内容。</p>
+
+<!-- more -->
+
+
+<h3>Spark Streaming</h3>
+
+<blockquote><p>目前的大数据处理可以分为如下3个类型：</p></blockquote>
+
+<ol>
+<li>复杂的批量数据处理：10min~数小时</li>
+<li>基于历史数据的交互式查询： 10sec~ 数分钟</li>
+<li>基于实时数据流的数据处理（Streaming data processing): 数百毫秒到数秒</li>
+</ol>
+
+
+<p>除了Spark，流式计算计算系统比较有名的包括Twitter Storm和Yahoo S4。现在所提及的Storm主要是指Apache Storm ，Apache Storm的前身是 Twitter Storm 平台，目前已经归于 Apache 基金会管辖。Storm已经出现好多年了，而且自从2011年开始就在Twitter内部生产环境中使用，还有其他一些公司。而Spark Streaming是一个新的项目, 2013年开始。</p>
+
+<p>Spark的流式计算还是要弱于Storm的，作者在<a href="http://www.csdn.net/article/2014-08-04/2821018">这篇文章中</a>认为互联网公司对于Storm的部署还是多于Spark。这篇文章对<a href="http://blog.csdn.net/anzhsoft/article/details/38168025">流式计算</a>系统的设计考虑的一些要素进行了比较详细的讨论。这篇文章介绍了Storm和Streaming框架的<a href="http://www.open-open.com/lib/view/open1426129553435.html">对比</a>. 如此说来，Storm在以后的项目中估计要用到<img src="/assets/smilies/8.gif" alt="image" />.</p>
+
+<p>相对与<strong>Mapreduce</strong>来说，Mapreduce的输入数据集合是静态的，不能动态变化。因此适合于离线处理。Mapreduce的使用场景包括，简单的网站pv,uv统计，搜索引擎建立索引，海量数据查找，复杂数据的分析和算法实现（聚类，分类，推荐，图算法等）</p>
+
+<p><strong>Yarn</strong> 的提出，解决了多计算框架直接的数据无法共享问题，同时负责集群资源的统一管理和调度。</p>
+
+<p>运行在YARN上的计算框架：
+1. 离线计算框架Mapreduce
+2. DAG计算框架Tez
+3. 流式计算框架Strom
+4. 内存计算框架Spark</p>
+
+<blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>hello world again</title>

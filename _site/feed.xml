@@ -7,6 +7,94 @@
 		<atom:link href="http://jason-zhuo.github.io//feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+			   <title>Structure Risk Minimization,SRM</title>
+			   <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2015-04-18-StatML.png&quot; alt=&quot;image&quot; /&gt;
+本周学术交流，张老师给我们介绍了结构风险最小化原理，这篇博客对交流内容进行了精炼和总结。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h2&gt;结构风险最小化&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;基于数据的机器学习有2个方法，第1个是经典的统计估计方法，通过训练样本来估计参数值，代表是R.A Fisher 的统计理论（线性回归）。但我们经常做的预测真的&lt;strong&gt;靠谱&lt;/strong&gt;吗？答案是，不靠谱，因为我们在做预测的时候，引入了一个很强的假设条件———样本集要满足独立同分布条件（iid-independent identically distribulted）。&lt;/p&gt;
+
+&lt;p&gt;第2个方法是V.Vapnik等人提出的统计学习理论。该理论也被称作VC理论，最重要的概念就是VC维。VC维~函数复杂度~是一个正整数（也叫做函数容量）。函数复杂度越大，预测效果越差。&lt;/p&gt;
+
+&lt;p&gt;$$R_{exp}=\int L(y,f)p(x,y)dxdy \leq \frac{1}{m} \sum_i^{m} {(y_i-f(x_i))}^2 +\psi(\frac{V(f)}{m})$$&lt;/p&gt;
+
+&lt;p&gt;其中\(V(f)\)就是函数VC维，m为样本个数。上式表明在样本一定的情况下，VC维越高，期望风险越大。&lt;/p&gt;
+
+&lt;p&gt;统计学习理论-结构风险最小化SRM:&lt;br/&gt;
+        $$期望风险&amp;lt;=经验风险 + 置信度$$&lt;/p&gt;
+
+&lt;p&gt;这里简单介绍一下Vladimir Vapnik。Vladimir Vapnik是俄国人，1936年出生。1964年，他于莫斯科的控制科学学院获得博士学位。毕业后，他一直在该校工作直到1990年，这期间他作为不多（估计在国内可能有点那个），但是1991加入贝尔实验室之后，他在1995年发明了SVM。从此，他就出名了，2006年当上了美国科学院院士。
+&lt;img src=&quot;/assets/smilies/16.gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;所谓的结构风险最小化就是在保证分类精度（经验风险）的同时，降低学习机器的 VC 维，可以使学习机器在整个样本集上的期望风险得到控制。&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;见图：
+&lt;img src=&quot;http://img.my.csdn.net/uploads/201105/29/0_1306659245j5ZS.gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;张老师随后介绍了SVM中最著名的核方法。将低维度转化到高维度，计算复杂度却和低维度差不多。这太牛了，佩服Mercer。张老师补充到，这个是1911年提出来的（当时清王朝刚被推翻，国内可能无人潜心科研吧），之后Mercer的论文成为了睡美人，直到后来被Vapnik发现。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;核函数&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;$$&amp;lt;\psi(x),\psi(y)&gt;=k(x,y)$$&lt;/p&gt;
+
+&lt;p&gt;核函数的作用&lt;/p&gt;
+
+&lt;p&gt;$$R^{n} \to H^{\infty}$$
+(H为Hilbert空间)&lt;/p&gt;
+
+&lt;p&gt;非线性问题&lt;strong&gt;一定&lt;/strong&gt;能够线性化&lt;/p&gt;
+</description>
+			   <pubDate>Sat, 18 Apr 2015 00:00:00 +0800</pubDate>
+			   <link>http://jason-zhuo.github.io//structure-risk-minimizationsrm/</link>
+			   <guid isPermaLink="true">http://jason-zhuo.github.io//structure-risk-minimizationsrm/</guid>
+			   </item>
+		
+			<item>
+			   <title>Big data Short notes</title>
+			   <description>&lt;p&gt;Bigdata培训课程，听了一天，感觉听不大懂，工程细节上的东西太多了，而且自己这方面也刚刚起步，因此本文就稍微记一下我比较感兴趣的内容。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h3&gt;Spark Streaming&lt;/h3&gt;
+
+&lt;blockquote&gt;&lt;p&gt;目前的大数据处理可以分为如下3个类型：&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;ol&gt;
+&lt;li&gt;复杂的批量数据处理：10min~数小时&lt;/li&gt;
+&lt;li&gt;基于历史数据的交互式查询： 10sec~ 数分钟&lt;/li&gt;
+&lt;li&gt;基于实时数据流的数据处理（Streaming data processing): 数百毫秒到数秒&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;除了Spark，流式计算计算系统比较有名的包括Twitter Storm和Yahoo S4。现在所提及的Storm主要是指Apache Storm ，Apache Storm的前身是 Twitter Storm 平台，目前已经归于 Apache 基金会管辖。Storm已经出现好多年了，而且自从2011年开始就在Twitter内部生产环境中使用，还有其他一些公司。而Spark Streaming是一个新的项目, 2013年开始。&lt;/p&gt;
+
+&lt;p&gt;Spark的流式计算还是要弱于Storm的，作者在&lt;a href=&quot;http://www.csdn.net/article/2014-08-04/2821018&quot;&gt;这篇文章中&lt;/a&gt;认为互联网公司对于Storm的部署还是多于Spark。这篇文章对&lt;a href=&quot;http://blog.csdn.net/anzhsoft/article/details/38168025&quot;&gt;流式计算&lt;/a&gt;系统的设计考虑的一些要素进行了比较详细的讨论。这篇文章介绍了Storm和Streaming框架的&lt;a href=&quot;http://www.open-open.com/lib/view/open1426129553435.html&quot;&gt;对比&lt;/a&gt;. 如此说来，Storm在以后的项目中估计要用到&lt;img src=&quot;/assets/smilies/8.gif&quot; alt=&quot;image&quot; /&gt;.&lt;/p&gt;
+
+&lt;p&gt;相对与&lt;strong&gt;Mapreduce&lt;/strong&gt;来说，Mapreduce的输入数据集合是静态的，不能动态变化。因此适合于离线处理。Mapreduce的使用场景包括，简单的网站pv,uv统计，搜索引擎建立索引，海量数据查找，复杂数据的分析和算法实现（聚类，分类，推荐，图算法等）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Yarn&lt;/strong&gt; 的提出，解决了多计算框架直接的数据无法共享问题，同时负责集群资源的统一管理和调度。&lt;/p&gt;
+
+&lt;p&gt;运行在YARN上的计算框架：
+1. 离线计算框架Mapreduce
+2. DAG计算框架Tez
+3. 流式计算框架Strom
+4. 内存计算框架Spark&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;Written with &lt;a href=&quot;https://stackedit.io/&quot;&gt;StackEdit&lt;/a&gt;.&lt;/p&gt;&lt;/blockquote&gt;
+</description>
+			   <pubDate>Sat, 18 Apr 2015 00:00:00 +0800</pubDate>
+			   <link>http://jason-zhuo.github.io//big-data-course/</link>
+			   <guid isPermaLink="true">http://jason-zhuo.github.io//big-data-course/</guid>
+			   </item>
+		
+			<item>
 			   <title>hello world again</title>
 			   <description>&lt;p&gt;I&#39;m back!&lt;/p&gt;
 

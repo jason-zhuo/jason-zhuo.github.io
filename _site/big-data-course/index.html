@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="Jaosonzhuo" />
-    <title>Jaosonzhuo's Blog - 标签</title>
+    <title>Big data Short notes</title>
     <meta name="name" content="Jaosonzhuo's Blog" />
-    <meta name="description" content="Jasonzhuo的博客" />
-    <meta name="keywords" content= "" />
+    <meta name="description" content="" />
+    <meta name="keywords" content= "Big data" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="Jaosonzhuo" type="application/atom+xml" />
@@ -130,216 +130,130 @@ style="border-width:0" /></a>
     <div id="main-col" class="alignright">
         <div id="wrapper">   
     
-         
-
-<h2 class="archive-title" id="Hello world">Hello world</h2>
-
-
-<div class="archive">
-
-<article class="post">
+         <article class="post">
 <div class="post-content">
+
+
+
+
 <header>
-<h1 class="title">
-<a href="/hello-world/">Hello world</a>
-</h1>
-<time datetime="2014-10-18">
-<a href="/hello-world/">2014-10-18</a>
-</time>
+    <h1 class="title">Big data Short notes</h1>
+    <section class="meta">
+<span class="time">
+  <time datetime="2015-04-18">2015-04-18</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#big data" title="big data">big data</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Big data" title="Big data">Big data</a>&nbsp;
+  
+</span>
+
+
+</section>    
 </header>
+
+<div class="entry">
+
+  <p>Bigdata培训课程，听了一天，感觉听不大懂，工程细节上的东西太多了，而且自己这方面也刚刚起步，因此本文就稍微记一下我比较感兴趣的内容。</p>
+
+<!-- more -->
+
+
+<h3>Spark Streaming</h3>
+
+<blockquote><p>目前的大数据处理可以分为如下3个类型：</p></blockquote>
+
+<ol>
+<li>复杂的批量数据处理：10min~数小时</li>
+<li>基于历史数据的交互式查询： 10sec~ 数分钟</li>
+<li>基于实时数据流的数据处理（Streaming data processing): 数百毫秒到数秒</li>
+</ol>
+
+
+<p>除了Spark，流式计算计算系统比较有名的包括Twitter Storm和Yahoo S4。现在所提及的Storm主要是指Apache Storm ，Apache Storm的前身是 Twitter Storm 平台，目前已经归于 Apache 基金会管辖。Storm已经出现好多年了，而且自从2011年开始就在Twitter内部生产环境中使用，还有其他一些公司。而Spark Streaming是一个新的项目, 2013年开始。</p>
+
+<p>Spark的流式计算还是要弱于Storm的，作者在<a href="http://www.csdn.net/article/2014-08-04/2821018">这篇文章中</a>认为互联网公司对于Storm的部署还是多于Spark。这篇文章对<a href="http://blog.csdn.net/anzhsoft/article/details/38168025">流式计算</a>系统的设计考虑的一些要素进行了比较详细的讨论。这篇文章介绍了Storm和Streaming框架的<a href="http://www.open-open.com/lib/view/open1426129553435.html">对比</a>. 如此说来，Storm在以后的项目中估计要用到<img src="/assets/smilies/8.gif" alt="image" />.</p>
+
+<p>相对与<strong>Mapreduce</strong>来说，Mapreduce的输入数据集合是静态的，不能动态变化。因此适合于离线处理。Mapreduce的使用场景包括，简单的网站pv,uv统计，搜索引擎建立索引，海量数据查找，复杂数据的分析和算法实现（聚类，分类，推荐，图算法等）</p>
+
+<p><strong>Yarn</strong> 的提出，解决了多计算框架直接的数据无法共享问题，同时负责集群资源的统一管理和调度。</p>
+
+<p>运行在YARN上的计算框架：
+1. 离线计算框架Mapreduce
+2. DAG计算框架Tez
+3. 流式计算框架Strom
+4. 内存计算框架Spark</p>
+
+<blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
+
+
+  <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2015-04-18</span><br>
+  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io"><strong>Jasonzhuo's Blog</strong></a></span>
+  </p>
+</div>
+
+<footer>
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_renren"></a>
+  <a href="http://www.jiathis.com/share?uid=1976264" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1976264" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+</footer>
 </div>
 </article>
 
-</div>
-
-
-
-
-<h2 class="archive-title" id="Linux">Linux</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/AutoBlogpost/">Auto Blog Post</a>
-</h1>
-<time datetime="2014-10-19">
-<a href="/AutoBlogpost/">2014-10-19</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Bash">Bash</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/AutoBlogpost/">Auto Blog Post</a>
-</h1>
-<time datetime="2014-10-19">
-<a href="/AutoBlogpost/">2014-10-19</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Matlab">Matlab</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/matlab2014b-install/">Matlab2014b Install</a>
-</h1>
-<time datetime="2014-11-18">
-<a href="/matlab2014b-install/">2014-11-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Bigdata">Bigdata</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/BigDatareport/">Big data Algorithm Report</a>
-</h1>
-<time datetime="2014-12-01">
-<a href="/BigDatareport/">2014-12-01</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Math equation">Math equation</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/hello-world-again/">hello world again</a>
-</h1>
-<time datetime="2015-04-15">
-<a href="/hello-world-again/">2015-04-15</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Big data">Big data</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/big-data-course/">Big data Short notes</a>
-</h1>
-<time datetime="2015-04-18">
-<a href="/big-data-course/">2015-04-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="SRM">SRM</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/structure-risk-minimizationsrm/">Structure Risk Minimization,SRM</a>
-</h1>
-<time datetime="2015-04-18">
-<a href="/structure-risk-minimizationsrm/">2015-04-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-<h2 class="archive-title" id="Machine learning">Machine learning</h2>
-
-
-<div class="archive">
-
-<article class="post">
-<div class="post-content">
-<header>
-<h1 class="title">
-<a href="/structure-risk-minimizationsrm/">Structure Risk Minimization,SRM</a>
-</h1>
-<time datetime="2015-04-18">
-<a href="/structure-risk-minimizationsrm/">2015-04-18</a>
-</time>
-</header>
-</div>
-</article>
-
-</div>
-
-
-
-
-
+<section class="pageselect">
+<br/>
+<span class="pre-span">  
+  <a  href="/structure-risk-minimizationsrm/" class="pageNav" >上一篇&nbsp;-&nbsp;Structure Risk Minimization,SRM  </a>
+</span>
+<span class="next-span">
+  <a  href="/hello-world-again/" class="pageNav"  >下一篇&nbsp;-&nbsp;hello world again </a>
+</span>
+<span class="mobile-pre-span">  
+  <a  href="/structure-risk-minimizationsrm/" class="pageNav" >上一篇 </a>
+</span>
+<span class="mobile-next-span">
+  <a  href="/hello-world-again/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+
+
+	
+	<section id="comment">
+  		<h1 class="title">评论</h1>
+		
+	<!-- UY BEGIN -->
+	<div id="uyan_frame"></div>
+	<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
+	<!-- UY END -->
+	</section>
 
 
   
