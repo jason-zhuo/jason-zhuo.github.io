@@ -3,10 +3,10 @@ markdown: rdiscount
 permalink: /:title/
 
 #url: http://jason-zhuo.github.io/
-url: http://jasonzhuo.com/
-name: Jaosonzhuo's Blog
-author: Jaosonzhuo
-description: "Jasonzhuo的博客"
+name:         Jaosonzhuo's blog
+description:  Jasonzhuo's blog
+url:          http://jasonzhuo.com/
+
 
 email: jason_zhuo@iclould.com
 github: jason-zhuo
