@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="Jaosonzhuo" />
-    <title>Matlab2014b Install</title>
+    <title>Shadowsocks in Lab</title>
     <meta name="name" content="Jaosonzhuo's Blog" />
-    <meta name="description" content="" />
-    <meta name="keywords" content= "Matlab" />
+    <meta name="description" content="Shadowsocks introduction" />
+    <meta name="keywords" content= "Proxy，Shadowsocks" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="Jaosonzhuo" type="application/atom+xml" />
@@ -143,17 +143,17 @@ style="border-width:0" /></a>
 
 
 <header>
-    <h1 class="title">Matlab2014b Install</h1>
+    <h1 class="title">Shadowsocks in Lab</h1>
     <section class="meta">
 <span class="time">
-  <time datetime="2014-11-18">2014-11-18</time>
+  <time datetime="2015-04-25">2015-04-25</time>
 </span>
 
  | 
 <span class="categories">
   分类
   
-  <a href="/categories/#new stuff" title="new stuff">new stuff</a>&nbsp;
+  <a href="/categories/#infosec" title="infosec">infosec</a>&nbsp;
   
 </span>
 
@@ -162,7 +162,7 @@ style="border-width:0" /></a>
 <span class="tags">
   标签
   
-  <a href="/tags/#Matlab" title="Matlab">Matlab</a>&nbsp;
+  <a href="/tags/#Proxy，Shadowsocks" title="Proxy，Shadowsocks">Proxy，Shadowsocks</a>&nbsp;
   
 </span>
 
@@ -172,67 +172,59 @@ style="border-width:0" /></a>
 
 <div class="entry">
 
-  <p><img src="/assets/images/2014-11-18-matlab.png" alt="image" />
-本文描述了作者安装matlab2014b的折腾手记，本着折腾自己方便他人的思想，体现了作者乐于助人的中心思想。</p>
+  <p><img src="https://dn-teddysun.qbox.me/wp-content/uploads/2015/shadowsocks_logo.png" alt="image" />
+好多童鞋搞不清楚我在实验室搭建的Shadowsocks如何使用，在这里给你们科普一下，知道原理之后使用起来就更加顺心了，保证一口气科研就到天亮哦~</p>
 
 <!-- more -->
 
 
-<p>距离上一次写博客都好久了，于是本文出于为了不忘记如何写博客以及就很多小伙伴的问题进行统一解答的目的，写下了折腾手记。本文不鼓励大家使用盗版软件。支持正版，人人有责，本文作者在XBG童鞋的诱惑下，已经在app store上购买了超过300元的正版软件。</p>
+<h4>注明：以下高能内容转载自<a href="http://vc2tea.com/whats-shadowsocks/">vc2tea的博客</a></h4>
 
-<blockquote><p>使用正版就是免去了折腾的麻烦，珍爱生命，请用正版。——本文作者</p></blockquote>
+<p>在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户.</p>
 
-<p>好多用Mac的童鞋在升级最新的操作系统之后，就无法使用Matlab了，这为我们科研造成了一些小麻烦。最新的Matlab2014b可以在Yosemite上面运行。特别感谢破解人员的辛勤劳动，我这里就补充一些细枝末节的东西，以解答小伙伴们在MAC平台下安装过程中的一些问题。</p>
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-01.png" alt="image" /></p>
 
-<p>首先给出<a href="http://bbs.feng.com/read-htm-tid-8467093.html">Matlab2014b全部平台的下载链接</a></p>
+<p>然后有一天，GFW 就出现了，他像一个收过路费的强盗一样夹在了在用户和服务之间，每当用户需要获取信息，都经过了 GFW，GFW将它不喜欢的内容统统过滤掉，于是客户当触发 GFW 的过滤规则的时候，就会收到 Connection Reset 这样的响应内容，而无法接收到正常的内容.</p>
 
-<h4>问题：</h4>
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-02.png" alt="image" /></p>
+
+<p>聪明的人们想到了利用境外服务器代理的方法来绕过 GFW 的过滤，其中包含了各种HTTP代理服务、Socks服务、VPN服务, <strong>Tor</strong>, <strong>Freegate</strong> … 其中以 ssh tunnel 的方法比较有代表性</p>
 
 <ol>
-<li>作者好不容易下载完成，然后解压运行，发现matlab mac版本提示powerpc应用程序不再被支持。</li>
-<li>载入镜像安装，输入密钥后发现产品列表里面只有几个基本插件，其他功能都不在了</li>
+<li>首先用户和境外服务器基于 ssh 建立起一条加密的通道</li>
+<li>用户通过建立起的隧道进行代理，通过 ssh server 向真实的服务发起请求</li>
+<li>服务通过 ssh server，再通过创建好的隧道返回给用户</li>
 </ol>
 
 
-<h4>解决办法：</h4>
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-03.png" alt="image" /></p>
 
-<ol>
-<li>下载的iso文件千万别用the unarchiever解压，右键iso文件，注意是iso不是解压出来的那个图标，用DiskImageMounter打开。<img src="/assets/images/2014-11-18-matlab1.png" alt="image" /></li>
-<li>使用UltraISO编辑下载的matlab的ISO文件，<a href="http://www.downxia.com/downinfo/659.html">UltraISO下载</a></li>
-</ol>
+<p>由于 ssh 本身就是基于 RSA 加密技术，所以 GFW 无法从数据传输的过程中的加密数据内容进行关键词分析，避免了被重置链接的问题，但由于创建隧道和数据传输的过程中，ssh 本身的特征是明显的，所以 GFW 一度通过分析连接的特征进行干扰，导致 ssh 存在被定向进行干扰的问题。</p>
 
+<p>这时候<strong>shadowsocks</strong>横空出世。简单看来，shadowsocks是将原来 ssh 创建的 Socks5 协议拆开成 server 端和 client 端，所以下面这个原理图基本上和利用 ssh tunnel 大致类似。</p>
 
-<p>用UltraISO打开matlab的ISO文件:</p>
+<h4>shadowsocks工作原理</h4>
 
-<p><img src="/assets/images/2014-11-18-matlab3.png" alt="image" /></p>
+<p>1、6) 客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题</p>
 
-<p>进入matlab的ISO文件目录java/jar/，删除install.jar</p>
+<p>2、5) ss-local 和 ss-server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的TCP包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密</p>
 
-<p><img src="/assets/images/2014-11-18-matlab4.png" alt="image" /></p>
+<p>3、4) ss-server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回</p>
 
-<p>再添加破解的install.jar</p>
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-04.png" alt="image" /></p>
 
-<p><img src="/assets/images/2014-11-18-matlab5.png" alt="image" /></p>
+<hr />
 
-<p>最后点保存
-<img src="/assets/images/2014-11-18-matlab6.png" alt="image" />
-<img src="/assets/images/2014-11-18-matlab7.png" alt="image" /></p>
+<p>截止目前，笔者所使用最流畅、最稳定的就是shadowsocks，一口气翻墙不费劲，以后再也不用操心翻墙了。传送门：<a href="https://github.com/shadowsocks/shadowsocks">shadowsocks下载地址</a></p>
 
-<p>断网后，再次用DiskImageMounter打开matlab安装程序，输入刚才使用的密钥：29797-39064-48306-32452。发现已经有很多功能了，进行正常安装需要（9GB+）。默认情况下我们用不到那么多工具包，为了节约磁盘空间，可以将一些不常用的，非本专业的工具包取消。（视个人情况而定,可以全部安装）</p>
-
-<p>正常安装完成后，激活即可：
-activation file = license.lic</p>
-
-<p><img src="/assets/images/2014-11-18-matlab8.png" alt="image" />
-<img src="/assets/images/2014-11-18-matlab9.png" alt="image" /></p>
-
-<p>然后在应用程序中找到刚刚安装完成的Matlab.app，右键进入包内容，将/Applications/MATLAB_R2014b/bin/maci64/libmwservices.dylib 用破解的该文件进行替换即可</p>
-
-<h4>最后就可以愉快地进行科研活动啦~！</h4>
+<p>在我们实验室中，翻墙代理设置可以为网关的IP地址192.168.1.1，也可以为本地127.0.0.1地址。唯一区别就是上图中SS Local代理程序运行的位置不同，（刘博士懂了撒~）。在实验室环境中，童鞋们可以自己设置利用本机的代理，也可以使用阿江搭建在网关上的SS Local代理，效果一致。没有在实验室的童鞋就只能靠自己本地代理啦。最后使用的时候需要设置为Socks5代理类型就可以正常使用了。
+<img src="/assets/smilies/37.gif" id="similey">
+(css inline 表情，深夜特别鸣谢刘博士)
+<img src="/assets/smilies/28.gif" id="similey"></p>
 
 
   <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
-  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2014-11-18</span><br>
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2015-04-25</span><br>
   <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io"><strong>Jasonzhuo's Blog</strong></a></span>
   </p>
 </div>
@@ -262,16 +254,16 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="/BigDatareport/" class="pageNav" >上一篇&nbsp;-&nbsp;Big data Algorithm Report  </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="next-span">
-  <a  href="/AutoBlogpost/" class="pageNav"  >下一篇&nbsp;-&nbsp;Auto Blog Post </a>
+  <a  href="/Botnet%20and%20fast%20flux/" class="pageNav"  >下一篇&nbsp;-&nbsp;Botnet and fast flux </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="/BigDatareport/" class="pageNav" >上一篇 </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="mobile-next-span">
-  <a  href="/AutoBlogpost/" class="pageNav"  >下一篇</a>
+  <a  href="/Botnet%20and%20fast%20flux/" class="pageNav"  >下一篇</a>
 </span>
 </section>
 

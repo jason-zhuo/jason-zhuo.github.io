@@ -5,17 +5,179 @@
   >
   <channel>
     <title>Jaosonzhuo's Blog</title>
-    <link href="http://jason-zhuo.github.io//feed/" rel="self" />
-    <link href="http://jason-zhuo.github.io/" />
-    <lastBuildDate>2015-04-18T22:30:20+08:00</lastBuildDate>
-    <webMaster>zhongiu.zhuo@gmail.com</webMaster>
+    <link href="http://jasonzhuo.com//feed/" rel="self" />
+    <link href="http://jasonzhuo.com/" />
+    <lastBuildDate>2015-04-26T00:59:44+08:00</lastBuildDate>
+    <webMaster>jason_zhuo@iclould.com</webMaster>
+    
+    <item>
+      <title>Shadowsocks in Lab</title>
+      <link href="http://jasonzhuo.com//shadowsocks-in-lab/"/>
+      <pubDate>2015-04-25T00:00:00+08:00</pubDate>
+      <author>Jaosonzhuo</author>
+      <guid>http://jasonzhuo.com//shadowsocks-in-lab</guid>
+      <content:encoded><![CDATA[<p><img src="https://dn-teddysun.qbox.me/wp-content/uploads/2015/shadowsocks_logo.png" alt="image" />
+好多童鞋搞不清楚我在实验室搭建的Shadowsocks如何使用，在这里给你们科普一下，知道原理之后使用起来就更加顺心了，保证一口气科研就到天亮哦~</p>
+
+<!-- more -->
+
+
+<h4>注明：以下高能内容转载自<a href="http://vc2tea.com/whats-shadowsocks/">vc2tea的博客</a></h4>
+
+<p>在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户.</p>
+
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-01.png" alt="image" /></p>
+
+<p>然后有一天，GFW 就出现了，他像一个收过路费的强盗一样夹在了在用户和服务之间，每当用户需要获取信息，都经过了 GFW，GFW将它不喜欢的内容统统过滤掉，于是客户当触发 GFW 的过滤规则的时候，就会收到 Connection Reset 这样的响应内容，而无法接收到正常的内容.</p>
+
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-02.png" alt="image" /></p>
+
+<p>聪明的人们想到了利用境外服务器代理的方法来绕过 GFW 的过滤，其中包含了各种HTTP代理服务、Socks服务、VPN服务, <strong>Tor</strong>, <strong>Freegate</strong> … 其中以 ssh tunnel 的方法比较有代表性</p>
+
+<ol>
+<li>首先用户和境外服务器基于 ssh 建立起一条加密的通道</li>
+<li>用户通过建立起的隧道进行代理，通过 ssh server 向真实的服务发起请求</li>
+<li>服务通过 ssh server，再通过创建好的隧道返回给用户</li>
+</ol>
+
+
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-03.png" alt="image" /></p>
+
+<p>由于 ssh 本身就是基于 RSA 加密技术，所以 GFW 无法从数据传输的过程中的加密数据内容进行关键词分析，避免了被重置链接的问题，但由于创建隧道和数据传输的过程中，ssh 本身的特征是明显的，所以 GFW 一度通过分析连接的特征进行干扰，导致 ssh 存在被定向进行干扰的问题。</p>
+
+<p>这时候<strong>shadowsocks</strong>横空出世。简单看来，shadowsocks是将原来 ssh 创建的 Socks5 协议拆开成 server 端和 client 端，所以下面这个原理图基本上和利用 ssh tunnel 大致类似。</p>
+
+<h4>shadowsocks工作原理</h4>
+
+<p>1、6) 客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题</p>
+
+<p>2、5) ss-local 和 ss-server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的TCP包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密</p>
+
+<p>3、4) ss-server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回</p>
+
+<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-04.png" alt="image" /></p>
+
+<hr />
+
+<p>截止目前，笔者所使用最流畅、最稳定的就是shadowsocks，一口气翻墙不费劲，以后再也不用操心翻墙了。传送门：<a href="https://github.com/shadowsocks/shadowsocks">shadowsocks下载地址</a></p>
+
+<p>在我们实验室中，翻墙代理设置可以为网关的IP地址192.168.1.1，也可以为本地127.0.0.1地址。唯一区别就是上图中SS Local代理程序运行的位置不同，（刘博士懂了撒~）。在实验室环境中，童鞋们可以自己设置利用本机的代理，也可以使用阿江搭建在网关上的SS Local代理，效果一致。没有在实验室的童鞋就只能靠自己本地代理啦。最后使用的时候需要设置为Socks5代理类型就可以正常使用了。
+<img src="/assets/smilies/37.gif" id="similey">
+(css inline 表情，深夜特别鸣谢刘博士)
+<img src="/assets/smilies/28.gif" id="similey"></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Botnet and fast flux</title>
+      <link href="http://jasonzhuo.com//Botnet%20and%20fast%20flux/"/>
+      <pubDate>2015-04-25T00:00:00+08:00</pubDate>
+      <author>Jaosonzhuo</author>
+      <guid>http://jasonzhuo.com//Botnet and fast flux</guid>
+      <content:encoded><![CDATA[<p>Botnet and fast flux 特征介绍；Botminer论文初看</p>
+
+<!-- more -->
+
+
+<h2>Botnet and fast flux</h2>
+
+<hr />
+
+<h3>几个定义</h3>
+
+<dl>
+<dt><strong>Round-Robin DNS (RRDNS) </strong>* </dt>
+<dd>Round-robin的意思是循环的意思，顾名思义，这种DNS返回的A记录不只一个，返回的记录是一个列表，列表里面记录的先后顺序是循环出现的。</dd>
+<dt><strong>Content Distribution Networks (CDN)</strong></dt>
+<dd>中文名叫内容分发网络，和RRDNS比较类似，不过返回的记录的TTL值相对RRDNS更低。CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。</dd>
+<dt><strong><em>Fast-Flux Service Networks (FFSN)</em></strong></dt>
+<dd>FFSN更加创新地利用了RRDNS和CDN的上述特性，来降低恶意服务器被发现和关闭的概率。FFSN的特点下面会讨论。</dd>
+</dl>
+
+<hr />
+
+<h3>Fast flux特征</h3>
+
+<ol>
+<li><strong>不重复的IP地址数量</strong>：通常情况来说合法DNS查询不重复的IP地址为1~3个，而fast flux查询结果中会有5~6个，以确保至少有一个IP可以连接。</li>
+<li><strong>NS数量</strong>：NS数量是指在单一次DNS 查询中所得到的NS （Name server）数量。客户端与DNS 主机进行查询时,可能透过快速变动网域技术掩护DNS 主机,因此NS Records 与NS 的A Records 可能有多笔记录,相较之下,合法的FQDN 其NS Records 与NS 的A Records比较少。</li>
+<li><strong>ASN数量与注册时间</strong>：指对ASN进行查询时，主机使用的IP所属的ASN是否属于同一个单位。由于CDN主机使用的IP所属的ASN多属于同一个单位，而fast flux主机大多分散在世界各地，与CDN向比较之下，主机使用的IP所属的ASN属于不同单位。注册时间能够缩小选取范围。</li>
+<li><strong>Domain age</strong>:指合法网站记录的TTL时间相对于恶意网站更长；恶意网站的FQDN与对应的IP记录不会长时间存留电脑，电脑必须时常进行DNS查询，以更新记录。RFC1912建议TTL最小为1~5天，这么长！而FFSN的TTL值一般小于600秒。但是一般不使用TTL值来判定FFSN，因为这样的误报率比较高，合法使用的CDN也会返回比较低的TTL值。因此TTL值一般用来区分FFSN/CDN和RRDNS.</li>
+</ol>
+
+
+<h4>常见僵尸网络检测程序</h4>
+
+<table>
+<thead>
+<tr>
+<th> Name        </th>
+<th style="text-align:center;">TYPE                       </th>
+<th style="text-align:center;">Protocols </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BotSniffer     </td>
+<td style="text-align:center;"> centralized servers     </td>
+<td style="text-align:center;">   IRC,HTTP </td>
+</tr>
+<tr>
+<td> BotHunter      </td>
+<td style="text-align:center;"> structure independent  </td>
+<td style="text-align:center;">Protocol independent </td>
+</tr>
+<tr>
+<td> Botminer </td>
+<td style="text-align:center;"> structure independent  </td>
+<td style="text-align:center;">    Protocol independent       </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>BotMiner 初看</h3>
+
+<h5>BotMiner的系统架构</h5>
+
+<p><img src="/assets/images/2015-04-19-botminer.png" alt="Structure of Botminer" /></p>
+
+<h4>论文中的一些定义</h4>
+
+<dl>
+<dt><strong>A平面</strong></dt>
+<dd>主要检测恶意行为模型,文章用Snort检测某主机的行为,主机的扫描行为用的是Bothunter的SCADE，下载地址：<a href="http://www.bothunter.net/">Cyber-TA.BotHunter Free Internet Distribution Page, 2008. </a>。文章采用两种异常检测模式，一种是高频率异常扫描次数，另外一种是带加权的失败连接次数。文章作者为了检测恶意邮件，开发了一种</dd>
+<dt><strong>C平面</strong></dt>
+<dd>网络通信关系模型和流特征模型</dd>
+<dt><strong>AC跨平面关联</strong></dt>
+<dd>发现AC平面之间的某种关联关系，僵尸网络评分s(h)</dd>
+<dt><strong>C平面的聚类</strong></dt>
+<dd>  定义 C-flow 为一段时间E内具有相同源IP，目的IP和目的端口的网络流</dd>
+</dl>
+
+<p><strong>C-flow的一些特征</strong></p>
+
+<ol>
+<li>FPH: the number of flows per hour.</li>
+<li>PPF: the number of packets per flow</li>
+<li>BPP: the average number of bytes per packets</li>
+<li>BPS: the average number of bytes per second</li>
+</ol>
+
+
+<h4>参考文献</h4>
+
+<p><a href="https://www.usenix.org/legacy/event/sec08/tech/full_papers/gu/gu_html/">[1]BotMiner: Clustering Analysis of Network Traffic for
+Protocol- and Structure-Independent Botnet Detection</a></p>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>Structure Risk Minimization,SRM</title>
-      <link href="http://jason-zhuo.github.io//structure-risk-minimizationsrm/"/>
+      <link href="http://jasonzhuo.com//structure-risk-minimizationsrm/"/>
       <pubDate>2015-04-18T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
-      <guid>http://jason-zhuo.github.io//structure-risk-minimizationsrm</guid>
+      <guid>http://jasonzhuo.com//structure-risk-minimizationsrm</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2015-04-18-StatML.png" alt="image" />
 本周学术交流，张老师给我们介绍了结构风险最小化原理，这篇博客对交流内容进行了精炼和总结。</p>
 
@@ -62,10 +224,10 @@
     
     <item>
       <title>Big data Short notes</title>
-      <link href="http://jason-zhuo.github.io//big-data-course/"/>
+      <link href="http://jasonzhuo.com//big-data-course/"/>
       <pubDate>2015-04-18T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
-      <guid>http://jason-zhuo.github.io//big-data-course</guid>
+      <guid>http://jasonzhuo.com//big-data-course</guid>
       <content:encoded><![CDATA[<p>Bigdata培训课程，听了一天，感觉听不大懂，工程细节上的东西太多了，而且自己这方面也刚刚起步，因此本文就稍微记一下我比较感兴趣的内容。</p>
 
 <!-- more -->
@@ -102,10 +264,10 @@
     
     <item>
       <title>hello world again</title>
-      <link href="http://jason-zhuo.github.io//hello-world-again/"/>
+      <link href="http://jasonzhuo.com//hello-world-again/"/>
       <pubDate>2015-04-15T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
-      <guid>http://jason-zhuo.github.io//hello-world-again</guid>
+      <guid>http://jasonzhuo.com//hello-world-again</guid>
       <content:encoded><![CDATA[<p>I'm back!</p>
 
 <!-- more -->
@@ -142,15 +304,17 @@
 <p>编辑完成之后，在上传之前可以进行检查，把上述图中的代码加入就可以进行检查了。</p>
 
 <p>在此庆祝我的博客复活啦，以后就可以写写高大上的数学公式了~ 就这样了，碎觉碎觉，累死累活！</p>
+
+<blockquote><h2>... in mathematics you didn't understand things, you just get used to them. --J.von.Newmann </h2></blockquote>
 ]]></content:encoded>
     </item>
     
     <item>
       <title>Big data Algorithm Report</title>
-      <link href="http://jason-zhuo.github.io//BigDatareport/"/>
+      <link href="http://jasonzhuo.com//BigDatareport/"/>
       <pubDate>2014-12-01T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
-      <guid>http://jason-zhuo.github.io//BigDatareport</guid>
+      <guid>http://jasonzhuo.com//BigDatareport</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2014-12-1-Bigdata.jpg" alt="image" />
 这篇主要讲的是周末听大数据讲座的听后感。</p>
 
@@ -207,10 +371,10 @@
     
     <item>
       <title>Matlab2014b Install</title>
-      <link href="http://jason-zhuo.github.io//matlab2014b-install/"/>
+      <link href="http://jasonzhuo.com//matlab2014b-install/"/>
       <pubDate>2014-11-18T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
-      <guid>http://jason-zhuo.github.io//matlab2014b-install</guid>
+      <guid>http://jasonzhuo.com//matlab2014b-install</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2014-11-18-matlab.png" alt="image" />
 本文描述了作者安装matlab2014b的折腾手记，本着折腾自己方便他人的思想，体现了作者乐于助人的中心思想。</p>
 
@@ -273,10 +437,10 @@ activation file = license.lic</p>
     
     <item>
       <title>Auto Blog Post</title>
-      <link href="http://jason-zhuo.github.io//AutoBlogpost/"/>
+      <link href="http://jasonzhuo.com//AutoBlogpost/"/>
       <pubDate>2014-10-19T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
-      <guid>http://jason-zhuo.github.io//AutoBlogpost</guid>
+      <guid>http://jasonzhuo.com//AutoBlogpost</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2014-10-19-bash_logo.jpg" alt="image" /></p>
 
 <p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。为了省事，自己根据Bash语言写了一个自动发表已经撰写好的Blog。</p>
@@ -323,10 +487,10 @@ activation file = license.lic</p>
     
     <item>
       <title>Hello world</title>
-      <link href="http://jason-zhuo.github.io//hello-world/"/>
+      <link href="http://jasonzhuo.com//hello-world/"/>
       <pubDate>2014-10-18T00:00:00+08:00</pubDate>
       <author>Jaosonzhuo</author>
-      <guid>http://jason-zhuo.github.io//hello-world</guid>
+      <guid>http://jasonzhuo.com//hello-world</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2014-10-18-hello_world.jpg" alt="image" /></p>
 
 <p>几经折腾，我的个人博客终于首次上线啦。我的博客主要记录我平时的一些想法和技术总结。在飞速发展的年代里，闭门造车会让人乐不思蜀，不识时务。因此，我希望把我的一些想法和技术和大家探讨。</p>

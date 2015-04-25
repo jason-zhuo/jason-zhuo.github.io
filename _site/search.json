@@ -1,6 +1,20 @@
 [
 	
 		{
+		  "title"    : "Shadowsocks in Lab",
+		  "categories" : "infosec",
+		  "url"     : "/shadowsocks-in-lab/",
+		  "date"     : " 2015年25月04日"
+		} ,
+	
+		{
+		  "title"    : "Botnet and fast flux",
+		  "categories" : "infosec",
+		  "url"     : "/Botnet%20and%20fast%20flux/",
+		  "date"     : " 2015年25月04日"
+		} ,
+	
+		{
 		  "title"    : "Structure Risk Minimization,SRM",
 		  "categories" : "machine learning",
 		  "url"     : "/structure-risk-minimizationsrm/",

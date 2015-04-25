@@ -1,82 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>http://jason-zhuo.github.io/</loc>
+        <loc>http://jasonzhuo.com/</loc>
     </url>
     
     
     <url>
-        <loc>http://jason-zhuo.github.io//404.html</loc>
+        <loc>http://jasonzhuo.com//404.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//feed.xml</loc>
+        <loc>http://jasonzhuo.com//feed/index.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//feed/index.html</loc>
+        <loc>http://jasonzhuo.com//index.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//index.html</loc>
+        <loc>http://jasonzhuo.com//categories/index.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//about/index.html</loc>
+        <loc>http://jasonzhuo.com//about/index.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//categories/index.html</loc>
+        <loc>http://jasonzhuo.com//search/index.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//search/index.html</loc>
+        <loc>http://jasonzhuo.com//tags/index.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//tags/index.html</loc>
+        <loc>http://jasonzhuo.com//tags/index%E5%89%AF%E6%9C%AC.html</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//tags/index%E5%89%AF%E6%9C%AC.html</loc>
+        <loc>http://jasonzhuo.com//search.json</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//search.json</loc>
+        <loc>http://jasonzhuo.com//sitemap.xml</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//sitemap.xml</loc>
+        <loc>http://jasonzhuo.com//page2/index.html</loc>
     </url>
     
 
     
     <url>
-        <loc>http://jason-zhuo.github.io//structure-risk-minimizationsrm/</loc>
+        <loc>http://jasonzhuo.com//shadowsocks-in-lab/</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//big-data-course/</loc>
+        <loc>http://jasonzhuo.com//Botnet%20and%20fast%20flux/</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//hello-world-again/</loc>
+        <loc>http://jasonzhuo.com//structure-risk-minimizationsrm/</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//BigDatareport/</loc>
+        <loc>http://jasonzhuo.com//big-data-course/</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//matlab2014b-install/</loc>
+        <loc>http://jasonzhuo.com//hello-world-again/</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//AutoBlogpost/</loc>
+        <loc>http://jasonzhuo.com//BigDatareport/</loc>
     </url>
     
     <url>
-        <loc>http://jason-zhuo.github.io//hello-world/</loc>
+        <loc>http://jasonzhuo.com//matlab2014b-install/</loc>
+    </url>
+    
+    <url>
+        <loc>http://jasonzhuo.com//AutoBlogpost/</loc>
+    </url>
+    
+    <url>
+        <loc>http://jasonzhuo.com//hello-world/</loc>
     </url>
     
 </urlset>

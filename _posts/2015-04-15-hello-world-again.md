@@ -34,3 +34,6 @@ $$\sum_{i\to 2}^i$$
 编辑完成之后，在上传之前可以进行检查，把上述图中的代码加入就可以进行检查了。
 
 在此庆祝我的博客复活啦，以后就可以写写高大上的数学公式了~ 就这样了，碎觉碎觉，累死累活！
+
+>... in mathematics you didn't understand things, you just get used to them. --J.von.Newmann 
+--

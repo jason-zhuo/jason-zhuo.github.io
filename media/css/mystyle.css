@@ -475,6 +475,11 @@ article .entry video {
   -moz-box-shadow: #999 1px 1px 4px;
   box-shadow: #999 1px 1px 4px;
 }
+#similey
+{
+  border: none;
+  display: inline;
+}
 @media screen and (max-width: 900px) {
   article .entry img,
   article .entry video {
