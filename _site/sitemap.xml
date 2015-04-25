@@ -10,6 +10,10 @@
     </url>
     
     <url>
+        <loc>http://jasonzhuo.com//feed.xml</loc>
+    </url>
+    
+    <url>
         <loc>http://jasonzhuo.com//feed/index.html</loc>
     </url>
     
@@ -18,11 +22,11 @@
     </url>
     
     <url>
-        <loc>http://jasonzhuo.com//categories/index.html</loc>
+        <loc>http://jasonzhuo.com//about/index.html</loc>
     </url>
     
     <url>
-        <loc>http://jasonzhuo.com//about/index.html</loc>
+        <loc>http://jasonzhuo.com//categories/index.html</loc>
     </url>
     
     <url>

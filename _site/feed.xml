@@ -1,18 +1,503 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-	<channel>
-		<title>{{ site.name }}</title>
-		<description>{{ site.description }}</description>
-		<link>{{ site.baseurl}}{{ site.url }}</link>
-		<atom:link href="{{ site.baseurl}}{{ site.url }}/feed.xml" rel="self" type="application/rss+xml" />
-		{% for post in site.posts limit:10 %}
-			<item>
-			   <title>{{ post.title }}</title>
-			   <description>{{ post.content | xml_escape }}</description>
-			   <pubDate>{{ post.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
-			   <link>{{ site.url }}{{ site.baseurl}}{{ post.url }}</link>
-			   <guid isPermaLink="true">{{ site.url }}{{ site.baseurl}}{{ post.url }}</guid>
-			   </item>
-		{% endfor %}
-	</channel>
+  <channel>
+    <title>Jaosonzhuo&#39;s blog</title>
+    <description>Jasonzhuo&#39;s blog</description>
+    <link>http://jasonzhuo.com/</link>
+    <atom:link href="http://jasonzhuo.com//feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>Shadowsocks in Lab</title>
+        <description>&lt;p&gt;&lt;img src=&quot;https://dn-teddysun.qbox.me/wp-content/uploads/2015/shadowsocks_logo.png&quot; alt=&quot;image&quot; /&gt;
+好多童鞋搞不清楚我在实验室搭建的Shadowsocks如何使用，在这里给你们科普一下，知道原理之后使用起来就更加顺心了，保证一口气科研就到天亮哦~&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h4&gt;注明：以下高能内容转载自&lt;a href=&quot;http://vc2tea.com/whats-shadowsocks/&quot;&gt;vc2tea的博客&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://vc2tea.com/public/upload/whats-shadowsocks-01.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后有一天，GFW 就出现了，他像一个收过路费的强盗一样夹在了在用户和服务之间，每当用户需要获取信息，都经过了 GFW，GFW将它不喜欢的内容统统过滤掉，于是客户当触发 GFW 的过滤规则的时候，就会收到 Connection Reset 这样的响应内容，而无法接收到正常的内容.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://vc2tea.com/public/upload/whats-shadowsocks-02.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;聪明的人们想到了利用境外服务器代理的方法来绕过 GFW 的过滤，其中包含了各种HTTP代理服务、Socks服务、VPN服务, &lt;strong&gt;Tor&lt;/strong&gt;, &lt;strong&gt;Freegate&lt;/strong&gt; … 其中以 ssh tunnel 的方法比较有代表性&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;首先用户和境外服务器基于 ssh 建立起一条加密的通道&lt;/li&gt;
+&lt;li&gt;用户通过建立起的隧道进行代理，通过 ssh server 向真实的服务发起请求&lt;/li&gt;
+&lt;li&gt;服务通过 ssh server，再通过创建好的隧道返回给用户&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;&lt;img src=&quot;http://vc2tea.com/public/upload/whats-shadowsocks-03.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;由于 ssh 本身就是基于 RSA 加密技术，所以 GFW 无法从数据传输的过程中的加密数据内容进行关键词分析，避免了被重置链接的问题，但由于创建隧道和数据传输的过程中，ssh 本身的特征是明显的，所以 GFW 一度通过分析连接的特征进行干扰，导致 ssh 存在被定向进行干扰的问题。&lt;/p&gt;
+
+&lt;p&gt;这时候&lt;strong&gt;shadowsocks&lt;/strong&gt;横空出世。简单看来，shadowsocks是将原来 ssh 创建的 Socks5 协议拆开成 server 端和 client 端，所以下面这个原理图基本上和利用 ssh tunnel 大致类似。&lt;/p&gt;
+
+&lt;h4&gt;shadowsocks工作原理&lt;/h4&gt;
+
+&lt;p&gt;1、6) 客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题&lt;/p&gt;
+
+&lt;p&gt;2、5) ss-local 和 ss-server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的TCP包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密&lt;/p&gt;
+
+&lt;p&gt;3、4) ss-server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://vc2tea.com/public/upload/whats-shadowsocks-04.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;截止目前，笔者所使用最流畅、最稳定的就是shadowsocks，一口气翻墙不费劲，以后再也不用操心翻墙了。传送门：&lt;a href=&quot;https://github.com/shadowsocks/shadowsocks&quot;&gt;shadowsocks下载地址&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;在我们实验室中，翻墙代理设置可以为网关的IP地址192.168.1.1，也可以为本地127.0.0.1地址。唯一区别就是上图中SS Local代理程序运行的位置不同，（刘博士懂了撒~）。在实验室环境中，童鞋们可以自己设置利用本机的代理，也可以使用阿江搭建在网关上的SS Local代理，效果一致。没有在实验室的童鞋就只能靠自己本地代理啦。最后使用的时候需要设置为Socks5代理类型就可以正常使用了。
+&lt;img src=&quot;/assets/smilies/37.gif&quot; id=&quot;similey&quot;&gt;
+(css inline 表情，深夜特别鸣谢刘博士)
+&lt;img src=&quot;/assets/smilies/28.gif&quot; id=&quot;similey&quot;&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 25 Apr 2015 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///shadowsocks-in-lab/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///shadowsocks-in-lab/</guid>
+      </item>
+    
+      <item>
+        <title>Botnet and fast flux</title>
+        <description>&lt;p&gt;Botnet and fast flux 特征介绍；Botminer论文初看&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h2&gt;Botnet and fast flux&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;h3&gt;几个定义&lt;/h3&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;&lt;strong&gt;Round-Robin DNS (RRDNS) &lt;/strong&gt;* &lt;/dt&gt;
+&lt;dd&gt;Round-robin的意思是循环的意思，顾名思义，这种DNS返回的A记录不只一个，返回的记录是一个列表，列表里面记录的先后顺序是循环出现的。&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;Content Distribution Networks (CDN)&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;中文名叫内容分发网络，和RRDNS比较类似，不过返回的记录的TTL值相对RRDNS更低。CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;&lt;em&gt;Fast-Flux Service Networks (FFSN)&lt;/em&gt;&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;FFSN更加创新地利用了RRDNS和CDN的上述特性，来降低恶意服务器被发现和关闭的概率。FFSN的特点下面会讨论。&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;hr /&gt;
+
+&lt;h3&gt;Fast flux特征&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;不重复的IP地址数量&lt;/strong&gt;：通常情况来说合法DNS查询不重复的IP地址为1~3个，而fast flux查询结果中会有5~6个，以确保至少有一个IP可以连接。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NS数量&lt;/strong&gt;：NS数量是指在单一次DNS 查询中所得到的NS （Name server）数量。客户端与DNS 主机进行查询时,可能透过快速变动网域技术掩护DNS 主机,因此NS Records 与NS 的A Records 可能有多笔记录,相较之下,合法的FQDN 其NS Records 与NS 的A Records比较少。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ASN数量与注册时间&lt;/strong&gt;：指对ASN进行查询时，主机使用的IP所属的ASN是否属于同一个单位。由于CDN主机使用的IP所属的ASN多属于同一个单位，而fast flux主机大多分散在世界各地，与CDN向比较之下，主机使用的IP所属的ASN属于不同单位。注册时间能够缩小选取范围。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Domain age&lt;/strong&gt;:指合法网站记录的TTL时间相对于恶意网站更长；恶意网站的FQDN与对应的IP记录不会长时间存留电脑，电脑必须时常进行DNS查询，以更新记录。RFC1912建议TTL最小为1~5天，这么长！而FFSN的TTL值一般小于600秒。但是一般不使用TTL值来判定FFSN，因为这样的误报率比较高，合法使用的CDN也会返回比较低的TTL值。因此TTL值一般用来区分FFSN/CDN和RRDNS.&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;h4&gt;常见僵尸网络检测程序&lt;/h4&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt; Name        &lt;/th&gt;
+&lt;th style=&quot;text-align:center;&quot;&gt;TYPE                       &lt;/th&gt;
+&lt;th style=&quot;text-align:center;&quot;&gt;Protocols &lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;BotSniffer     &lt;/td&gt;
+&lt;td style=&quot;text-align:center;&quot;&gt; centralized servers     &lt;/td&gt;
+&lt;td style=&quot;text-align:center;&quot;&gt;   IRC,HTTP &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt; BotHunter      &lt;/td&gt;
+&lt;td style=&quot;text-align:center;&quot;&gt; structure independent  &lt;/td&gt;
+&lt;td style=&quot;text-align:center;&quot;&gt;Protocol independent &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt; Botminer &lt;/td&gt;
+&lt;td style=&quot;text-align:center;&quot;&gt; structure independent  &lt;/td&gt;
+&lt;td style=&quot;text-align:center;&quot;&gt;    Protocol independent       &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+&lt;h3&gt;BotMiner 初看&lt;/h3&gt;
+
+&lt;h5&gt;BotMiner的系统架构&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2015-04-19-botminer.png&quot; alt=&quot;Structure of Botminer&quot; /&gt;&lt;/p&gt;
+
+&lt;h4&gt;论文中的一些定义&lt;/h4&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;&lt;strong&gt;A平面&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;主要检测恶意行为模型,文章用Snort检测某主机的行为,主机的扫描行为用的是Bothunter的SCADE，下载地址：&lt;a href=&quot;http://www.bothunter.net/&quot;&gt;Cyber-TA.BotHunter Free Internet Distribution Page, 2008. &lt;/a&gt;。文章采用两种异常检测模式，一种是高频率异常扫描次数，另外一种是带加权的失败连接次数。文章作者为了检测恶意邮件，开发了一种&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;C平面&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;网络通信关系模型和流特征模型&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;AC跨平面关联&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;发现AC平面之间的某种关联关系，僵尸网络评分s(h)&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;C平面的聚类&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;  定义 C-flow 为一段时间E内具有相同源IP，目的IP和目的端口的网络流&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;p&gt;&lt;strong&gt;C-flow的一些特征&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;FPH: the number of flows per hour.&lt;/li&gt;
+&lt;li&gt;PPF: the number of packets per flow&lt;/li&gt;
+&lt;li&gt;BPP: the average number of bytes per packets&lt;/li&gt;
+&lt;li&gt;BPS: the average number of bytes per second&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;h4&gt;参考文献&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.usenix.org/legacy/event/sec08/tech/full_papers/gu/gu_html/&quot;&gt;[1]BotMiner: Clustering Analysis of Network Traffic for
+Protocol- and Structure-Independent Botnet Detection&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 25 Apr 2015 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///Botnet%20and%20fast%20flux/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///Botnet%20and%20fast%20flux/</guid>
+      </item>
+    
+      <item>
+        <title>Structure Risk Minimization,SRM</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2015-04-18-StatML.png&quot; alt=&quot;image&quot; /&gt;
+本周学术交流，张老师给我们介绍了结构风险最小化原理，这篇博客对交流内容进行了精炼和总结。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h2&gt;结构风险最小化&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;基于数据的机器学习有2个方法，第1个是经典的统计估计方法，通过训练样本来估计参数值，代表是R.A Fisher 的统计理论（线性回归）。但我们经常做的预测真的&lt;strong&gt;靠谱&lt;/strong&gt;吗？答案是，不靠谱，因为我们在做预测的时候，引入了一个很强的假设条件———样本集要满足独立同分布条件（iid-independent identically distribulted）。&lt;/p&gt;
+
+&lt;p&gt;第2个方法是V.Vapnik等人提出的统计学习理论。该理论也被称作VC理论，最重要的概念就是VC维。VC维~函数复杂度~是一个正整数（也叫做函数容量）。函数复杂度越大，预测效果越差。&lt;/p&gt;
+
+&lt;p&gt;$$R_{exp}=\int L(y,f)p(x,y)dxdy \leq \frac{1}{m} \sum_i^{m} {(y_i-f(x_i))}^2 +\psi(\frac{V(f)}{m})$$&lt;/p&gt;
+
+&lt;p&gt;其中\(V(f)\)就是函数VC维，m为样本个数。上式表明在样本一定的情况下，VC维越高，期望风险越大。&lt;/p&gt;
+
+&lt;p&gt;统计学习理论-结构风险最小化SRM:&lt;br/&gt;
+        $$期望风险&amp;lt;=经验风险 + 置信度$$&lt;/p&gt;
+
+&lt;p&gt;这里简单介绍一下Vladimir Vapnik。Vladimir Vapnik是俄国人，1936年出生。1964年，他于莫斯科的控制科学学院获得博士学位。毕业后，他一直在该校工作直到1990年，这期间他作为不多（估计在国内可能有点那个），但是1991加入贝尔实验室之后，他在1995年发明了SVM。从此，他就出名了，2006年当上了美国科学院院士。
+&lt;img src=&quot;/assets/smilies/16.gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;所谓的结构风险最小化就是在保证分类精度（经验风险）的同时，降低学习机器的 VC 维，可以使学习机器在整个样本集上的期望风险得到控制。&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;见图：
+&lt;img src=&quot;http://img.my.csdn.net/uploads/201105/29/0_1306659245j5ZS.gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;张老师随后介绍了SVM中最著名的核方法。将低维度转化到高维度，计算复杂度却和低维度差不多。这太牛了，佩服Mercer。张老师补充到，这个是1911年提出来的（当时清王朝刚被推翻，国内可能无人潜心科研吧），之后Mercer的论文成为了睡美人，直到后来被Vapnik发现。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;核函数&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;$$&amp;lt;\psi(x),\psi(y)&gt;=k(x,y)$$&lt;/p&gt;
+
+&lt;p&gt;核函数的作用&lt;/p&gt;
+
+&lt;p&gt;$$R^{n} \to H^{\infty}$$
+(H为Hilbert空间)&lt;/p&gt;
+
+&lt;p&gt;非线性问题&lt;strong&gt;一定&lt;/strong&gt;能够线性化&lt;/p&gt;
+</description>
+        <pubDate>Sat, 18 Apr 2015 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///structure-risk-minimizationsrm/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///structure-risk-minimizationsrm/</guid>
+      </item>
+    
+      <item>
+        <title>Big data Short notes</title>
+        <description>&lt;p&gt;Bigdata培训课程，听了一天，感觉听不大懂，工程细节上的东西太多了，而且自己这方面也刚刚起步，因此本文就稍微记一下我比较感兴趣的内容。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h3&gt;Spark Streaming&lt;/h3&gt;
+
+&lt;blockquote&gt;&lt;p&gt;目前的大数据处理可以分为如下3个类型：&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;ol&gt;
+&lt;li&gt;复杂的批量数据处理：10min~数小时&lt;/li&gt;
+&lt;li&gt;基于历史数据的交互式查询： 10sec~ 数分钟&lt;/li&gt;
+&lt;li&gt;基于实时数据流的数据处理（Streaming data processing): 数百毫秒到数秒&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;除了Spark，流式计算计算系统比较有名的包括Twitter Storm和Yahoo S4。现在所提及的Storm主要是指Apache Storm ，Apache Storm的前身是 Twitter Storm 平台，目前已经归于 Apache 基金会管辖。Storm已经出现好多年了，而且自从2011年开始就在Twitter内部生产环境中使用，还有其他一些公司。而Spark Streaming是一个新的项目, 2013年开始。&lt;/p&gt;
+
+&lt;p&gt;Spark的流式计算还是要弱于Storm的，作者在&lt;a href=&quot;http://www.csdn.net/article/2014-08-04/2821018&quot;&gt;这篇文章中&lt;/a&gt;认为互联网公司对于Storm的部署还是多于Spark。这篇文章对&lt;a href=&quot;http://blog.csdn.net/anzhsoft/article/details/38168025&quot;&gt;流式计算&lt;/a&gt;系统的设计考虑的一些要素进行了比较详细的讨论。这篇文章介绍了Storm和Streaming框架的&lt;a href=&quot;http://www.open-open.com/lib/view/open1426129553435.html&quot;&gt;对比&lt;/a&gt;. 如此说来，Storm在以后的项目中估计要用到&lt;img src=&quot;/assets/smilies/8.gif&quot; alt=&quot;image&quot; /&gt;.&lt;/p&gt;
+
+&lt;p&gt;相对与&lt;strong&gt;Mapreduce&lt;/strong&gt;来说，Mapreduce的输入数据集合是静态的，不能动态变化。因此适合于离线处理。Mapreduce的使用场景包括，简单的网站pv,uv统计，搜索引擎建立索引，海量数据查找，复杂数据的分析和算法实现（聚类，分类，推荐，图算法等）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Yarn&lt;/strong&gt; 的提出，解决了多计算框架直接的数据无法共享问题，同时负责集群资源的统一管理和调度。&lt;/p&gt;
+
+&lt;p&gt;运行在YARN上的计算框架：
+1. 离线计算框架Mapreduce
+2. DAG计算框架Tez
+3. 流式计算框架Strom
+4. 内存计算框架Spark&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;Written with &lt;a href=&quot;https://stackedit.io/&quot;&gt;StackEdit&lt;/a&gt;.&lt;/p&gt;&lt;/blockquote&gt;
+</description>
+        <pubDate>Sat, 18 Apr 2015 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///big-data-course/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///big-data-course/</guid>
+      </item>
+    
+      <item>
+        <title>hello world again</title>
+        <description>&lt;p&gt;I&#39;m back!&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;p&gt;时隔了这么久没写过博客，感觉有点对不起起初建立博客的初衷。于是想把我的博客给恢复起来。今天尝试了向我的博客里面添加数学公式的方法：&lt;/p&gt;
+
+&lt;h3&gt;添加行内公式&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;\\(公式\\)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3&gt;添加行间公式&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$$公式$$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;例如行间公式：\(\sum_{i\to 2}^i\)&lt;/p&gt;
+
+&lt;p&gt;$$\sum_{i\to 2}^i$$&lt;/p&gt;
+
+&lt;p&gt;具体来说实现比较简单：
+如果用Mou渲染Math公式，尝试在&lt;strong&gt;default.html&lt;/strong&gt;加上如下js，表示让Mou去加载Mathjax的脚本&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;
+ src=&quot;http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot;&amp;gt;
+&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;在试过上面的方法后，我还尝试了直接在mou编辑过程中加入上述代码：
+&lt;img src=&quot;/assets/images/2015-04-16-mathequa.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;加入之后倒是可以一边编辑一边看到编辑结果，但是容易造成Mou在渲染过程中的卡顿，不推荐这样使用。&lt;/p&gt;
+
+&lt;p&gt;编辑完成之后，在上传之前可以进行检查，把上述图中的代码加入就可以进行检查了。&lt;/p&gt;
+
+&lt;p&gt;在此庆祝我的博客复活啦，以后就可以写写高大上的数学公式了~ 就这样了，碎觉碎觉，累死累活！&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;h2&gt;... in mathematics you didn&#39;t understand things, you just get used to them. --J.von.Newmann &lt;/h2&gt;&lt;/blockquote&gt;
+</description>
+        <pubDate>Wed, 15 Apr 2015 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///hello-world-again/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///hello-world-again/</guid>
+      </item>
+    
+      <item>
+        <title>Big data Algorithm Report</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2014-12-1-Bigdata.jpg&quot; alt=&quot;image&quot; /&gt;
+这篇主要讲的是周末听大数据讲座的听后感。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;p&gt;大数据时代，我们每个人都在谈论大数据，每个人都可以说自己在研究大数据。但是真正懂大数据的还是只有真正的大神们。大数据设计的概念太大了，就和云计算差不多，涵盖的面也非常广泛，可以说是上到天文下到地理，从宏观的天体运动到微观的分子结构，简直无所不包。&lt;/p&gt;
+
+&lt;p&gt;报告上半场是9点到12点，下半场是14点到18点。我听了上半场的上半部分和整个下半场。听完报告感觉都快虚脱了。。。各种听不懂，各种高大上~ 能听懂的都是前面几页PPT。真实台上一分钟，台下十年功啊！台上PPT的每一个图或者一个表，虽然只展示了不到1分钟，但其背后的付出都是可想而知的。我还发现大牛们的一个普遍规律，就是讲着讲着就冒一句英语，而且语速还不慢。简直让我们摸不着头脑。&lt;/p&gt;
+
+&lt;h4&gt;大数据的4V特点:&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014-12-1-big4.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这四个特点好像很多老师来做报告都要讲，不过都是简单地提了一下。&lt;/p&gt;
+
+&lt;h4&gt;报告简单回忆&lt;/h4&gt;
+
+&lt;h5&gt;1.Collective attention and Collective allocation&lt;/h5&gt;
+
+&lt;p&gt;报告首先是由沈华伟老师给我们带来的Collective attention and Collective allocation. Collective attention主要是衡量一篇论文到底能获得多大关注度。Collective allocation是说的有些诺贝尔颁奖的时候，有些情况是颁发给论文的第1作者，但也有些情况是颁发给论文的第3或者第4作者。这个资源分配的问题就是Collective allocation问题，其主要思想是结合每个作者在该领域的引用文章的影响进行合理分配。&lt;/p&gt;
+
+&lt;h5&gt;2. A query-based algorithm framework for dynamic data analysis&lt;/h5&gt;
+
+&lt;p&gt;刘兴武老师介绍了一下动态处理大规模数据的方法。主要思想是用基于查询的方法来处理动态数据。&lt;/p&gt;
+
+&lt;h5&gt;3.融合空间认知学的空间数据库研究&lt;/h5&gt;
+
+&lt;p&gt;邵杰老师介绍了如何利用空间认知学上的研究思路来进行数据研究。空间认知学包括了地理学和认知心理学。传统的寻路算法都是考虑的是最近邻，最短路径等，然而，现在我们需要寻找最易到达邻。这一点还是很有研究意义的。&lt;/p&gt;
+
+&lt;h5&gt;4.Learn to Hash for Big Data&lt;/h5&gt;
+
+&lt;p&gt;李武军老师介绍了如何用Hash函数来处理数据。在大数据的前提下，Hash函数可以降维，提高处理效率，节约存储空间。李老师主要介绍了监督Hash学习方法，非监督Hash学习和多模态Hash学习方法。Hash学习和最近邻检索有着密切关系。&lt;/p&gt;
+
+&lt;h5&gt;5.Big-data Machine Learning&lt;/h5&gt;
+
+&lt;p&gt;林智仁老师给我们带来的是关于分布式的机器学习方法。林老师的讲解深入浅出，相对容易理解一些。林老师还形象地描述了做大数据的人，形容的相当形象。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014-12-01-live.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;Big data is like teenage sex, everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so everyone claims they are doing it.&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;传统的机器学习都是单机的，在处理大数据时效率很低，训练时间长，不能够让模型随着新增样本的变化而相应变化。考虑提高效率的方法，有（1）买一个超大RAM （2）Disk-level 机器学习 （3）GPU计算 （4）分布式机器学习。但是林老师也说了，不是所有的都可以用分布式来解决问题。分布式还会带来很多问题，例如同步，通信时间。原来的Ph.D学生都主要研究训练计算时间如何提高上去了，很少有人研究过在大数据情况下，如何快速载入大数据。&lt;/p&gt;
+
+&lt;h5&gt;5.用物理观点看图挖掘问题&lt;/h5&gt;
+
+&lt;p&gt;好不容易到了最后，本以为周涛老师会以幽默风趣的谈吐和深入浅出的讲解结束本次报告。但是，恰恰相反，到了很多人已经筋疲力尽的时候，周涛老师讲了他是如何用物理学上的方法解决网络链路预测问题的。他所提出的模型似乎很强大，比原来的牛文章里面的还要好。不过我没听懂，PPT上各种公式弄得我晕头转向。但是，周涛老师提到了用统计物理的方法来研究计算机问题，挺有启发的。&lt;/p&gt;
+
+&lt;h5&gt;6.秘书问题与在线算法&lt;/h5&gt;
+
+&lt;p&gt;孙晓明老师介绍了秘书问题和在线算法相关工作。在通常情况下，数据都是一个接着一个到达的，正如秘书来面试一样，是一个接着一个和面试官面试的。面试官如何在这种情况下选择最优的秘书，是在线算法需要解决的工作。秘书问题是多对一的问题，online matching是多对多的问题。这些问题有关动态分配和动态取最优解，比较有意思。&lt;/p&gt;
+</description>
+        <pubDate>Mon, 01 Dec 2014 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///BigDatareport/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///BigDatareport/</guid>
+      </item>
+    
+      <item>
+        <title>Matlab2014b Install</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab.png&quot; alt=&quot;image&quot; /&gt;
+本文描述了作者安装matlab2014b的折腾手记，本着折腾自己方便他人的思想，体现了作者乐于助人的中心思想。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;p&gt;距离上一次写博客都好久了，于是本文出于为了不忘记如何写博客以及就很多小伙伴的问题进行统一解答的目的，写下了折腾手记。本文不鼓励大家使用盗版软件。支持正版，人人有责，本文作者在XBG童鞋的诱惑下，已经在app store上购买了超过300元的正版软件。&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;使用正版就是免去了折腾的麻烦，珍爱生命，请用正版。——本文作者&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;好多用Mac的童鞋在升级最新的操作系统之后，就无法使用Matlab了，这为我们科研造成了一些小麻烦。最新的Matlab2014b可以在Yosemite上面运行。特别感谢破解人员的辛勤劳动，我这里就补充一些细枝末节的东西，以解答小伙伴们在MAC平台下安装过程中的一些问题。&lt;/p&gt;
+
+&lt;p&gt;首先给出&lt;a href=&quot;http://bbs.feng.com/read-htm-tid-8467093.html&quot;&gt;Matlab2014b全部平台的下载链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4&gt;问题：&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;作者好不容易下载完成，然后解压运行，发现matlab mac版本提示powerpc应用程序不再被支持。&lt;/li&gt;
+&lt;li&gt;载入镜像安装，输入密钥后发现产品列表里面只有几个基本插件，其他功能都不在了&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;h4&gt;解决办法：&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;下载的iso文件千万别用the unarchiever解压，右键iso文件，注意是iso不是解压出来的那个图标，用DiskImageMounter打开。&lt;img src=&quot;/assets/images/2014-11-18-matlab1.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;使用UltraISO编辑下载的matlab的ISO文件，&lt;a href=&quot;http://www.downxia.com/downinfo/659.html&quot;&gt;UltraISO下载&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;用UltraISO打开matlab的ISO文件:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;进入matlab的ISO文件目录java/jar/，删除install.jar&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;再添加破解的install.jar&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最后点保存
+&lt;img src=&quot;/assets/images/2014-11-18-matlab6.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;/assets/images/2014-11-18-matlab7.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;断网后，再次用DiskImageMounter打开matlab安装程序，输入刚才使用的密钥：29797-39064-48306-32452。发现已经有很多功能了，进行正常安装需要（9GB+）。默认情况下我们用不到那么多工具包，为了节约磁盘空间，可以将一些不常用的，非本专业的工具包取消。（视个人情况而定,可以全部安装）&lt;/p&gt;
+
+&lt;p&gt;正常安装完成后，激活即可：
+activation file = license.lic&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab8.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;/assets/images/2014-11-18-matlab9.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后在应用程序中找到刚刚安装完成的Matlab.app，右键进入包内容，将/Applications/MATLAB_R2014b/bin/maci64/libmwservices.dylib 用破解的该文件进行替换即可&lt;/p&gt;
+
+&lt;h4&gt;最后就可以愉快地进行科研活动啦~！&lt;/h4&gt;
+</description>
+        <pubDate>Tue, 18 Nov 2014 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///matlab2014b-install/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///matlab2014b-install/</guid>
+      </item>
+    
+      <item>
+        <title>Auto Blog Post</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2014-10-19-bash_logo.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。为了省事，自己根据Bash语言写了一个自动发表已经撰写好的Blog。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;p&gt;每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;Shell脚本语言(Shell Script)，Shell脚本与Windows/Dos下的批处理相似，也就是用各类命令预先放入到一个文件中，方便一次性执行的一个程序文件，主要是方便管理员进行设置或者管理用的。但是它比Windows下的批处理更强大，比用其他编程程序编辑的程序效率更高，毕竟它使用了Linux/Unix下的命令。——百度百科&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;Shell脚本语言为实现自动化提供了良好帮助，真不愧为胶水语言，确实省事了很多。
+下面展示了我如何利用脚本语言来一键发表提交撰写好的博客内容。脚本内容比较简单，基本逻辑是先输入提交本次提交的评注，然后脚本会自动删除你在本地Git仓库中删除的文件，不然无法提交到远程Git库中。其中“--cached”表示只删除本地git仓库的文件内容，本地的文件还没有删除，所以--cached可以考虑去掉。最后3个命令基本上都和网上的教程差不多。代码虽然很简单，但是还是有一定作用。&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -n &lt;span class=&quot;s2&quot;&gt;&amp;quot;Enter comment:&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;read  &lt;/span&gt;comment
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;files&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;git status &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep deleted &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{print \$2}&amp;#39;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;${files}&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;nothing to remove&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; var in &lt;span class=&quot;nv&quot;&gt;$files&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;             &lt;span class=&quot;c&quot;&gt;#echo $var&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;             git rm --cached &lt;span class=&quot;nv&quot;&gt;$var&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; git add .
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; git commit -m &lt;span class=&quot;s2&quot;&gt;&amp;quot;$comment&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; git push origin master
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;0&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;给予该脚本可执行权限后，直接执行./Publish.sh即可轻松提交到远程Git仓库啦~&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;chmod +x Publish.sh
+./Publish.sh&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;效果图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2014-10-19-AutoblogRes.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sun, 19 Oct 2014 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///AutoBlogpost/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///AutoBlogpost/</guid>
+      </item>
+    
+      <item>
+        <title>Hello world</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2014-10-18-hello_world.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;几经折腾，我的个人博客终于首次上线啦。我的博客主要记录我平时的一些想法和技术总结。在飞速发展的年代里，闭门造车会让人乐不思蜀，不识时务。因此，我希望把我的一些想法和技术和大家探讨。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;p&gt;早在之前就有搭建自己博客的想法，因为很多企业和学校在招聘的时候都提到了个人主页这一项。个人主页的确能够帮我们更好地展示自己。但由于自己怕麻烦，嫌太折腾一直没有时间来细心搭建自己的博客。现在，终于在NSTL实验室刘博士的耐心指导下顺利完成自己博客的搭建。在此特别鸣谢NSTL实验室刘博士。&lt;/p&gt;
+
+&lt;p&gt;我的博客还没有购买域名，不过我感觉我的博客地址还算不错啦，io结尾确实还挺新鲜的。以后再考虑购买域名这件事吧。&lt;/p&gt;
+
+&lt;p&gt;博客的主要目的还是出于技术交流，学术交流的目的，因为做学术如果缺少了交流，总感觉还没入门，更别提发表创新性学术论文了。博客同时也会偶尔记录一下生活中的美好经历，以免遗忘。&lt;/p&gt;
+
+&lt;p&gt;最后引用一下名言吧，以此勉励自己：&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;&quot;Let the wind of freedom blow 让自由之风劲吹&quot;&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;这句传自16世纪德国人类学家修顿的名言，自被斯坦福确立为校训之日起，一直鼓舞着学者大胆创新，勇于实现自己的想法。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 18 Oct 2014 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///hello-world/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///hello-world/</guid>
+      </item>
+    
+  </channel>
 </rss>
