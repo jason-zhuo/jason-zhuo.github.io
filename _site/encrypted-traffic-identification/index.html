@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="" />
-    <title>Botnet and fast flux</title>
+    <title>Encrypted Traffic identification</title>
     <meta name="name" content="Jaosonzhuo's blog" />
-    <meta name="description" content="" />
-    <meta name="keywords" content= "Botnet,fast flux" />
+    <meta name="description" content="paper reading" />
+    <meta name="keywords" content= "Machine learning,encrypted flow" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="" type="application/atom+xml" />
@@ -145,10 +145,10 @@ style="border-width:0" /></a>
 
 
 <header>
-    <h1 class="title">Botnet and fast flux</h1>
+    <h1 class="title">Encrypted Traffic identification</h1>
     <section class="meta">
 <span class="time">
-  <time datetime="2015-04-25">2015-04-25</time>
+  <time datetime="2015-05-11">2015-05-11</time>
 </span>
 
  | 
@@ -164,9 +164,9 @@ style="border-width:0" /></a>
 <span class="tags">
   标签
   
-  <a href="/tags/#Botnet" title="Botnet">Botnet</a>&nbsp;
+  <a href="/tags/#Machine learning" title="Machine learning">Machine learning</a>&nbsp;
   
-  <a href="/tags/#fast flux" title="fast flux">fast flux</a>&nbsp;
+  <a href="/tags/#encrypted flow" title="encrypted flow">encrypted flow</a>&nbsp;
   
 </span>
 
@@ -176,105 +176,74 @@ style="border-width:0" /></a>
 
 <div class="entry">
 
-  <p>Botnet and fast flux 特征介绍；Botminer论文初看</p>
+  <p><img src="/assets/images/2015-05-11enflow2.png" alt="image" />
+2015加密流量检测论文阅读笔记</p>
 
 <!-- more -->
 
 
-<h2>Botnet and fast flux</h2>
-
-<hr />
-
-<h3>几个定义</h3>
-
-<dl>
-<dt><strong>Round-Robin DNS (RRDNS) </strong>* </dt>
-<dd>Round-robin的意思是循环的意思，顾名思义，这种DNS返回的A记录不只一个，返回的记录是一个列表，列表里面记录的先后顺序是循环出现的。</dd>
-<dt><strong>Content Distribution Networks (CDN)</strong></dt>
-<dd>中文名叫内容分发网络，和RRDNS比较类似，不过返回的记录的TTL值相对RRDNS更低。CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。</dd>
-<dt><strong><em>Fast-Flux Service Networks (FFSN)</em></strong></dt>
-<dd>FFSN更加创新地利用了RRDNS和CDN的上述特性，来降低恶意服务器被发现和关闭的概率。FFSN的特点下面会讨论。</dd>
-</dl>
-
-<hr />
-
-<h3>Fast flux特征</h3>
+<h4>目前还有效的加密流量识别方法</h4>
 
 <ol>
-<li><strong>不重复的IP地址数量</strong>：通常情况来说合法DNS查询不重复的IP地址为1~3个，而fast flux查询结果中会有5~6个，以确保至少有一个IP可以连接。</li>
-<li><strong>NS数量</strong>：NS数量是指在单一次DNS 查询中所得到的NS （Name server）数量。客户端与DNS 主机进行查询时,可能透过快速变动网域技术掩护DNS 主机,因此NS Records 与NS 的A Records 可能有多笔记录,相较之下,合法的FQDN 其NS Records 与NS 的A Records比较少。</li>
-<li><strong>ASN数量与注册时间</strong>：指对ASN进行查询时，主机使用的IP所属的ASN是否属于同一个单位。由于CDN主机使用的IP所属的ASN多属于同一个单位，而fast flux主机大多分散在世界各地，与CDN向比较之下，主机使用的IP所属的ASN属于不同单位。注册时间能够缩小选取范围。</li>
-<li><strong>Domain age</strong>:指合法网站记录的TTL时间相对于恶意网站更长；恶意网站的FQDN与对应的IP记录不会长时间存留电脑，电脑必须时常进行DNS查询，以更新记录。RFC1912建议TTL最小为1~5天，这么长！而FFSN的TTL值一般小于600秒。但是一般不使用TTL值来判定FFSN，因为这样的误报率比较高，合法使用的CDN也会返回比较低的TTL值。因此TTL值一般用来区分FFSN/CDN和RRDNS.</li>
+<li>基于端口号的。</li>
+<li>基于内容签名的。有些加密协议有固定特殊的内容特征。</li>
+<li>基于流特征的。加密协议在进行密钥协商时具有特殊过程。</li>
 </ol>
 
 
-<h4>常见僵尸网络检测程序</h4>
+<hr />
 
-<table>
-<thead>
-<tr>
-<th> Name        </th>
-<th style="text-align:center;">TYPE                       </th>
-<th style="text-align:center;">Protocols </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>BotSniffer     </td>
-<td style="text-align:center;"> centralized servers     </td>
-<td style="text-align:center;">   IRC,HTTP </td>
-</tr>
-<tr>
-<td> BotHunter      </td>
-<td style="text-align:center;"> structure independent  </td>
-<td style="text-align:center;">Protocol independent </td>
-</tr>
-<tr>
-<td> Botminer </td>
-<td style="text-align:center;"> structure independent  </td>
-<td style="text-align:center;">    Protocol independent       </td>
-</tr>
-</tbody>
-</table>
+<h4>论文作者的方法</h4>
 
+<p>上述方法的局限性较大。论文[1]中作者采用了随机度测试的方法来对加密流量进行识别。首先作者利用了$l_1-norm$ regularized 逻辑斯特回归来选择<strong>sparse</strong>特征（特征中有很多0值），然后利用了ELM来对加密流量进行识别，选择ELM的原因是其具有更好的识别效果和更快的识别速度。</p>
 
-<h3>BotMiner 初看</h3>
+<p>作者在论文[1]中利用随机度测试方法获取了188维度的特征，然后利用一范数正则化方法对特征进行降维。最后再利用ELM学习算法，对加密流量进行识别。</p>
 
-<h5>BotMiner的系统架构</h5>
+<p>识别效果和支持向量数据描述(support vector data description)SVDD以及GMM方法进行了对比。可见作者采用了one-class分类。最后的结果是识别率大概在80%左右。</p>
 
-<p><img src="/assets/images/2015-04-19-botminer.png" alt="Structure of Botminer" /></p>
+<h4>随机度测试与加密方法</h4>
 
-<h4>论文中的一些定义</h4>
+<p>如何衡量加密算法的强弱好坏呢。有一种方法就是加密密文需要通过一定的随机度测试，输出的密文需要是随机的，或者近似随机的，这样的加密效果才好。衡量随机度的参数P-value越大则随机的可能性越高。参考：<a href="http://www.zhihu.com/question/20222653">知乎：如何评价一个伪随机数生成算法的优劣</a></p>
 
-<dl>
-<dt><strong>A平面</strong></dt>
-<dd>主要检测恶意行为模型,文章用Snort检测某主机的行为,主机的扫描行为用的是Bothunter的SCADE，下载地址：<a href="http://www.bothunter.net/">Cyber-TA.BotHunter Free Internet Distribution Page, 2008. </a>。文章采用两种异常检测模式，一种是高频率异常扫描次数，另外一种是带加权的失败连接次数。文章作者为了检测恶意邮件，开发了一种</dd>
-<dt><strong>C平面</strong></dt>
-<dd>网络通信关系模型和流特征模型</dd>
-<dt><strong>AC跨平面关联</strong></dt>
-<dd>发现AC平面之间的某种关联关系，僵尸网络评分s(h)</dd>
-<dt><strong>C平面的聚类</strong></dt>
-<dd>  定义 C-flow 为一段时间E内具有相同源IP，目的IP和目的端口的网络流</dd>
-</dl>
+<p>下图比较形象的说明了随机数测试的问题<a href="https://www.random.org/analysis/">cited from https://www.random.org/analysis/ </a>
+<img src="https://www.random.org/analysis/dilbert.jpg" alt="Cited " />
+现在随机度测试的方法很多，如：NIST test set, DiEHARD test set等等，其中以美国国家标准与技术研究所的NIST最为著名：<a href="http://csrc.nist.gov/groups/ST/toolkit/rng/documentation_software.html">NIST传送门</a>，<a href="http://blog.csdn.net/Tom_VS_Jerry/article/details/26086099">NIST安装过程介绍</a></p>
 
-<p><strong>C-flow的一些特征</strong></p>
+<p>NIST SP800-22 测试标准包含15个测试项，每个测试项都是针对被测序列的某一特性进行检测的，如下图所示。图片引用自[2]</p>
 
-<ol>
-<li>FPH: the number of flows per hour.</li>
-<li>PPF: the number of packets per flow</li>
-<li>BPP: the average number of bytes per packets</li>
-<li>BPS: the average number of bytes per second</li>
-</ol>
+<p><img src="/assets/images/2015-05-11enflow.png" alt="image" /></p>
 
+<h4>特征提取与选择</h4>
+
+<p>作者在文中利用NIST测试套件，通过不同的参数调节产生不同的测试小项，总共提取了188维度的特征。然后作者利用稀疏特征提取(Sparse Feature selection)。并在逻辑斯特回归中加入了1范数罚参。</p>
+
+<h4>ELM 简介</h4>
+
+<p>传统的SVM和神经网络需要人们进行干预，学习速度较慢，学习泛化能力也比较差。极限学习机具有较快的学习速度以及良好的泛化性能。然而，它的性能还可以得到很大提高，主要基于两个原因[3]：(1)极限学习机网络中的隐层节点可以减少；(2)网络参数不必每次都调节。</p>
+
+<p>我感觉ELM和传统神经网络学习过程中最大的区别就在于如何求解最小化损失函数。传统的神经网络在学习过程中，学习算法需要在迭代过程中调整所有参赛。而在ELM算法中，直接通过求H的广义逆矩阵，输出权重$\beta$就可以被确定。</p>
+
+<p>为啥不需要调节参数了呢，原来Huang 已经证明了具有随机制定的输入权值、隐层阈值和非零激活函数的单隐层前馈神经网络可以<strong>普遍近似</strong>任何具有紧凑输入集的连续函数。由此可以看出，输入权值和隐层阈值可以不必调节[3]。</p>
+
+<p>另外可以参考<a href="http://blog.csdn.net/google19890102/article/details/18222103">ELM算法简介</a></p>
+
+<p>以及<a href="http://www.ntu.edu.sg/home/egbhuang/">ELM intro</a></p>
+
+<p>还有<a href="http://blog.csdn.net/itplus/article/details/9277721">ELM算法基础</a></p>
 
 <h4>参考文献</h4>
 
-<p><a href="https://www.usenix.org/legacy/event/sec08/tech/full_papers/gu/gu_html/">[1]BotMiner: Clustering Analysis of Network Traffic for
-Protocol- and Structure-Independent Botnet Detection</a></p>
+<p>[1]Meng J, Yang L, Zhou Y, et al. Encrypted Traffic Identification Based on Sparse Logistical Regression and Extreme Learning Machine[M]//Proceedings of ELM-2014 Volume 2. Springer International Publishing, 2015: 61-70.</p>
+
+<p>[2]侯佳音, 萧宝瑾. 随机数测试标准与随机数发生器性能的关系[J]. 2012.</p>
+
+<p>[3]王建功. 基于极限学习机的多网络学习[J]. 2010.</p>
+
+<blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
 
 
   <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
-  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2015-04-25</span><br>
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2015-05-11</span><br>
   <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io"><strong>Jasonzhuo's Blog</strong></a></span>
   </p>
 </div>
@@ -308,16 +277,16 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="/shadowsocks-in-lab/" class="pageNav" >上一篇&nbsp;-&nbsp;Shadowsocks in Lab  </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="next-span">
-  <a  href="/structure-risk-minimizationsrm/" class="pageNav"  >下一篇&nbsp;-&nbsp;Structure Risk Minimization,SRM </a>
+  <a  href="/botnet-detection/" class="pageNav"  >下一篇&nbsp;-&nbsp;Botnet detection </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="/shadowsocks-in-lab/" class="pageNav" >上一篇 </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="mobile-next-span">
-  <a  href="/structure-risk-minimizationsrm/" class="pageNav"  >下一篇</a>
+  <a  href="/botnet-detection/" class="pageNav"  >下一篇</a>
 </span>
 </section>
 

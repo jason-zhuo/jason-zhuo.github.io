@@ -1,6 +1,13 @@
 [
 	
 		{
+		  "title"    : "Encrypted Traffic identification",
+		  "categories" : "infosec",
+		  "url"     : "/encrypted-traffic-identification/",
+		  "date"     : " 2015年11月05日"
+		} ,
+	
+		{
 		  "title"    : "Botnet detection",
 		  "categories" : "infosec",
 		  "url"     : "/botnet-detection/",
