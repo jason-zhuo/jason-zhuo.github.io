@@ -29,7 +29,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-14SDN2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;控制器目前有很多，根据知乎网友的推荐&lt;a href=&quot;http://www.zhihu.com/question/22599089&quot;&gt;link&lt;/a&gt;, 控制器如果选择Python 的话，推荐 POX 或者 Ryu，更推荐 Ryu 一些，Java 的话就是 Floodlight 了。&lt;/p&gt;
+&lt;p&gt;控制器目前有很多，根据知乎网友的推荐[link][http://www.zhihu.com/question/22599089], 控制器如果选择Python 的话，推荐 POX 或者 Ryu，更推荐 Ryu 一些，Java 的话就是 Floodlight 了。&lt;/p&gt;
 
 &lt;h3&gt;术语区分&lt;/h3&gt;
 
@@ -45,15 +45,15 @@
 
 &lt;p&gt;网络是私有云中的瓶颈问题。现在，服务器和存储技术已经发展成共享资源，云管理员可以自由地调用这些资源，但是网络却仍然是手动的。为了提高灵活性，私有云网络必须进行虚拟化，而软件定义网络（SDN）是一个性价比不错的方法。&lt;/p&gt;
 
-&lt;p&gt;根据&lt;a href=&quot;https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud&quot;&gt;ONF&lt;/a&gt;介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。&lt;/p&gt;
+&lt;p&gt;根据[ONF][https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud]介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。&lt;/p&gt;
 
 &lt;h3&gt;Mininet运行原理&lt;/h3&gt;
 
-&lt;p&gt;Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，&lt;a href=&quot;http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html&quot;&gt;Network Namespace 介绍&lt;/a&gt;,通过这个介绍，Mininet理解起来就方便多了。&lt;/p&gt;
+&lt;p&gt;Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，[Network Namespace 介绍][http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html],通过这个介绍，Mininet理解起来就方便多了。&lt;/p&gt;
 
-&lt;p&gt;在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。&lt;a href=&quot;http://segmentfault.com/a/1190000000669218&quot;&gt;参考外链&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。[参考外链][http://segmentfault.com/a/1190000000669218]&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg&quot; alt=&quot;Mininet原理&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;![Mininet原理][http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg]&lt;/p&gt;
 
 &lt;h3&gt;其它&lt;/h3&gt;
 
