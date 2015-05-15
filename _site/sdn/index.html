@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="" />
-    <title>Big data Short notes</title>
+    <title>Software Define Network</title>
     <meta name="name" content="Jaosonzhuo's blog" />
-    <meta name="description" content="" />
-    <meta name="keywords" content= "Big data" />
+    <meta name="description" content="SDN:Still don't know" />
+    <meta name="keywords" content= "SDN" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="" type="application/atom+xml" />
@@ -147,17 +147,17 @@ style="border-width:0" /></a>
 
 
 <header>
-    <h1 class="title">Big data Short notes</h1>
+    <h1 class="title">Software Define Network</h1>
     <section class="meta">
 <span class="time">
-  <time datetime="2015-04-18">2015-04-18</time>
+  <time datetime="2015-05-14">2015-05-14</time>
 </span>
 
  | 
 <span class="categories">
   分类
   
-  <a href="/categories/#big data" title="big data">big data</a>&nbsp;
+  <a href="/categories/#infosec" title="infosec">infosec</a>&nbsp;
   
 </span>
 
@@ -166,7 +166,7 @@ style="border-width:0" /></a>
 <span class="tags">
   标签
   
-  <a href="/tags/#Big data" title="Big data">Big data</a>&nbsp;
+  <a href="/tags/#SDN" title="SDN">SDN</a>&nbsp;
   
 </span>
 
@@ -176,41 +176,70 @@ style="border-width:0" /></a>
 
 <div class="entry">
 
-  <p>Bigdata培训课程，听了一天，感觉听不大懂，工程细节上的东西太多了，而且自己这方面也刚刚起步，因此本文就稍微记一下我比较感兴趣的内容。</p>
+  <h3>软件定义网络初探</h3>
+
+<hr />
+
+<p><img src="/assets/images/2015-05-14SDN1.png" alt="image" />
+软件定义网络Software Define Network(SDN:Still don't know)初探笔记，以及Mininet原理分析</p>
 
 <!-- more -->
 
 
-<h3>Spark Streaming</h3>
+<h3>软件定义网络的定义</h3>
 
-<blockquote><p>目前的大数据处理可以分为如下3个类型：</p></blockquote>
+<p>如果将网络中的所有网络设备视为被管理的资源，那么就像操作系统一样，软件定义网络SDN提供了同样的管理视图和编程接口。这样基于SDN这个平台，用户可以开发各种应用程序，通过软件来定义逻辑上的网络拓扑，以满足对网络资源的不同需求，二维无需关系底层网络的拓扑结构。</p>
 
-<ol>
-<li>复杂的批量数据处理：10min~数小时</li>
-<li>基于历史数据的交互式查询： 10sec~ 数分钟</li>
-<li>基于实时数据流的数据处理（Streaming data processing): 数百毫秒到数秒</li>
-</ol>
+<h3>SDN交换机与控制器</h3>
 
+<p>SDN交换机只负责网络高速转发，保存的用于转发决策的转发表信息来自控制器，<strong>SDN交换机需要在远程控制器的管控下工作</strong>，与之相关的设备状态和控制指令都需要经由SDN的南向接口传达，从而实现集中化统一管理。控制指令标准和状态需要满足SDN协议规范。
+下图说明了SDN与交换机的工作流程</p>
 
-<p>除了Spark，流式计算计算系统比较有名的包括Twitter Storm和Yahoo S4。现在所提及的Storm主要是指Apache Storm ，Apache Storm的前身是 Twitter Storm 平台，目前已经归于 Apache 基金会管辖。Storm已经出现好多年了，而且自从2011年开始就在Twitter内部生产环境中使用，还有其他一些公司。而Spark Streaming是一个新的项目, 2013年开始。</p>
+<p><img src="/assets/images/2015-05-14SDN2.png" alt="image" /></p>
 
-<p>Spark的流式计算还是要弱于Storm的，作者在<a href="http://www.csdn.net/article/2014-08-04/2821018">这篇文章中</a>认为互联网公司对于Storm的部署还是多于Spark。这篇文章对<a href="http://blog.csdn.net/anzhsoft/article/details/38168025">流式计算</a>系统的设计考虑的一些要素进行了比较详细的讨论。这篇文章介绍了Storm和Streaming框架的<a href="http://www.open-open.com/lib/view/open1426129553435.html">对比</a>. 如此说来，Storm在以后的项目中估计要用到<img src="/assets/smilies/8.gif" alt="image" />.</p>
+<p>控制器目前有很多，根据知乎网友的推荐<a href="http://www.zhihu.com/question/22599089">link</a>, 控制器如果选择Python 的话，推荐 POX 或者 Ryu，更推荐 Ryu 一些，Java 的话就是 Floodlight 了。</p>
 
-<p>相对与<strong>Mapreduce</strong>来说，Mapreduce的输入数据集合是静态的，不能动态变化。因此适合于离线处理。Mapreduce的使用场景包括，简单的网站pv,uv统计，搜索引擎建立索引，海量数据查找，复杂数据的分析和算法实现（聚类，分类，推荐，图算法等）</p>
+<h3>术语区分</h3>
 
-<p><strong>Yarn</strong> 的提出，解决了多计算框架直接的数据无法共享问题，同时负责集群资源的统一管理和调度。</p>
+<p><strong>Mininet</strong>: 主要是虚拟出Openflow交换机以及host节点，并且可以自定义拓扑结构，是一个网络仿真平台。支持Openflow，OpenvSwitch等软件定义网络布局。
+<strong>Open vSwitch（OVS）</strong>:是由 Nicira Networks 主导的，运行在虚拟化平台（例如 KVM，Xen）上的虚拟交换机。
+<strong>Opendaylight（ODL）</strong>: 属于控制器的一种，开源项目，整体SDN解决方案，包含一系列组件，支持多种协议包括了openflow。是现在主流的控制器项目，功能比较完善
+<strong>floodlight</strong>: 属于控制器的一种，开源项目，文档齐全，图形化界面管理。简而言之，Floodlight提供了用户友好的图形化界面，来控制管理支持Openflow协议的交换机。
+<strong>Openflow</strong>: 是用于管理交换机流表的协议，起源于斯坦福大学的Clean Slate项目组，属于SDN协议的一种（其他的例如ForCES、PCE-P等等）。Openflow应用最广，现已成为了SDN的代言词。OpenFlow协议是描述控制器和交换机之间交互信息的南向接口标准。控制器和交换机之间通过这SDN协议进行连接建立，流表下发和信息交换，实现对网络中所有OpenFlow交换机的控制。</p>
 
-<p>运行在YARN上的计算框架：
-1. 离线计算框架Mapreduce
-2. DAG计算框架Tez
-3. 流式计算框架Strom
-4. 内存计算框架Spark</p>
+<h3>私有云与SDN的关系</h3>
 
-<blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
+<p>私有云(Private Clouds)是为特定客户单独使用而构建的一个资源服务网络。特定用户拥有基础设施，并可以控制在此基础设施上部署需求的应用程序和服务。私有云的核心属性是专有资源。</p>
+
+<p>网络是私有云中的瓶颈问题。现在，服务器和存储技术已经发展成共享资源，云管理员可以自由地调用这些资源，但是网络却仍然是手动的。为了提高灵活性，私有云网络必须进行虚拟化，而软件定义网络（SDN）是一个性价比不错的方法。</p>
+
+<p>根据<a href="https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud">ONF</a>介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。</p>
+
+<h3>Mininet运行原理</h3>
+
+<p>Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，<a href="http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html">Network Namespace 介绍</a>,通过这个介绍，Mininet理解起来就方便多了。</p>
+
+<p>在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。<a href="http://segmentfault.com/a/1190000000669218">参考外链</a></p>
+
+<p><img src="http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg" alt="Mininet原理" /></p>
+
+<h3>其它</h3>
+
+<p>通过mininet可以在本机迅速搭建任意拓扑结构的虚拟网络。然后利用控制器可以控制和管理所构建的虚拟网络，增加设备，删除设备等等。</p>
+
+<p>最简单的配置就是只有一台主机即可，如下图所示：</p>
+
+<p><img src="/assets/images/2015-05-14SDN3.png" alt="image" /></p>
+
+<p>当然复杂一点可以利用多台主机，比如这样：</p>
+
+<p><img src="/assets/images/2015-05-14SDN4.png" alt="image" /></p>
+
+<p>最近实验室采购设备，调研至此感觉SDN好像不需要特殊设备呢？我们只需要在不同host上运行不同的程序，甚至不同的操作系统，以方便网络安全实验。不过现在有很多厂家在做SDN控制器，还有支持Openflow协议的交换机，但都还不成熟。目前业界尚未发布完全符合 OpenFlow 协议规范的芯片，所以说感觉没必要买一些不成熟的产品。就多买几台性能还行的服务器，交换机，其余硬件资源没必要，在剩下的就是手动搭建工作了。</p>
 
 
   <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
-  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2015-04-18</span><br>
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2015-05-14</span><br>
   <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io"><strong>Jasonzhuo's Blog</strong></a></span>
   </p>
 </div>
@@ -244,16 +273,16 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="/structure-risk-minimizationsrm/" class="pageNav" >上一篇&nbsp;-&nbsp;Structure Risk Minimization,SRM  </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="next-span">
-  <a  href="/hello-world-again/" class="pageNav"  >下一篇&nbsp;-&nbsp;hello world again </a>
+  <a  href="/encrypted-traffic-identification/" class="pageNav"  >下一篇&nbsp;-&nbsp;Encrypted Traffic identification </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="/structure-risk-minimizationsrm/" class="pageNav" >上一篇 </a>
+  <a  href="" >已经是第一篇 </a>
 </span>
 <span class="mobile-next-span">
-  <a  href="/hello-world-again/" class="pageNav"  >下一篇</a>
+  <a  href="/encrypted-traffic-identification/" class="pageNav"  >下一篇</a>
 </span>
 </section>
 

@@ -7,8 +7,77 @@
     <title>Jaosonzhuo's blog</title>
     <link href="http://jasonzhuo.com//feed/" rel="self" />
     <link href="http://jasonzhuo.com/" />
-    <lastBuildDate>2015-05-11T21:00:19+08:00</lastBuildDate>
+    <lastBuildDate>2015-05-15T21:10:40+08:00</lastBuildDate>
     <webMaster>jason_zhuo@iclould.com</webMaster>
+    
+    <item>
+      <title>Software Define Network</title>
+      <link href="http://jasonzhuo.com//sdn/"/>
+      <pubDate>2015-05-14T00:00:00+08:00</pubDate>
+      <author></author>
+      <guid>http://jasonzhuo.com//sdn</guid>
+      <content:encoded><![CDATA[<h3>软件定义网络初探</h3>
+
+<hr />
+
+<p><img src="/assets/images/2015-05-14SDN1.png" alt="image" />
+软件定义网络Software Define Network(SDN:Still don't know)初探笔记，以及Mininet原理分析</p>
+
+<!-- more -->
+
+
+<h3>软件定义网络的定义</h3>
+
+<p>如果将网络中的所有网络设备视为被管理的资源，那么就像操作系统一样，软件定义网络SDN提供了同样的管理视图和编程接口。这样基于SDN这个平台，用户可以开发各种应用程序，通过软件来定义逻辑上的网络拓扑，以满足对网络资源的不同需求，二维无需关系底层网络的拓扑结构。</p>
+
+<h3>SDN交换机与控制器</h3>
+
+<p>SDN交换机只负责网络高速转发，保存的用于转发决策的转发表信息来自控制器，<strong>SDN交换机需要在远程控制器的管控下工作</strong>，与之相关的设备状态和控制指令都需要经由SDN的南向接口传达，从而实现集中化统一管理。控制指令标准和状态需要满足SDN协议规范。
+下图说明了SDN与交换机的工作流程</p>
+
+<p><img src="/assets/images/2015-05-14SDN2.png" alt="image" /></p>
+
+<p>控制器目前有很多，根据知乎网友的推荐<a href="http://www.zhihu.com/question/22599089">link</a>, 控制器如果选择Python 的话，推荐 POX 或者 Ryu，更推荐 Ryu 一些，Java 的话就是 Floodlight 了。</p>
+
+<h3>术语区分</h3>
+
+<p><strong>Mininet</strong>: 主要是虚拟出Openflow交换机以及host节点，并且可以自定义拓扑结构，是一个网络仿真平台。支持Openflow，OpenvSwitch等软件定义网络布局。
+<strong>Open vSwitch（OVS）</strong>:是由 Nicira Networks 主导的，运行在虚拟化平台（例如 KVM，Xen）上的虚拟交换机。
+<strong>Opendaylight（ODL）</strong>: 属于控制器的一种，开源项目，整体SDN解决方案，包含一系列组件，支持多种协议包括了openflow。是现在主流的控制器项目，功能比较完善
+<strong>floodlight</strong>: 属于控制器的一种，开源项目，文档齐全，图形化界面管理。简而言之，Floodlight提供了用户友好的图形化界面，来控制管理支持Openflow协议的交换机。
+<strong>Openflow</strong>: 是用于管理交换机流表的协议，起源于斯坦福大学的Clean Slate项目组，属于SDN协议的一种（其他的例如ForCES、PCE-P等等）。Openflow应用最广，现已成为了SDN的代言词。OpenFlow协议是描述控制器和交换机之间交互信息的南向接口标准。控制器和交换机之间通过这SDN协议进行连接建立，流表下发和信息交换，实现对网络中所有OpenFlow交换机的控制。</p>
+
+<h3>私有云与SDN的关系</h3>
+
+<p>私有云(Private Clouds)是为特定客户单独使用而构建的一个资源服务网络。特定用户拥有基础设施，并可以控制在此基础设施上部署需求的应用程序和服务。私有云的核心属性是专有资源。</p>
+
+<p>网络是私有云中的瓶颈问题。现在，服务器和存储技术已经发展成共享资源，云管理员可以自由地调用这些资源，但是网络却仍然是手动的。为了提高灵活性，私有云网络必须进行虚拟化，而软件定义网络（SDN）是一个性价比不错的方法。</p>
+
+<p>根据<a href="https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud">ONF</a>介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。</p>
+
+<h3>Mininet运行原理</h3>
+
+<p>Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，<a href="http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html">Network Namespace 介绍</a>,通过这个介绍，Mininet理解起来就方便多了。</p>
+
+<p>在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。<a href="http://segmentfault.com/a/1190000000669218">参考外链</a></p>
+
+<p><img src="http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg" alt="Mininet原理" /></p>
+
+<h3>其它</h3>
+
+<p>通过mininet可以在本机迅速搭建任意拓扑结构的虚拟网络。然后利用控制器可以控制和管理所构建的虚拟网络，增加设备，删除设备等等。</p>
+
+<p>最简单的配置就是只有一台主机即可，如下图所示：</p>
+
+<p><img src="/assets/images/2015-05-14SDN3.png" alt="image" /></p>
+
+<p>当然复杂一点可以利用多台主机，比如这样：</p>
+
+<p><img src="/assets/images/2015-05-14SDN4.png" alt="image" /></p>
+
+<p>最近实验室采购设备，调研至此感觉SDN好像不需要特殊设备呢？我们只需要在不同host上运行不同的程序，甚至不同的操作系统，以方便网络安全实验。不过现在有很多厂家在做SDN控制器，还有支持Openflow协议的交换机，但都还不成熟。目前业界尚未发布完全符合 OpenFlow 协议规范的芯片，所以说感觉没必要买一些不成熟的产品。就多买几台性能还行的服务器，交换机，其余硬件资源没必要，在剩下的就是手动搭建工作了。</p>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>Encrypted Traffic identification</title>
@@ -35,7 +104,7 @@
 
 <h4>论文作者的方法</h4>
 
-<p>上述方法的局限性较大。论文[1]中作者采用了随机度测试的方法来对加密流量进行识别。首先作者利用了$l_1-norm$ regularized 逻辑斯特回归来选择<strong>sparse</strong>特征（特征中有很多0值），然后利用了ELM来对加密流量进行识别，选择ELM的原因是其具有更好的识别效果和更快的识别速度。</p>
+<p>上述方法的局限性较大。论文[1]中作者采用了随机度测试的方法来对加密流量进行识别。首先作者利用了\(l_{1}-norm\) regularized 逻辑斯特回归来选择<strong>sparse</strong>特征（特征中有很多0值），然后利用了ELM来对加密流量进行识别，选择ELM的原因是其具有更好的识别效果和更快的识别速度。</p>
 
 <p>作者在论文[1]中利用随机度测试方法获取了188维度的特征，然后利用一范数正则化方法对特征进行降维。最后再利用ELM学习算法，对加密流量进行识别。</p>
 
@@ -61,7 +130,7 @@
 
 <p>传统的SVM和神经网络需要人们进行干预，学习速度较慢，学习泛化能力也比较差。极限学习机具有较快的学习速度以及良好的泛化性能。然而，它的性能还可以得到很大提高，主要基于两个原因[3]：(1)极限学习机网络中的隐层节点可以减少；(2)网络参数不必每次都调节。</p>
 
-<p>我感觉ELM和传统神经网络学习过程中最大的区别就在于如何求解最小化损失函数。传统的神经网络在学习过程中，学习算法需要在迭代过程中调整所有参赛。而在ELM算法中，直接通过求H的广义逆矩阵，输出权重$\beta$就可以被确定。</p>
+<p>我感觉ELM和传统神经网络学习过程中最大的区别就在于如何求解最小化损失函数。传统的神经网络在学习过程中，学习算法需要在迭代过程中调整所有参赛。而在ELM算法中，直接通过求H的广义逆矩阵，输出权重\(\beta\)就可以被确定。</p>
 
 <p>为啥不需要调节参数了呢，原来Huang 已经证明了具有随机制定的输入权值、隐层阈值和非零激活函数的单隐层前馈神经网络可以<strong>普遍近似</strong>任何具有紧凑输入集的连续函数。由此可以看出，输入权值和隐层阈值可以不必调节[3]。</p>
 
@@ -634,56 +703,6 @@ activation file = license.lic</p>
 <p>然后在应用程序中找到刚刚安装完成的Matlab.app，右键进入包内容，将/Applications/MATLAB_R2014b/bin/maci64/libmwservices.dylib 用破解的该文件进行替换即可</p>
 
 <h4>最后就可以愉快地进行科研活动啦~！</h4>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Auto Blog Post</title>
-      <link href="http://jasonzhuo.com//AutoBlogpost/"/>
-      <pubDate>2014-10-19T00:00:00+08:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//AutoBlogpost</guid>
-      <content:encoded><![CDATA[<p><img src="/assets/images/2014-10-19-bash_logo.jpg" alt="image" /></p>
-
-<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。为了省事，自己根据Bash语言写了一个自动发表已经撰写好的Blog。</p>
-
-<!-- more -->
-
-
-<p>每次写完Blog要不是忘记该输什么命令，就是懒得一个一个命令行敲。</p>
-
-<blockquote><p>Shell脚本语言(Shell Script)，Shell脚本与Windows/Dos下的批处理相似，也就是用各类命令预先放入到一个文件中，方便一次性执行的一个程序文件，主要是方便管理员进行设置或者管理用的。但是它比Windows下的批处理更强大，比用其他编程程序编辑的程序效率更高，毕竟它使用了Linux/Unix下的命令。——百度百科</p></blockquote>
-
-<p>Shell脚本语言为实现自动化提供了良好帮助，真不愧为胶水语言，确实省事了很多。
-下面展示了我如何利用脚本语言来一键发表提交撰写好的博客内容。脚本内容比较简单，基本逻辑是先输入提交本次提交的评注，然后脚本会自动删除你在本地Git仓库中删除的文件，不然无法提交到远程Git库中。其中“--cached”表示只删除本地git仓库的文件内容，本地的文件还没有删除，所以--cached可以考虑去掉。最后3个命令基本上都和网上的教程差不多。代码虽然很简单，但是还是有一定作用。</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno"> 1</span> <span class="nb">echo</span> -n <span class="s2">&quot;Enter comment:&quot;</span>
-<span class="lineno"> 2</span> <span class="nb">read  </span>comment
-<span class="lineno"> 3</span> <span class="nv">files</span><span class="o">=</span><span class="sb">`</span>git status <span class="p">|</span> grep deleted <span class="p">|</span> awk <span class="s1">&#39;{print \$2}&#39;</span><span class="sb">`</span>
-<span class="lineno"> 4</span> <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${files}&quot;</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-<span class="lineno"> 5</span>    <span class="nb">echo</span> <span class="s2">&quot;nothing to remove&quot;</span>
-<span class="lineno"> 6</span>  <span class="k">else</span>
-<span class="lineno"> 7</span>         <span class="k">for</span> var in <span class="nv">$files</span>
-<span class="lineno"> 8</span>         <span class="k">do</span>
-<span class="lineno"> 9</span>             <span class="c">#echo $var</span>
-<span class="lineno">10</span>             git rm --cached <span class="nv">$var</span>
-<span class="lineno">11</span>         <span class="k">done</span>
-<span class="lineno">12</span> <span class="k">fi</span>
-<span class="lineno">13</span> git add .
-<span class="lineno">14</span> git commit -m <span class="s2">&quot;$comment&quot;</span>
-<span class="lineno">15</span> git push origin master
-<span class="lineno">16</span> <span class="nb">exit </span>0</code></pre></div>
-
-
-<p>给予该脚本可执行权限后，直接执行./Publish.sh即可轻松提交到远程Git仓库啦~</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">chmod +x Publish.sh
-./Publish.sh</code></pre></div>
-
-
-<p>效果图：</p>
-
-<p><img src="/assets/images/2014-10-19-AutoblogRes.png" alt="image" /></p>
 ]]></content:encoded>
     </item>
     
