@@ -105,6 +105,10 @@ style="border-width:0" /></a>
                     
                     <a href="/tags/#SDN" title="SDN" rel="1">SDN</a>
                     
+                    <a href="/tags/#Random forest" title="Random forest" rel="1">Random forest</a>
+                    
+                    <a href="/tags/#clustering" title="clustering" rel="1">clustering</a>
+                    
                 </div>
             </div>
 
@@ -195,7 +199,7 @@ style="border-width:0" /></a>
 <p>SDN交换机只负责网络高速转发，保存的用于转发决策的转发表信息来自控制器，<strong>SDN交换机需要在远程控制器的管控下工作</strong>，与之相关的设备状态和控制指令都需要经由SDN的南向接口传达，从而实现集中化统一管理。控制指令标准和状态需要满足SDN协议规范。
 下图说明了SDN与交换机的工作流程</p>
 
-<p><img src="/assets/images/2015-05-14SDN2.png" alt="image" /></p>
+<p><img src="/assets/images/2015-05-15sdn2.png" alt="image" /></p>
 
 <p>控制器目前有很多，根据知乎网友的推荐[link][http://www.zhihu.com/question/22599089], 控制器如果选择Python 的话，推荐 POX 或者 Ryu，更推荐 Ryu 一些，Java 的话就是 Floodlight 了。</p>
 
@@ -213,15 +217,15 @@ style="border-width:0" /></a>
 
 <p>网络是私有云中的瓶颈问题。现在，服务器和存储技术已经发展成共享资源，云管理员可以自由地调用这些资源，但是网络却仍然是手动的。为了提高灵活性，私有云网络必须进行虚拟化，而软件定义网络（SDN）是一个性价比不错的方法。</p>
 
-<p>根据[ONF][https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud]介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。</p>
+<p>根据<a href="https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud">ONF</a>介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。</p>
 
 <h3>Mininet运行原理</h3>
 
-<p>Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，[Network Namespace 介绍][http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html],通过这个介绍，Mininet理解起来就方便多了。</p>
+<p>Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，<a href="http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html">Network Namespace 介绍</a>,通过这个介绍，Mininet理解起来就方便多了。</p>
 
-<p>在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。[参考外链][http://segmentfault.com/a/1190000000669218]</p>
+<p>在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。<a href="http://segmentfault.com/a/1190000000669218">参考外链</a></p>
 
-<p>![Mininet原理][http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg]</p>
+<p><img src="http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg" alt="Mininet原理" /></p>
 
 <h3>其它</h3>
 
@@ -229,11 +233,11 @@ style="border-width:0" /></a>
 
 <p>最简单的配置就是只有一台主机即可，如下图所示：</p>
 
-<p><img src="/assets/images/2015-05-14SDN3.png" alt="image" /></p>
+<p><img src="/assets/images/2015-05-15sdn3.png" alt="image" /></p>
 
 <p>当然复杂一点可以利用多台主机，比如这样：</p>
 
-<p><img src="/assets/images/2015-05-14SDN4.png" alt="image" /></p>
+<p><img src="/assets/images/2015-05-15SDN4.png" alt="image" /></p>
 
 <p>最近实验室采购设备，调研至此感觉SDN好像不需要特殊设备呢？我们只需要在不同host上运行不同的程序，甚至不同的操作系统，以方便网络安全实验。不过现在有很多厂家在做SDN控制器，还有支持Openflow协议的交换机，但都还不成熟。目前业界尚未发布完全符合 OpenFlow 协议规范的芯片，所以说感觉没必要买一些不成熟的产品。就多买几台性能还行的服务器，交换机，其余硬件资源没必要，在剩下的就是手动搭建工作了。</p>
 
@@ -273,13 +277,13 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="" >已经是第一篇 </a>
+  <a  href="/random-forest-clustering/" class="pageNav" >上一篇&nbsp;-&nbsp;Random forest clustering  </a>
 </span>
 <span class="next-span">
   <a  href="/encrypted-traffic-identification/" class="pageNav"  >下一篇&nbsp;-&nbsp;Encrypted Traffic identification </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="" >已经是第一篇 </a>
+  <a  href="/random-forest-clustering/" class="pageNav" >上一篇 </a>
 </span>
 <span class="mobile-next-span">
   <a  href="/encrypted-traffic-identification/" class="pageNav"  >下一篇</a>

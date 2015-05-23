@@ -7,6 +7,126 @@
     <atom:link href="http://jasonzhuo.com//feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Random forest clustering</title>
+        <description>&lt;h3&gt;随机森林聚类（Random forest clustering）&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-23-randforest.png&quot; alt=&quot;image&quot; /&gt;
+随机森林聚类分析&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h3&gt;1.起因&lt;/h3&gt;
+
+&lt;p&gt;网络上现存的很多资料都是关于随机森林的分类和回归分析，但很少有材料讲解随机森林的聚类分析过程。
+随机森林以及随机森林的分类回归过程我就不做详细介绍了，你可以参考网络上的其他资料 [1]，[2], [3], [8]。&lt;/p&gt;
+
+&lt;p&gt;分析随机森林聚类算法还有如下的原因：&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;GBDT和随机森林在ESL书里面说是目前最优的两种算法&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;然后呢，最近也在研究一些新的聚类算法，就顺带研究一些随机森林是如何用了聚类的吧。&lt;/p&gt;
+
+&lt;h3&gt;2.随机森林聚类&lt;/h3&gt;
+
+&lt;p&gt;随机森林聚类算法的最核心思想：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1. 将非监督学习转换为监督学习&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2. 相似度矩阵的计算&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;合成数据集（synthetic dataset）中包括的样本是通过样本合成算法产生新的样本的集合。最常用的就是合成算法就是生成和原始数据集（Orignial dataset）样本数量一致，相同特征的集合。&lt;/p&gt;
+
+&lt;p&gt;举个网上的例子[7]来说吧：
+假设有两个特征\(x_1\),\(x_2\).其中，\(x_1\)是连续变量服从\(Normal(0,1)\),\(x_2\)是0，1分布。一种合成数据的方法是根据每个特征的分布进行估计，值得注意的是随机生成的数据是各自独立的。另外一种合成方法是根据样本的概率进行随机选择，例如在样本中\(P(male)=0.4\),\(P(female)=0.6\)，那么合成的\(x_1\)的值就从原始数据集里面随机选择一个，合成的\(x_2\)的值就按照上述概率生成0或1。&lt;/p&gt;
+
+&lt;p&gt;新的训练样本集合多了一个新的特征，该特征用来区分该样本是合成的还是原始的，用二进制表示即可。&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;新的训练样本集合（多一个类标签特征）=合成样本数据集合+原始数据集合&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;h4&gt;2.1相似度矩阵&lt;/h4&gt;
+
+&lt;p&gt;随机森林在建模的同时，还提供了样本相似性度量，即相似度矩阵(简记为 Prox 矩阵)。当用一棵树对所有数据进行判别时，这些数据最终都将达到该树的某个叶节点上.可以用两个样本在每棵树的同一个节点上出现的频率大小，来衡量这两个样本之间的相似程度，或两个样本属于同一类的概率大小。&lt;/p&gt;
+
+&lt;p&gt;Prox矩阵\(P=p_{ij} \)生成过程如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;对于样本数为N的训练集合，首先生成一个\(N\times N\)的矩阵，\(p_{ii}=1\)，其他元素为0。&lt;/li&gt;
+&lt;li&gt;对于任意两个样本\(x_i\),\(x_j\),若他们出现在生成的同一棵树上的同一个叶节点上，则$$p[i][j]= 1+p[i][j]$$&lt;/li&gt;
+&lt;li&gt;重复上述过程直到m棵树全部生成，得到相应的矩阵&lt;/li&gt;
+&lt;li&gt;进行归一化处理$$p[i][j]= \frac{p[i][j]}{N}$$&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;在随机森林进行聚类的过程中，运用到到了两个样本之间的相似度进行计算。我们知道在聚类算法中存在很多衡量两个样本之间距离的方法，欧几里得距离等等。但是在随机森林中的距离是如下计算的[5]:&lt;/p&gt;
+
+&lt;p&gt;$$DISSIM[i][j]= \sqrt{1-p[i][j]}$$&lt;/p&gt;
+
+&lt;h4&gt;2.2随机森林聚类计算过程&lt;/h4&gt;
+
+&lt;p&gt;随机森林聚类算法：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;生成合成样本集合&lt;/li&gt;
+&lt;li&gt;生成新的带类新标签的训练集合N，样本只包括两类：合成的数据，原始的数据&lt;/li&gt;
+&lt;li&gt;根据N生成相似度矩阵P&lt;/li&gt;
+&lt;li&gt;将P中被我们标记为合成数据的行和列删除&lt;/li&gt;
+&lt;li&gt;运用其他聚类算法进行聚类&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;为啥我们要生产合成数据集，然后还要将其加入原始训练集合呢？我直观地认为直接在原始数据集上算相似性不就ok啦。后来我反应过来，但是原始数据是不带类标签的（非监督学习）。产生合成数据集的目的就是和原始数据进行类标记，将非监督学习转换为监督学习。&lt;/p&gt;
+
+&lt;p&gt;步骤5中居然采用还是其他的聚类算法，只不过替换了距离测量方法，这点感觉有点那个啥&lt;img src=&quot;/assets/smilies/30.gif&quot; id=&quot;similey&quot;&gt;。&lt;/p&gt;
+
+&lt;h4&gt;2.3随机森林聚类应用&lt;/h4&gt;
+
+&lt;p&gt;文献[3]和文献[4]主要是用随机森林对医疗疾病属性的聚类，文献[3][4]用的是PAM（Partitioning around medoids）聚类算法。
+随机森林的Prox矩阵可以作为多个基于不相似度聚类算法的输入，例如文献[5]中同样利用的是K-Medoids聚类算法PAM。作者将其应用到网络流量的聚类上，还比较创新。&lt;/p&gt;
+
+&lt;h4&gt;2.4随机森林聚类Case study&lt;/h4&gt;
+
+&lt;p&gt;利用R语言中的函数&lt;code&gt;rfClustering(model,noClusters=4)&lt;/code&gt;进行聚类分析，这个例子中没有体现出合成数据集合的生成的，因为iris数据集是带类标签的。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;set&amp;lt;-iris&lt;/code&gt; 载入iris数据集，iris数据集是带类标签的&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;md&amp;lt;-CoreModel(Species ~., set,model=&quot;rf&quot;,rfNoTrees=30)&lt;/code&gt; 利用随机森林得到模型，模型md中包括了相似度矩阵&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mdCluster&amp;lt;-rfClustering(md,3)&lt;/code&gt;聚成3类&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;&lt;code&gt;rfClustering&lt;/code&gt;这个函数根据作者介绍，内在是调用的PAM聚类算法的。&lt;/p&gt;
+
+&lt;p&gt;聚类结果：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-23rfresult.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3&gt;参考文献&lt;/h3&gt;
+
+&lt;p&gt;[1]&lt;a href=&quot;http://www.cnblogs.com/leftnoteasy/archive/2011/03/07/random-forest-and-gbdt.html&quot;&gt;http://www.cnblogs.com/leftnoteasy/archive/2011/03/07/random-forest-and-gbdt.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]&lt;a href=&quot;http://blog.sciencenet.cn/blog-661364-615921.html&quot;&gt;http://blog.sciencenet.cn/blog-661364-615921.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[3]&lt;a href=&quot;http://blog.csdn.net/songzitea/article/details/10035757&quot;&gt;http://blog.csdn.net/songzitea/article/details/10035757&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[4]Shi T, Seligson D, Belldegrun A S, et al. Tumor classification by tissue microarray profiling: random forest clustering applied to renal cell carcinoma[J]. Modern Pathology, 2005, 18(4): 547-557.&lt;/p&gt;
+
+&lt;p&gt;[5]Shi T, Horvath S. Unsupervised learning with random forest predictors[J]. Journal of Computational and Graphical Statistics, 2006, 15(1).&lt;/p&gt;
+
+&lt;p&gt;[6]Wang Y, Xiang Y, Zhang J. Network traffic clustering using Random Forest proximities[C]//Communications (ICC), 2013 IEEE International Conference on. IEEE, 2013: 2058-2062.&lt;/p&gt;
+
+&lt;p&gt;[7]&lt;a href=&quot;http://stats.stackexchange.com/questions/92725/unsupervised-random-forest-using-weka&quot;&gt;http://stats.stackexchange.com/questions/92725/unsupervised-random-forest-using-weka&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[8]&lt;a href=&quot;http://www.zilhua.com/629.html&quot;&gt;http://www.zilhua.com/629.html&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 23 May 2015 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///random-forest-clustering/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///random-forest-clustering/</guid>
+      </item>
+    
+      <item>
         <title>Software Define Network</title>
         <description>&lt;h3&gt;软件定义网络初探&lt;/h3&gt;
 
@@ -27,7 +147,7 @@
 &lt;p&gt;SDN交换机只负责网络高速转发，保存的用于转发决策的转发表信息来自控制器，&lt;strong&gt;SDN交换机需要在远程控制器的管控下工作&lt;/strong&gt;，与之相关的设备状态和控制指令都需要经由SDN的南向接口传达，从而实现集中化统一管理。控制指令标准和状态需要满足SDN协议规范。
 下图说明了SDN与交换机的工作流程&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-14SDN2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-15sdn2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;控制器目前有很多，根据知乎网友的推荐[link][http://www.zhihu.com/question/22599089], 控制器如果选择Python 的话，推荐 POX 或者 Ryu，更推荐 Ryu 一些，Java 的话就是 Floodlight 了。&lt;/p&gt;
 
@@ -45,15 +165,15 @@
 
 &lt;p&gt;网络是私有云中的瓶颈问题。现在，服务器和存储技术已经发展成共享资源，云管理员可以自由地调用这些资源，但是网络却仍然是手动的。为了提高灵活性，私有云网络必须进行虚拟化，而软件定义网络（SDN）是一个性价比不错的方法。&lt;/p&gt;
 
-&lt;p&gt;根据[ONF][https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud]介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。&lt;/p&gt;
+&lt;p&gt;根据&lt;a href=&quot;https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud&quot;&gt;ONF&lt;/a&gt;介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。&lt;/p&gt;
 
 &lt;h3&gt;Mininet运行原理&lt;/h3&gt;
 
-&lt;p&gt;Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，[Network Namespace 介绍][http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html],通过这个介绍，Mininet理解起来就方便多了。&lt;/p&gt;
+&lt;p&gt;Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，&lt;a href=&quot;http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html&quot;&gt;Network Namespace 介绍&lt;/a&gt;,通过这个介绍，Mininet理解起来就方便多了。&lt;/p&gt;
 
-&lt;p&gt;在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。[参考外链][http://segmentfault.com/a/1190000000669218]&lt;/p&gt;
+&lt;p&gt;在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。&lt;a href=&quot;http://segmentfault.com/a/1190000000669218&quot;&gt;参考外链&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;![Mininet原理][http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg]&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg&quot; alt=&quot;Mininet原理&quot; /&gt;&lt;/p&gt;
 
 &lt;h3&gt;其它&lt;/h3&gt;
 
@@ -61,11 +181,11 @@
 
 &lt;p&gt;最简单的配置就是只有一台主机即可，如下图所示：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-14SDN3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-15sdn3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;当然复杂一点可以利用多台主机，比如这样：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-14SDN4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-15SDN4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;最近实验室采购设备，调研至此感觉SDN好像不需要特殊设备呢？我们只需要在不同host上运行不同的程序，甚至不同的操作系统，以方便网络安全实验。不过现在有很多厂家在做SDN控制器，还有支持Openflow协议的交换机，但都还不成熟。目前业界尚未发布完全符合 OpenFlow 协议规范的芯片，所以说感觉没必要买一些不成熟的产品。就多买几台性能还行的服务器，交换机，其余硬件资源没必要，在剩下的就是手动搭建工作了。&lt;/p&gt;
 </description>
@@ -77,7 +197,7 @@
       <item>
         <title>Encrypted Traffic identification</title>
         <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-11enflow2.png&quot; alt=&quot;image&quot; /&gt;
-2015加密流量检测论文阅读笔记&lt;/p&gt;
+2015加密流量检测论文阅读笔记，持续更新（last update 2015.5.20）&lt;/p&gt;
 
 &lt;!-- more --&gt;
 
@@ -85,15 +205,16 @@
 &lt;h4&gt;目前还有效的加密流量识别方法&lt;/h4&gt;
 
 &lt;ol&gt;
-&lt;li&gt;基于端口号的。&lt;/li&gt;
+&lt;li&gt;基于端口号的，局限性很大但某些场景仍然有效。&lt;/li&gt;
 &lt;li&gt;基于内容签名的。有些加密协议有固定特殊的内容特征。&lt;/li&gt;
 &lt;li&gt;基于流特征的。加密协议在进行密钥协商时具有特殊过程。&lt;/li&gt;
+&lt;li&gt;基于主机行为的。从主机行为来看加密协议的建立过程，局限性仍然很大。&lt;/li&gt;
 &lt;/ol&gt;
 
 
 &lt;hr /&gt;
 
-&lt;h4&gt;论文作者的方法&lt;/h4&gt;
+&lt;h4&gt;论文[1]作者的方法&lt;/h4&gt;
 
 &lt;p&gt;上述方法的局限性较大。论文[1]中作者采用了随机度测试的方法来对加密流量进行识别。首先作者利用了\(l_{1}-norm\) regularized 逻辑斯特回归来选择&lt;strong&gt;sparse&lt;/strong&gt;特征（特征中有很多0值），然后利用了ELM来对加密流量进行识别，选择ELM的原因是其具有更好的识别效果和更快的识别速度。&lt;/p&gt;
 
@@ -131,6 +252,28 @@
 
 &lt;p&gt;还有&lt;a href=&quot;http://blog.csdn.net/itplus/article/details/9277721&quot;&gt;ELM算法基础&lt;/a&gt;&lt;/p&gt;
 
+&lt;h4&gt;论文[6]阅读笔记&lt;/h4&gt;
+
+&lt;p&gt;作者在文章中介绍了加密流量识别的基本情况，强调了最近的进展和未来的发展可能会遇到的挑战。文章中指出，加密流量类型主要集中在：SSH，VPN，SSL,加密P2P，加密VoIP，匿名网络流量。&lt;/p&gt;
+
+&lt;p&gt;仅仅粗粒度区分加密和非加密流量是远远不够的，现实世界迫切需要的是从加密中获取应用层类型。这显然是相当复杂的工作，许多方法的综合运用才可能达到该目的。另外，协议混淆（traffic obfuscation）和流量变形（traffic morph）可以达到绕过基于机器学习的统计分类的效果，同样是未来的挑战之一。论文没有开放下载，只读了其中能看到的部分，就已经读到的内容来看，感觉文章综述很一般。&lt;/p&gt;
+
+&lt;h3&gt;SSL/TLS应用层流量识别&lt;/h3&gt;
+
+&lt;h4&gt;1.论文[4]阅读笔记&lt;/h4&gt;
+
+&lt;p&gt;在未加密情况下识别应用层类型是比较成熟的，然而在加密情况下识别就相对困难许多。&lt;/p&gt;
+
+&lt;p&gt;作者在文章中提出了使用随机指纹（&lt;em&gt;stochastic fingerprints&lt;/em&gt;）来识别SSL/TLS会话过程中的应用类型。指纹是基于一阶马尔可夫链的，然后马尔可夫链的参数是通过训练集合学习得到的。由于参数的不同性，该方法能有效的检测出应用层类型，以及异常的SSL会话过程。&lt;/p&gt;
+
+&lt;p&gt;该方法和一些其他的SSL指纹识别方法比较类似，也是利用SSL/TLS握手过程中的头部信息。不同之处在于作者利用的是基于马尔可夫链随机指纹，将不同应用层类型的SSL/TLS握手过程的状态转移形成带有不同参数的马尔科夫状态转移链。作者在论文中对12项常用的SSL类型进行了建模：例如PayPal,Twitter,Skype等等。&lt;/p&gt;
+
+&lt;h4&gt;2.论文[5]阅读笔记&lt;/h4&gt;
+
+&lt;p&gt;传统的基于载荷的和机器学习的方法给系统造成的负载较大。作者提出了利用基于指纹和统计分析的混合方法来解决该问题。作者首先使用指纹来检测出SSL/TLS，然后再利用统计分析来找出确定的应用层类型。实验结果表明，该方法能够99%识别SSL/TLS流量，并达到F-score为94.52%的应用层识别效果。&lt;/p&gt;
+
+&lt;p&gt;作者识别SSL/TLS流量的方法主要还是基于流量关键字段特征，这点和普通方法没区别。作者将SSL/TLS流量识别出来之后，又用了贝叶斯方法来对加密流的特征进行学习，统计特征包括：平均包长度，最大最小包长度，平均包到达间隔时间，流持续时间，流所包括的包数量。总体感觉创新不是很大。&lt;/p&gt;
+
 &lt;h4&gt;参考文献&lt;/h4&gt;
 
 &lt;p&gt;[1]Meng J, Yang L, Zhou Y, et al. Encrypted Traffic Identification Based on Sparse Logistical Regression and Extreme Learning Machine[M]//Proceedings of ELM-2014 Volume 2. Springer International Publishing, 2015: 61-70.&lt;/p&gt;
@@ -138,6 +281,12 @@
 &lt;p&gt;[2]侯佳音, 萧宝瑾. 随机数测试标准与随机数发生器性能的关系[J]. 2012.&lt;/p&gt;
 
 &lt;p&gt;[3]王建功. 基于极限学习机的多网络学习[J]. 2010.&lt;/p&gt;
+
+&lt;p&gt;[4]Korczynski M, Duda A. Markov chain fingerprinting to classify encrypted traffic[C]//INFOCOM, 2014 Proceedings IEEE. IEEE, 2014: 781-789.&lt;/p&gt;
+
+&lt;p&gt;[5]Sun G L, Xue Y, Dong Y, et al. An novel hybrid method for effectively classifying encrypted traffic[C]//Global Telecommunications Conference (GLOBECOM 2010), 2010 IEEE. IEEE, 2010: 1-5.&lt;/p&gt;
+
+&lt;p&gt;[6]Cao Z, Xiong G, Zhao Y, et al. A Survey on Encrypted Traffic Classification[M]//Applications and Techniques in Information Security. Springer Berlin Heidelberg, 2014: 73-81.&lt;/p&gt;
 
 &lt;blockquote&gt;&lt;p&gt;Written with &lt;a href=&quot;https://stackedit.io/&quot;&gt;StackEdit&lt;/a&gt;.&lt;/p&gt;&lt;/blockquote&gt;
 </description>
@@ -625,71 +774,6 @@ Protocol- and Structure-Independent Botnet Detection&lt;/a&gt;&lt;/p&gt;
         <pubDate>Mon, 01 Dec 2014 00:00:00 +0800</pubDate>
         <link>http://jasonzhuo.com///BigDatareport/</link>
         <guid isPermaLink="true">http://jasonzhuo.com///BigDatareport/</guid>
-      </item>
-    
-      <item>
-        <title>Matlab2014b Install</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab.png&quot; alt=&quot;image&quot; /&gt;
-本文描述了作者安装matlab2014b的折腾手记，本着折腾自己方便他人的思想，体现了作者乐于助人的中心思想。&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-
-&lt;p&gt;距离上一次写博客都好久了，于是本文出于为了不忘记如何写博客以及就很多小伙伴的问题进行统一解答的目的，写下了折腾手记。本文不鼓励大家使用盗版软件。支持正版，人人有责，本文作者在XBG童鞋的诱惑下，已经在app store上购买了超过300元的正版软件。&lt;/p&gt;
-
-&lt;blockquote&gt;&lt;p&gt;使用正版就是免去了折腾的麻烦，珍爱生命，请用正版。——本文作者&lt;/p&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;好多用Mac的童鞋在升级最新的操作系统之后，就无法使用Matlab了，这为我们科研造成了一些小麻烦。最新的Matlab2014b可以在Yosemite上面运行。特别感谢破解人员的辛勤劳动，我这里就补充一些细枝末节的东西，以解答小伙伴们在MAC平台下安装过程中的一些问题。&lt;/p&gt;
-
-&lt;p&gt;首先给出&lt;a href=&quot;http://bbs.feng.com/read-htm-tid-8467093.html&quot;&gt;Matlab2014b全部平台的下载链接&lt;/a&gt;&lt;/p&gt;
-
-&lt;h4&gt;问题：&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;作者好不容易下载完成，然后解压运行，发现matlab mac版本提示powerpc应用程序不再被支持。&lt;/li&gt;
-&lt;li&gt;载入镜像安装，输入密钥后发现产品列表里面只有几个基本插件，其他功能都不在了&lt;/li&gt;
-&lt;/ol&gt;
-
-
-&lt;h4&gt;解决办法：&lt;/h4&gt;
-
-&lt;ol&gt;
-&lt;li&gt;下载的iso文件千万别用the unarchiever解压，右键iso文件，注意是iso不是解压出来的那个图标，用DiskImageMounter打开。&lt;img src=&quot;/assets/images/2014-11-18-matlab1.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;li&gt;使用UltraISO编辑下载的matlab的ISO文件，&lt;a href=&quot;http://www.downxia.com/downinfo/659.html&quot;&gt;UltraISO下载&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-
-&lt;p&gt;用UltraISO打开matlab的ISO文件:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;进入matlab的ISO文件目录java/jar/，删除install.jar&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;再添加破解的install.jar&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;最后点保存
-&lt;img src=&quot;/assets/images/2014-11-18-matlab6.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;/assets/images/2014-11-18-matlab7.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;断网后，再次用DiskImageMounter打开matlab安装程序，输入刚才使用的密钥：29797-39064-48306-32452。发现已经有很多功能了，进行正常安装需要（9GB+）。默认情况下我们用不到那么多工具包，为了节约磁盘空间，可以将一些不常用的，非本专业的工具包取消。（视个人情况而定,可以全部安装）&lt;/p&gt;
-
-&lt;p&gt;正常安装完成后，激活即可：
-activation file = license.lic&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014-11-18-matlab8.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;/assets/images/2014-11-18-matlab9.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;然后在应用程序中找到刚刚安装完成的Matlab.app，右键进入包内容，将/Applications/MATLAB_R2014b/bin/maci64/libmwservices.dylib 用破解的该文件进行替换即可&lt;/p&gt;
-
-&lt;h4&gt;最后就可以愉快地进行科研活动啦~！&lt;/h4&gt;
-</description>
-        <pubDate>Tue, 18 Nov 2014 00:00:00 +0800</pubDate>
-        <link>http://jasonzhuo.com///matlab2014b-install/</link>
-        <guid isPermaLink="true">http://jasonzhuo.com///matlab2014b-install/</guid>
       </item>
     
   </channel>
