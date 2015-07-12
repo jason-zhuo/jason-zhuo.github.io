@@ -7,6 +7,209 @@
     <atom:link href="http://jasonzhuo.com//feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Web Crawler Crawl4j</title>
+        <description>&lt;h3&gt;基于Crawl4j的网页爬虫（Web crawler based on Crawl4j）&lt;/h3&gt;
+
+&lt;p&gt;--
+&lt;img src=&quot;/assets/images/2015-07-12webcrawler.png&quot; alt=&quot;image&quot; /&gt;
+基于Crawl4j的网页爬虫简单实现以及运用。&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h3&gt;1.起因&lt;/h3&gt;
+
+&lt;p&gt;最近老师叫我去下载一个“核武器”，但是这个核武器一共有400G大小，包括2万多个目录，10多万个文件。如果一个一个去下载，明显是不靠谱的。网上也有人放出了这些文件的BT文件，可惜BT文件太大(23MB)，我电脑一打开就卡顿得不行。后来打开了，但是下载进度一直卡在0.0%，最快速度也就20KB/s。老师又叮嘱&lt;strong&gt;一定&lt;/strong&gt;要下载下来，于是我就停下了手上论文的工作，开始解决这个问题。一开始我没想太多，因为最近事情确实有点多，白天的事情忙不完，晚上还有兼职工作... 后来花了周六一下午时间，问题解决了,或多或少有些收获，又想到这篇blog或许不仅可以帮助他人学习进步，而且看到牛博士下载开源代码逐个目录的下载，很是辛苦。于是就又了这篇Blog.&lt;/p&gt;
+
+&lt;p&gt;另外，关于这个“核武器”，我就简单介绍一下，一开始我也是不知道的，后来老师通知我才晓得。&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;可以说这次事件和斯诺登事件的影响力是不相上下的，但HT(Hacking Team)被黑不光光是让公众知道有这回事，随之而来还有整整415G的泄漏资料！里面有Flash 0day, Windows字体0day, iOS enterprise backdoor app, Android selinux exploit, WP8 trojan等等核武级的漏洞和工具。&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;h3&gt;2.方案思路&lt;/h3&gt;
+
+&lt;p&gt;既然迅雷BT下载速度奇慢无比，那就只好用基本HTTP去下载公布在网络上的镜像文件了。如果像牛博士那样一条条链接去另存为的话，肯定不行。之前看过通过Wget做全站镜像的命令&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;p&gt;wget -mk -c http://target.com&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;这个也是解决方法之一，不过https网站不行，要出错。另外，上述命令在国内环境中下载速度慢，而且无法在远程VPS上进行下载（硬盘大小有限）。 容易造成 &lt;em&gt;wget memory exhausted&lt;/em&gt; 的错误，真是醉了。&lt;/p&gt;
+
+&lt;p&gt;另外一个解决方法就是利用网络爬虫将所有的文件链接获取，然后逐一发起HTTP请求去下载。有个叫做&lt;strong&gt;plowdown&lt;/strong&gt;的命令可以解决，参考&lt;a href=&quot;https://github.com/mcrapet/plowshare&quot;&gt;plowshare&lt;/a&gt;
+安装完之后，利用
+&lt;code&gt;plowdown --fallback -m Links.txt&lt;/code&gt;
+就行了。&lt;/p&gt;
+
+&lt;p&gt;后期，打算采用迅雷离线空间来下载上述链接，估计会比较快一点，唯一不足的就是没有文件目录结构，后期按照目录来下载估计就行了。&lt;/p&gt;
+
+&lt;h3&gt;3.Crawl4J简介&lt;/h3&gt;
+
+&lt;p&gt;Crawl4J是一个开源的Java爬虫程序，总共才三十多个类，比较简单，非常适合爬虫入门的学习。
+下载地址：&lt;a href=&quot;https://github.com/yasserg/crawler4j&quot;&gt;https://github.com/yasserg/crawler4j&lt;/a&gt;
+下载crawler4j-4.1-jar-with-dependencies.jar，然后将其导入外部依赖库。&lt;/p&gt;
+
+&lt;h3&gt;4. 源代码&lt;/h3&gt;
+
+&lt;p&gt;Mycrawler主要对每条链接进行处理。Controller里面设置了Java使用代理（链接到远程VPS）和目标网站。&lt;/p&gt;
+
+&lt;h4&gt;4.1.Mycrawler class&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&quot;&quot;&gt;import edu.uci.ics.crawler4j.crawler.Page;
+import edu.uci.ics.crawler4j.crawler.WebCrawler;
+import edu.uci.ics.crawler4j.parser.HtmlParseData;
+import edu.uci.ics.crawler4j.url.WebURL;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Set;
+
+public class Mycrawler extends WebCrawler {
+    static double totalFilesCount = 0.0;
+    static  File file = new File(&quot;Links.txt&quot;);
+    public  static  void writelinkstoFile(String url){
+        try {
+            BufferedWriter bf  = new BufferedWriter(new FileWriter(file,true));
+            bf.write(url+&quot;\n&quot;);
+            bf.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method receives two parameters. The first parameter is the page
+     * in which we have discovered this new url and the second parameter is
+     * the new url. You should implement this function to specify whether
+     * the given url should be crawled or not (based on your crawling logic).
+     * In this example, we are instructing the crawler to ignore urls that
+     * have css, js, git, ... extensions and to only accept urls that start
+     * with &quot;http://www.ics.uci.edu/&quot;. In this case, we didn&#39;t need the
+     * referringPage parameter to make the decision.
+     */
+    public boolean checkifIsDIR(String href){
+        if (href.endsWith(&quot;/&quot;)){
+            return true;
+        }else
+        return false;
+
+    }
+    @Override
+    public boolean shouldVisit(Page referringPage, WebURL url) {
+        String orghref =url.getURL();
+        String href = url.getURL().toLowerCase();
+
+        boolean iswithinDomain  =href.startsWith(Controller.TargetSite.toLowerCase());
+        if (iswithinDomain&amp;amp;&amp;amp;checkifIsDIR(href)){
+          //  System.out.println(href);
+            return true;
+        }else if (iswithinDomain){
+            {
+                if(href.equalsIgnoreCase(&quot;http://hacking.technology/Hacked%20Team/Exploit_Delivery_Network_android.tar.gz&quot;)){
+                    return false;
+                }
+                if(href.equalsIgnoreCase(&quot;http://hacking.technology/Hacked%20Team/Exploit_Delivery_Network_windows.tar.gz&quot;)){
+                    return false;
+                }
+                if(href.equalsIgnoreCase(&quot;http://hacking.technology/Hacked%20Team/support.hackingteam.com.tar.gz&quot;)){
+                    return false;
+                }
+
+            }
+            writelinkstoFile(orghref);
+            totalFilesCount++;
+        }
+        return false;
+
+    }
+
+    /**
+     * This function is called when a page is fetched and ready
+     * to be processed by your program.
+     */
+    @Override
+    public void visit(Page page) {
+        String url = page.getWebURL().getURL();
+        System.out.println(&quot;visited URL: &quot; + url);
+
+        if (page.getParseData() instanceof HtmlParseData) {
+            HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
+            String text = htmlParseData.getText();
+            String html = htmlParseData.getHtml();
+            Set&amp;lt;WebURL&amp;gt; links = htmlParseData.getOutgoingUrls();
+
+            System.out.println(&quot;Text length: &quot; + text.length());
+            System.out.println(&quot;Html length: &quot; + html.length());
+            System.out.println(&quot;Number of outgoing links: &quot; + links.size());
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;4.2.Controller class&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;import edu.uci.ics.crawler4j.crawler.CrawlConfig;
+import edu.uci.ics.crawler4j.crawler.CrawlController;
+import edu.uci.ics.crawler4j.fetcher.PageFetcher;
+import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
+import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+import java.util.Properties;
+
+/**
+ * Created by jasonzhuo on 2015/7/11.
+ */
+public class Controller {
+    public  static String TargetSite= &quot;http://hacking.technology/Hacked%20Team/&quot;;
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
+
+    static int numberOfCrawlers = 7;
+
+    public static void main(String[] args) {
+
+        CrawlConfig crawlConfig = new CrawlConfig();
+        crawlConfig.setCrawlStorageFolder(&quot;I:\\HTools&quot;);
+
+        //proxy setup
+       //crawlConfig.setProxyHost(&quot;127.0.0.1&quot;);
+      //  crawlConfig.setProxyPort(1080);
+        Properties prop = System.getProperties();
+        prop.setProperty(&quot;socksProxyHost&quot;, &quot;127.0.0.1&quot;);
+        prop.setProperty(&quot;socksProxyPort&quot;, &quot;1080&quot;);
+        crawlConfig.setMaxDownloadSize(Integer.MAX_VALUE);
+        crawlConfig.setMaxOutgoingLinksToFollow(Integer.MAX_VALUE);
+        crawlConfig.setMaxDepthOfCrawling(32767);
+        crawlConfig.setMaxPagesToFetch(Integer.MAX_VALUE);
+        System.out.println(crawlConfig.toString());
+        PageFetcher pageFetcher = new PageFetcher(crawlConfig);
+        RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
+        RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
+        try {
+            CrawlController controller = new CrawlController(crawlConfig, pageFetcher, robotstxtServer);
+            //controller.addSeed(&quot;http://www.ics.uci.edu/~welling/&quot;);
+            controller.addSeed(TargetSite);
+            // controller.addSeed(&quot;https://www.google.com.hk/&quot;);
+            controller.start(Mycrawler.class, numberOfCrawlers);
+            System.out.println(&quot;Recorded total number of files :&quot;+Mycrawler.totalFilesCount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Sun, 12 Jul 2015 00:00:00 +0800</pubDate>
+        <link>http://jasonzhuo.com///web-crawler-crawl4j/</link>
+        <guid isPermaLink="true">http://jasonzhuo.com///web-crawler-crawl4j/</guid>
+      </item>
+    
+      <item>
         <title>Random forest clustering</title>
         <description>&lt;h3&gt;随机森林聚类（Random forest clustering）&lt;/h3&gt;
 
@@ -715,65 +918,6 @@ Protocol- and Structure-Independent Botnet Detection&lt;/a&gt;&lt;/p&gt;
         <pubDate>Wed, 15 Apr 2015 00:00:00 +0800</pubDate>
         <link>http://jasonzhuo.com///hello-world-again/</link>
         <guid isPermaLink="true">http://jasonzhuo.com///hello-world-again/</guid>
-      </item>
-    
-      <item>
-        <title>Big data Algorithm Report</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2014-12-1-Bigdata.jpg&quot; alt=&quot;image&quot; /&gt;
-这篇主要讲的是周末听大数据讲座的听后感。&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-
-&lt;p&gt;大数据时代，我们每个人都在谈论大数据，每个人都可以说自己在研究大数据。但是真正懂大数据的还是只有真正的大神们。大数据设计的概念太大了，就和云计算差不多，涵盖的面也非常广泛，可以说是上到天文下到地理，从宏观的天体运动到微观的分子结构，简直无所不包。&lt;/p&gt;
-
-&lt;p&gt;报告上半场是9点到12点，下半场是14点到18点。我听了上半场的上半部分和整个下半场。听完报告感觉都快虚脱了。。。各种听不懂，各种高大上~ 能听懂的都是前面几页PPT。真实台上一分钟，台下十年功啊！台上PPT的每一个图或者一个表，虽然只展示了不到1分钟，但其背后的付出都是可想而知的。我还发现大牛们的一个普遍规律，就是讲着讲着就冒一句英语，而且语速还不慢。简直让我们摸不着头脑。&lt;/p&gt;
-
-&lt;h4&gt;大数据的4V特点:&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014-12-1-big4.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这四个特点好像很多老师来做报告都要讲，不过都是简单地提了一下。&lt;/p&gt;
-
-&lt;h4&gt;报告简单回忆&lt;/h4&gt;
-
-&lt;h5&gt;1.Collective attention and Collective allocation&lt;/h5&gt;
-
-&lt;p&gt;报告首先是由沈华伟老师给我们带来的Collective attention and Collective allocation. Collective attention主要是衡量一篇论文到底能获得多大关注度。Collective allocation是说的有些诺贝尔颁奖的时候，有些情况是颁发给论文的第1作者，但也有些情况是颁发给论文的第3或者第4作者。这个资源分配的问题就是Collective allocation问题，其主要思想是结合每个作者在该领域的引用文章的影响进行合理分配。&lt;/p&gt;
-
-&lt;h5&gt;2. A query-based algorithm framework for dynamic data analysis&lt;/h5&gt;
-
-&lt;p&gt;刘兴武老师介绍了一下动态处理大规模数据的方法。主要思想是用基于查询的方法来处理动态数据。&lt;/p&gt;
-
-&lt;h5&gt;3.融合空间认知学的空间数据库研究&lt;/h5&gt;
-
-&lt;p&gt;邵杰老师介绍了如何利用空间认知学上的研究思路来进行数据研究。空间认知学包括了地理学和认知心理学。传统的寻路算法都是考虑的是最近邻，最短路径等，然而，现在我们需要寻找最易到达邻。这一点还是很有研究意义的。&lt;/p&gt;
-
-&lt;h5&gt;4.Learn to Hash for Big Data&lt;/h5&gt;
-
-&lt;p&gt;李武军老师介绍了如何用Hash函数来处理数据。在大数据的前提下，Hash函数可以降维，提高处理效率，节约存储空间。李老师主要介绍了监督Hash学习方法，非监督Hash学习和多模态Hash学习方法。Hash学习和最近邻检索有着密切关系。&lt;/p&gt;
-
-&lt;h5&gt;5.Big-data Machine Learning&lt;/h5&gt;
-
-&lt;p&gt;林智仁老师给我们带来的是关于分布式的机器学习方法。林老师的讲解深入浅出，相对容易理解一些。林老师还形象地描述了做大数据的人，形容的相当形象。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2014-12-01-live.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;&lt;p&gt;Big data is like teenage sex, everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so everyone claims they are doing it.&lt;/p&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;传统的机器学习都是单机的，在处理大数据时效率很低，训练时间长，不能够让模型随着新增样本的变化而相应变化。考虑提高效率的方法，有（1）买一个超大RAM （2）Disk-level 机器学习 （3）GPU计算 （4）分布式机器学习。但是林老师也说了，不是所有的都可以用分布式来解决问题。分布式还会带来很多问题，例如同步，通信时间。原来的Ph.D学生都主要研究训练计算时间如何提高上去了，很少有人研究过在大数据情况下，如何快速载入大数据。&lt;/p&gt;
-
-&lt;h5&gt;5.用物理观点看图挖掘问题&lt;/h5&gt;
-
-&lt;p&gt;好不容易到了最后，本以为周涛老师会以幽默风趣的谈吐和深入浅出的讲解结束本次报告。但是，恰恰相反，到了很多人已经筋疲力尽的时候，周涛老师讲了他是如何用物理学上的方法解决网络链路预测问题的。他所提出的模型似乎很强大，比原来的牛文章里面的还要好。不过我没听懂，PPT上各种公式弄得我晕头转向。但是，周涛老师提到了用统计物理的方法来研究计算机问题，挺有启发的。&lt;/p&gt;
-
-&lt;h5&gt;6.秘书问题与在线算法&lt;/h5&gt;
-
-&lt;p&gt;孙晓明老师介绍了秘书问题和在线算法相关工作。在通常情况下，数据都是一个接着一个到达的，正如秘书来面试一样，是一个接着一个和面试官面试的。面试官如何在这种情况下选择最优的秘书，是在线算法需要解决的工作。秘书问题是多对一的问题，online matching是多对多的问题。这些问题有关动态分配和动态取最优解，比较有意思。&lt;/p&gt;
-</description>
-        <pubDate>Mon, 01 Dec 2014 00:00:00 +0800</pubDate>
-        <link>http://jasonzhuo.com///BigDatareport/</link>
-        <guid isPermaLink="true">http://jasonzhuo.com///BigDatareport/</guid>
       </item>
     
   </channel>

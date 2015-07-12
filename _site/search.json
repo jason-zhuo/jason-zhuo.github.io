@@ -1,6 +1,13 @@
 [
 	
 		{
+		  "title"    : "Web Crawler Crawl4j",
+		  "categories" : "new stuff",
+		  "url"     : "/web-crawler-crawl4j/",
+		  "date"     : " 2015年12月07日"
+		} ,
+	
+		{
 		  "title"    : "Random forest clustering",
 		  "categories" : "machine learning",
 		  "url"     : "/random-forest-clustering/",

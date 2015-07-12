@@ -56,6 +56,10 @@
 
     
     <url>
+        <loc>http://jasonzhuo.com//web-crawler-crawl4j/</loc>
+    </url>
+    
+    <url>
         <loc>http://jasonzhuo.com//random-forest-clustering/</loc>
     </url>
     
