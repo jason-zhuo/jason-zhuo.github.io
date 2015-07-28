@@ -188,8 +188,9 @@ style="border-width:0" /></a>
 
   <h3>基于Crawl4j的网页爬虫（Web crawler based on Crawl4j）</h3>
 
-<p>--
-<img src="/assets/images/2015-07-12webcrawler.png" alt="image" />
+<hr />
+
+<p><img src="/assets/images/2015-07-12webcrawler.png" alt="image" />
 基于Crawl4j的网页爬虫简单实现以及运用。</p>
 
 <!-- more -->
@@ -209,7 +210,7 @@ style="border-width:0" /></a>
 
 <blockquote><p>wget -mk -c http://target.com</p></blockquote>
 
-<p>这个也是解决方法之一，不过https网站不行，要出错。另外，上述命令在国内环境中下载速度慢，而且无法在远程VPS上进行下载（硬盘大小有限）。 容易造成 <em>wget memory exhausted</em> 的错误，真是醉了。</p>
+<p>这个也是解决方法之一，不过https网站不行，要出错。另外，上述命令在国内环境中下载速度慢，而且无法在远程VPS上进行下载（硬盘大小有限）。容易造成 <em>wget memory exhausted</em> 的错误，真是醉了。</p>
 
 <p>另外一个解决方法就是利用网络爬虫将所有的文件链接获取，然后逐一发起HTTP请求去下载。有个叫做<strong>plowdown</strong>的命令可以解决，参考<a href="https://github.com/mcrapet/plowshare">plowshare</a>
 安装完之后，利用
@@ -220,13 +221,15 @@ style="border-width:0" /></a>
 
 <h3>3.Crawl4J简介</h3>
 
-<p>Crawl4J是一个开源的Java爬虫程序，总共才三十多个类，比较简单，非常适合爬虫入门的学习。
-下载地址：<a href="https://github.com/yasserg/crawler4j">https://github.com/yasserg/crawler4j</a>
-下载crawler4j-4.1-jar-with-dependencies.jar，然后将其导入外部依赖库。</p>
+<p>Crawl4J是一个开源的Java爬虫程序，总共才三十多个类，比较简单，非常适合爬虫入门的学习。</p>
+
+<p>下载地址：<a href="https://github.com/yasserg/crawler4j">https://github.com/yasserg/crawler4j</a></p>
+
+<p>下载crawler4j-4.1-jar-with-dependencies.jar，然后将其导入外部依赖库。</p>
 
 <h3>4. 源代码</h3>
 
-<p>Mycrawler主要对每条链接进行处理。Controller里面设置了Java使用代理（链接到远程VPS）和目标网站。</p>
+<p>Mycrawler主要对每条链接进行处理。Controller里面设置了Java使用代理（链接到远程VPS）。代码是仿照官网给出的实例改编的，具体方法说明参考Crawl4j说明文档。</p>
 
 <h4>4.1.Mycrawler class</h4>
 

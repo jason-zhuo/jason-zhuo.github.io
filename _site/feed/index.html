@@ -7,7 +7,7 @@
     <title>Jaosonzhuo's blog</title>
     <link href="http://jasonzhuo.com//feed/" rel="self" />
     <link href="http://jasonzhuo.com/" />
-    <lastBuildDate>2015-07-12T16:26:15+08:00</lastBuildDate>
+    <lastBuildDate>2015-07-28T16:16:40+08:00</lastBuildDate>
     <webMaster>jason_zhuo@iclould.com</webMaster>
     
     <item>
@@ -18,8 +18,9 @@
       <guid>http://jasonzhuo.com//web-crawler-crawl4j</guid>
       <content:encoded><![CDATA[<h3>基于Crawl4j的网页爬虫（Web crawler based on Crawl4j）</h3>
 
-<p>--
-<img src="/assets/images/2015-07-12webcrawler.png" alt="image" />
+<hr />
+
+<p><img src="/assets/images/2015-07-12webcrawler.png" alt="image" />
 基于Crawl4j的网页爬虫简单实现以及运用。</p>
 
 <!-- more -->
@@ -39,7 +40,7 @@
 
 <blockquote><p>wget -mk -c http://target.com</p></blockquote>
 
-<p>这个也是解决方法之一，不过https网站不行，要出错。另外，上述命令在国内环境中下载速度慢，而且无法在远程VPS上进行下载（硬盘大小有限）。 容易造成 <em>wget memory exhausted</em> 的错误，真是醉了。</p>
+<p>这个也是解决方法之一，不过https网站不行，要出错。另外，上述命令在国内环境中下载速度慢，而且无法在远程VPS上进行下载（硬盘大小有限）。容易造成 <em>wget memory exhausted</em> 的错误，真是醉了。</p>
 
 <p>另外一个解决方法就是利用网络爬虫将所有的文件链接获取，然后逐一发起HTTP请求去下载。有个叫做<strong>plowdown</strong>的命令可以解决，参考<a href="https://github.com/mcrapet/plowshare">plowshare</a>
 安装完之后，利用
@@ -50,13 +51,15 @@
 
 <h3>3.Crawl4J简介</h3>
 
-<p>Crawl4J是一个开源的Java爬虫程序，总共才三十多个类，比较简单，非常适合爬虫入门的学习。
-下载地址：<a href="https://github.com/yasserg/crawler4j">https://github.com/yasserg/crawler4j</a>
-下载crawler4j-4.1-jar-with-dependencies.jar，然后将其导入外部依赖库。</p>
+<p>Crawl4J是一个开源的Java爬虫程序，总共才三十多个类，比较简单，非常适合爬虫入门的学习。</p>
+
+<p>下载地址：<a href="https://github.com/yasserg/crawler4j">https://github.com/yasserg/crawler4j</a></p>
+
+<p>下载crawler4j-4.1-jar-with-dependencies.jar，然后将其导入外部依赖库。</p>
 
 <h3>4. 源代码</h3>
 
-<p>Mycrawler主要对每条链接进行处理。Controller里面设置了Java使用代理（链接到远程VPS）和目标网站。</p>
+<p>Mycrawler主要对每条链接进行处理。Controller里面设置了Java使用代理（链接到远程VPS）。代码是仿照官网给出的实例改编的，具体方法说明参考Crawl4j说明文档。</p>
 
 <h4>4.1.Mycrawler class</h4>
 
@@ -488,6 +491,10 @@ public class Controller {
 
 <p>作者识别SSL/TLS流量的方法主要还是基于流量关键字段特征，这点和普通方法没区别。作者将SSL/TLS流量识别出来之后，又用了贝叶斯方法来对加密流的特征进行学习，统计特征包括：平均包长度，最大最小包长度，平均包到达间隔时间，流持续时间，流所包括的包数量。总体感觉创新不是很大。</p>
 
+<h4>3.论文[7]阅读笔记</h4>
+
+<p>论文作者根据加密会话数据内容中常见字符和非常见字符出现概率相近，非加密会话常见字符出现次数多，而非常见字符出现次数少的现象，设计了一个根据信息熵的加密会话识别方法。作者认为，不同加密会话信息熵的统计结果服从正态分布，加密会话的信息熵取值范围由均值\( \mu \) 和方差\( \sigma \)决定，信息熵值H，只要在\( H \in [\mu-2\sigma, \mu+2\sigma] \)。</p>
+
 <h4>参考文献</h4>
 
 <p>[1]Meng J, Yang L, Zhou Y, et al. Encrypted Traffic Identification Based on Sparse Logistical Regression and Extreme Learning Machine[M]//Proceedings of ELM-2014 Volume 2. Springer International Publishing, 2015: 61-70.</p>
@@ -501,6 +508,8 @@ public class Controller {
 <p>[5]Sun G L, Xue Y, Dong Y, et al. An novel hybrid method for effectively classifying encrypted traffic[C]//Global Telecommunications Conference (GLOBECOM 2010), 2010 IEEE. IEEE, 2010: 1-5.</p>
 
 <p>[6]Cao Z, Xiong G, Zhao Y, et al. A Survey on Encrypted Traffic Classification[M]//Applications and Techniques in Information Security. Springer Berlin Heidelberg, 2014: 73-81.</p>
+
+<p>[7]陈利,张利,班晓芳等.基于信息熵的加密会话检测方法[J].计算机科学,2015,42(1):142-143,174.DOI:10.11896/j.issn.1002-137X.2015.1.033.</p>
 
 <blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
 ]]></content:encoded>

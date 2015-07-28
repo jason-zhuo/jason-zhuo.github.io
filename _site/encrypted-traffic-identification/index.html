@@ -264,6 +264,10 @@ style="border-width:0" /></a>
 
 <p>作者识别SSL/TLS流量的方法主要还是基于流量关键字段特征，这点和普通方法没区别。作者将SSL/TLS流量识别出来之后，又用了贝叶斯方法来对加密流的特征进行学习，统计特征包括：平均包长度，最大最小包长度，平均包到达间隔时间，流持续时间，流所包括的包数量。总体感觉创新不是很大。</p>
 
+<h4>3.论文[7]阅读笔记</h4>
+
+<p>论文作者根据加密会话数据内容中常见字符和非常见字符出现概率相近，非加密会话常见字符出现次数多，而非常见字符出现次数少的现象，设计了一个根据信息熵的加密会话识别方法。作者认为，不同加密会话信息熵的统计结果服从正态分布，加密会话的信息熵取值范围由均值\( \mu \) 和方差\( \sigma \)决定，信息熵值H，只要在\( H \in [\mu-2\sigma, \mu+2\sigma] \)。</p>
+
 <h4>参考文献</h4>
 
 <p>[1]Meng J, Yang L, Zhou Y, et al. Encrypted Traffic Identification Based on Sparse Logistical Regression and Extreme Learning Machine[M]//Proceedings of ELM-2014 Volume 2. Springer International Publishing, 2015: 61-70.</p>
@@ -277,6 +281,8 @@ style="border-width:0" /></a>
 <p>[5]Sun G L, Xue Y, Dong Y, et al. An novel hybrid method for effectively classifying encrypted traffic[C]//Global Telecommunications Conference (GLOBECOM 2010), 2010 IEEE. IEEE, 2010: 1-5.</p>
 
 <p>[6]Cao Z, Xiong G, Zhao Y, et al. A Survey on Encrypted Traffic Classification[M]//Applications and Techniques in Information Security. Springer Berlin Heidelberg, 2014: 73-81.</p>
+
+<p>[7]陈利,张利,班晓芳等.基于信息熵的加密会话检测方法[J].计算机科学,2015,42(1):142-143,174.DOI:10.11896/j.issn.1002-137X.2015.1.033.</p>
 
 <blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
 
