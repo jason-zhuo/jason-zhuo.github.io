@@ -403,7 +403,7 @@ public class Controller {
       <item>
         <title>Encrypted Traffic identification</title>
         <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-11enflow2.png&quot; alt=&quot;image&quot; /&gt;
-2015加密流量检测论文阅读笔记，持续更新（last update 2015.5.20）&lt;/p&gt;
+2015加密流量检测论文阅读笔记，持续更新（last update 2015.7.28）&lt;/p&gt;
 
 &lt;!-- more --&gt;
 
@@ -482,7 +482,7 @@ public class Controller {
 
 &lt;h4&gt;3.论文[7]阅读笔记&lt;/h4&gt;
 
-&lt;p&gt;论文作者根据加密会话数据内容中常见字符和非常见字符出现概率相近，非加密会话常见字符出现次数多，而非常见字符出现次数少的现象，设计了一个根据信息熵的加密会话识别方法。作者认为，不同加密会话信息熵的统计结果服从正态分布，加密会话的信息熵取值范围由均值\( \mu \) 和方差\( \sigma \)决定，信息熵值H，只要在\( H \in [\mu-2\sigma, \mu+2\sigma] \)。&lt;/p&gt;
+&lt;p&gt;论文作者根据加密会话数据内容中常见字符和非常见字符出现概率相近，非加密会话常见字符出现次数多，而非常见字符出现次数少的现象，设计了一个根据信息熵的加密会话识别方法。作者认为，不同加密会话信息熵的统计结果服从正态分布，加密会话的信息熵取值范围由均值\(\mu\)和方差\(\sigma\)决定。作者提出了字符信息熵值H，只要在\(H\in [\mu-2\sigma, \mu+2\sigma] \)，则认为是加密会话。字符信息熵值和普通信息熵值在计算形式上只有一个分母上的差别，和我原来看过的一篇论文比较类似。另外，作者并没有说明为什么取2倍的置信域而不是3倍置信域，均值和方差的设置是经过大量实验取的经验数据，而没有较为科学的取值依据。论文并未有很好地说明为什么在拥塞网络环境下，识别准确率会降低的原因。&lt;/p&gt;
 
 &lt;h4&gt;参考文献&lt;/h4&gt;
 
@@ -694,7 +694,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
     
       <item>
         <title>Botnet and fast flux</title>
-        <description>&lt;p&gt;Botnet and fast flux 特征介绍；Botminer论文初看&lt;/p&gt;
+        <description>&lt;p&gt;Botnet and fast flux 特征介绍；Botminer论文初看,僵尸网络论文阅读笔记（last update:2015.8.10）&lt;/p&gt;
 
 &lt;!-- more --&gt;
 
@@ -703,7 +703,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 
 &lt;hr /&gt;
 
-&lt;h3&gt;几个定义&lt;/h3&gt;
+&lt;h3&gt;1.几个定义&lt;/h3&gt;
 
 &lt;dl&gt;
 &lt;dt&gt;&lt;strong&gt;Round-Robin DNS (RRDNS) &lt;/strong&gt;* &lt;/dt&gt;
@@ -716,13 +716,34 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 
 &lt;hr /&gt;
 
-&lt;h3&gt;Fast flux特征&lt;/h3&gt;
+&lt;h3&gt;2.Fast flux特征&lt;/h3&gt;
 
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;不重复的IP地址数量&lt;/strong&gt;：通常情况来说合法DNS查询不重复的IP地址为1~3个，而fast flux查询结果中会有5~6个，以确保至少有一个IP可以连接。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;NS数量&lt;/strong&gt;：NS数量是指在单一次DNS 查询中所得到的NS （Name server）数量。客户端与DNS 主机进行查询时,可能透过快速变动网域技术掩护DNS 主机,因此NS Records 与NS 的A Records 可能有多笔记录,相较之下,合法的FQDN 其NS Records 与NS 的A Records比较少。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;ASN数量与注册时间&lt;/strong&gt;：指对ASN进行查询时，主机使用的IP所属的ASN是否属于同一个单位。由于CDN主机使用的IP所属的ASN多属于同一个单位，而fast flux主机大多分散在世界各地，与CDN向比较之下，主机使用的IP所属的ASN属于不同单位。注册时间能够缩小选取范围。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Domain age&lt;/strong&gt;:指合法网站记录的TTL时间相对于恶意网站更长；恶意网站的FQDN与对应的IP记录不会长时间存留电脑，电脑必须时常进行DNS查询，以更新记录。RFC1912建议TTL最小为1~5天，这么长！而FFSN的TTL值一般小于600秒。但是一般不使用TTL值来判定FFSN，因为这样的误报率比较高，合法使用的CDN也会返回比较低的TTL值。因此TTL值一般用来区分FFSN/CDN和RRDNS.&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;h4&gt;2.1 关于Fast flux第一篇论文&lt;/h4&gt;
+
+&lt;p&gt;Fastflux网络和普通网络对比：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/fastflux.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Single flux网络和Double flux网络对比（Double flux比Single flux更加复杂）：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/singledoubleflux.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;攻击者采用fast flux的动机主要有，（1）简单：仅仅需要1台mothership主机来serve master content还有DNS信息。（2）front-end 节点是对于攻击者来说是可以部分随时放弃的。（3）延长关键的backend core servers的生命周期。&lt;/p&gt;
+
+&lt;p&gt;真实网络中的Fast flux网络攻击过程：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;攻击者用伪造或者偷窃的银行卡信息购买一个域名（www.example.com）该域名可以和某银行的域名很相似（原因你懂的）。&lt;/li&gt;
+&lt;li&gt;攻击者控制一部分主机群作为转发主机（Redirectors）或者临时租用一个僵尸网络。&lt;/li&gt;
+&lt;li&gt;攻击者将Name server (NS)记录&lt;a href=&quot;NS%EF%BC%88Name&quot;&gt;^NS&lt;/a&gt;公布，要么指向公开的DNS服务器，要么指向&lt;/li&gt;
 &lt;/ol&gt;
 
 
@@ -756,7 +777,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 &lt;/table&gt;
 
 
-&lt;h3&gt;BotMiner 初看&lt;/h3&gt;
+&lt;h3&gt;3.BotMiner 初看&lt;/h3&gt;
 
 &lt;h5&gt;BotMiner的系统架构&lt;/h5&gt;
 
@@ -766,7 +787,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 
 &lt;dl&gt;
 &lt;dt&gt;&lt;strong&gt;A平面&lt;/strong&gt;&lt;/dt&gt;
-&lt;dd&gt;主要检测恶意行为模型,文章用Snort检测某主机的行为,主机的扫描行为用的是Bothunter的SCADE，下载地址：&lt;a href=&quot;http://www.bothunter.net/&quot;&gt;Cyber-TA.BotHunter Free Internet Distribution Page, 2008. &lt;/a&gt;。文章采用两种异常检测模式，一种是高频率异常扫描次数，另外一种是带加权的失败连接次数。文章作者为了检测恶意邮件，开发了一种&lt;/dd&gt;
+&lt;dd&gt;主要检测恶意行为模型,文章用Snort检测某主机的行为,主机的扫描行为用的是Bothunter的SCADE，下载地址：&lt;a href=&quot;http://www.bothunter.net/&quot;&gt;Cyber-TA.BotHunter Free Internet Distribution Page, 2008. &lt;/a&gt;。文章采用两种异常检测模式，一种是高频率异常扫描次数，另外一种是带加权的失败连接次数。&lt;/dd&gt;
 &lt;dt&gt;&lt;strong&gt;C平面&lt;/strong&gt;&lt;/dt&gt;
 &lt;dd&gt;网络通信关系模型和流特征模型&lt;/dd&gt;
 &lt;dt&gt;&lt;strong&gt;AC跨平面关联&lt;/strong&gt;&lt;/dt&gt;
@@ -785,10 +806,47 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 &lt;/ol&gt;
 
 
+&lt;h3&gt;4.论文[2]阅读笔记&lt;/h3&gt;
+
+&lt;p&gt;该论文和之前僵尸网络研究的不同之处在于，之前的survey文章主要集中研究不同僵尸网络的技术细节，例如架构，通信协议，检测方法。这些研究只是僵尸网络某一方面的partial understanding，很难从全面的角度来了解问题。&lt;/p&gt;
+
+&lt;p&gt;文章根据僵尸网络的生命周期对僵尸网络进行建模。僵尸网络的生命周期（线性）如下图所示：每个状态都可以额外引入隐藏操作（Complementary Hidding Mechanism):例如&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Multi-hopping（多跳链路）通常是不同地区的多重代理。&lt;/li&gt;
+&lt;li&gt;Ciphering(加密)：SpamThru,Zeus采用的加密通道进行通信，Phatbot利用的是WASTE P2P私有加密协议。&lt;/li&gt;
+&lt;li&gt;Binary obfuscation(二进制混淆)：防止逆向分析得出僵尸网络程序的行为特征和其他信息&lt;/li&gt;
+&lt;li&gt;polymorphism(变形):通常实现了多种版本的源代码，但是基本功能保持不变。这样就可以绕过基于特征码检测的杀毒软件。（Phabot,Zeus采用了这种方法）&lt;/li&gt;
+&lt;li&gt;IP spoofing(IP 地址伪造)：在DoS攻击中经常使用。&lt;/li&gt;
+&lt;li&gt;Email-spoofing: 用错误的发件人地址发送邮件，在钓鱼攻击中经常使用。&lt;/li&gt;
+&lt;li&gt;Fast-flux: 对于Fast-flux的拥有者，重要的是要有大量的代理，以及代理位置的异质性。&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/botnetlifecycle.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Conception阶段主要去设计和实现一个特定目标的僵尸网络。MEECES为僵尸网络常见的构建动机（Money, Entertainment, Ego, Cause, Entrance to social groups, Status）&lt;/li&gt;
+&lt;li&gt;Recruitment阶段主要是将僵尸网络程序运行在一个传统的主机上。&lt;/li&gt;
+&lt;li&gt;Interaction阶段主要包括（1）bots和botmaster之间的通信过程 （2）秘密通信链路框架，来维护和统计bots。&lt;/li&gt;
+&lt;li&gt;Marketing阶段主要用于传播僵尸网络程序&lt;/li&gt;
+&lt;li&gt;攻击执行：攻击包括DDoS,Spam,click fraud（Search engine spam）, phishing，Data stealing等。&lt;/li&gt;
+&lt;li&gt;攻击成功&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;h5&gt;常见僵尸网络程序及其时间&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/botnetyear.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
 &lt;h4&gt;参考文献&lt;/h4&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://www.usenix.org/legacy/event/sec08/tech/full_papers/gu/gu_html/&quot;&gt;[1]BotMiner: Clustering Analysis of Network Traffic for
 Protocol- and Structure-Independent Botnet Detection&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2]Rodríguez-Gómez R A, Maciá-Fernández G, García-Teodoro P. Survey and taxonomy of botnet research through life-cycle[J]. ACM Computing Surveys (CSUR), 2013, 45(4): 45.&lt;/p&gt;
+
+&lt;p&gt;[3]Enemy K Y. Fast-Flux Service Networks[J]. The Honey net Project and Research Alliance, 2007.&lt;/p&gt;
 </description>
         <pubDate>Sat, 25 Apr 2015 00:00:00 +0800</pubDate>
         <link>http://jasonzhuo.com///Botnet%20and%20fast%20flux/</link>
