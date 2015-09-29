@@ -197,12 +197,16 @@ style="border-width:0" /></a>
 
 <h3>1.几个定义</h3>
 
+<p><strong>NS（Name Server）</strong>：记录是权威域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析。</p>
+
+<p><strong>A record</strong> A记录是名称解析的重要记录，它用于将特定的主机名映射到对应主机的IP地址上。你可以在DNS服务器中手动创建或通过DNS客户端动态更新来创建。</p>
+
 <dl>
-<dt><strong>Round-Robin DNS (RRDNS) </strong>* </dt>
+<dt><strong>Round-Robin DNS (RRDNS)</strong></dt>
 <dd>Round-robin的意思是循环的意思，顾名思义，这种DNS返回的A记录不只一个，返回的记录是一个列表，列表里面记录的先后顺序是循环出现的。</dd>
 <dt><strong>Content Distribution Networks (CDN)</strong></dt>
 <dd>中文名叫内容分发网络，和RRDNS比较类似，不过返回的记录的TTL值相对RRDNS更低。CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。</dd>
-<dt><strong><em>Fast-Flux Service Networks (FFSN)</em></strong></dt>
+<dt><strong>Fast-Flux Service Networks (FFSN)</strong></dt>
 <dd>FFSN更加创新地利用了RRDNS和CDN的上述特性，来降低恶意服务器被发现和关闭的概率。FFSN的特点下面会讨论。</dd>
 </dl>
 
@@ -218,7 +222,7 @@ style="border-width:0" /></a>
 </ol>
 
 
-<h4>2.1 关于Fast flux第一篇论文</h4>
+<h4>2.1 关于Fast flux的第一篇论文[3]</h4>
 
 <p>Fastflux网络和普通网络对比：</p>
 
@@ -226,18 +230,23 @@ style="border-width:0" /></a>
 
 <p>Single flux网络和Double flux网络对比（Double flux比Single flux更加复杂）：</p>
 
+<p><strong><em>doulbe flux 的A记录和NS记录都在变，而single flux网络的A记录变化而NS记录不变</em></strong></p>
+
 <p><img src="/assets/images/singledoubleflux.png" alt="image" /></p>
 
-<p>攻击者采用fast flux的动机主要有，（1）简单：仅仅需要1台mothership主机来serve master content还有DNS信息。（2）front-end 节点是对于攻击者来说是可以部分随时放弃的。（3）延长关键的backend core servers的生命周期。</p>
+<p>攻击者采用fast flux的动机主要有:（1）简单：仅仅需要1台mothership主机来serve master content还有DNS信息。（2）front-end 节点是对于攻击者来说是可以部分随时放弃的。（3）延长关键的backend core servers的生命周期。</p>
 
-<p>真实网络中的Fast flux网络攻击过程：</p>
+<p>真实网络中的Fast flux网络搭建过程：</p>
 
 <ol>
 <li>攻击者用伪造或者偷窃的银行卡信息购买一个域名（www.example.com）该域名可以和某银行的域名很相似（原因你懂的）。</li>
 <li>攻击者控制一部分主机群作为转发主机（Redirectors）或者临时租用一个僵尸网络。</li>
-<li>攻击者将Name server (NS)记录<a href="NS%EF%BC%88Name">^NS</a>公布，要么指向公开的DNS服务器，要么指向</li>
+<li>攻击者将Name server (NS)记录公布，要么指向公开的DNS服务器，要么指向受控的转发主机节点。</li>
+<li>搭建完成</li>
 </ol>
 
+
+<p>在真实网络中的Fast flux技术主要使用在基于HTTP协议的botnet[3]。</p>
 
 <h4>常见僵尸网络检测程序</h4>
 

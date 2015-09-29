@@ -9,7 +9,7 @@ music: []
 ---
 
 ![image](/assets/images/2015-05-08botnet.png)
-Botnet检测论文阅读笔记
+Botnet检测论文阅读笔记,last update (2015.8.11)
 <!-- more -->
 
 ####僵尸网络检测方法面临的问题
@@ -100,6 +100,28 @@ BotHunter是经过修改过的Snort软件。主要增加了两个插件，一个
 ---------
 > Written with [StackEdit](https://stackedit.io/).
 
+###论文[4]阅读笔记
+一个区分现代Botnet和之前的僵尸网络的特征是结构化的覆盖拓扑结构使用的增加。结构化拓扑结构有利于增加botnet系统的稳定性，但同时也对其检测带来了新的突破口。
+
+论文作者提出了BotGrep检测算法，只通过peer节点之间的通信图来检测僵尸网络的节点。
+
+现有检测面临的挑战：随机端口，内容加密。背景流量越来越纷繁复杂，流量大数据导致算法需要重新设计。
+ 
+ BotGrep算法输入：通信图，误用检测结果。输入误用检测结果的目标是为了区分P2P通信和Botnet。论文作者利用了一个“结构图”的特性叫做: ***fast mixintg time：*** i.e,the convergence time of random walks to a stationary distribution。来将僵尸网络的结构图从其余的通信图中分离出来。
+ 
+设原通信图为 \\(G \subset =（V,E）\\), \\(G_p\\)是在\\(G\\)中的P2P网络通信图 \\(G_p \subset G \\), \\(G_n=G-G_p \\)就是non-P2P通信图。作者最主要的idea就是从\\(G \\)中，分离出\\(G_n\\),\\(G_p\\)。基本思想就是因为P2P网络的拓扑结构是存在结构规律的，比背景的网络流量更具有结构性。在随机游走的情况下，P2P网络的mixing rate要比背景网络mixing rate更快。
+
+作者的主要步骤包括：
+
+1. 过滤操作：开始输入的图可能包括百万级别的节点数量，在这一步中先抽取出小部分的P2P候选节点和false positive节点。
+2. 运用***SybilInfer***聚类算法来对上一步中的P2P节点中的false positive节点去掉。
+3. 最后一步用fast-mixing特征对P2P网络监测结果进行验证。
+
+
+下面详细讲解一下每一步：
+
+***过滤操作:***
+
 ####参考文献
 [1]Dainotti A, Pescape A, Claffy K C. Issues and future directions in traffic classification[J]. Network, IEEE, 2012, 26(1): 35-40.
 
@@ -108,3 +130,5 @@ Elsevier. 2014. Vol 45, pp 100-123. http://dx.doi.org/10.1016/j.cose.2014.05.011
 
 [3]Ertoz L, Eilertson E, Lazarevic A, Tan PN, Kumar V, Srivastava J, et al. 
 Minds-minnesota intrusion detection system. In: Next generation data mining. MIT Press; 2004. pp. 199e218.
+
+[4]Nagaraja S, Mittal P, Hong C Y, et al. BotGrep: Finding P2P Bots with Structured Graph Analysis[C]//USENIX Security Symposium. 2010: 95-110.

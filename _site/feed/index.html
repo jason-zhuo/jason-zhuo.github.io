@@ -7,7 +7,7 @@
     <title>Jaosonzhuo's blog</title>
     <link href="http://jasonzhuo.com//feed/" rel="self" />
     <link href="http://jasonzhuo.com/" />
-    <lastBuildDate>2015-08-10T16:45:41+08:00</lastBuildDate>
+    <lastBuildDate>2015-09-29T10:32:26+08:00</lastBuildDate>
     <webMaster>jason_zhuo@iclould.com</webMaster>
     
     <item>
@@ -414,7 +414,7 @@ public class Controller {
       <author></author>
       <guid>http://jasonzhuo.com//encrypted-traffic-identification</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2015-05-11enflow2.png" alt="image" />
-2015加密流量检测论文阅读笔记，持续更新（last update 2015.7.28）</p>
+2015加密流量检测论文阅读笔记，持续更新（last update 2015.9.29）</p>
 
 <!-- more -->
 
@@ -450,6 +450,42 @@ public class Controller {
 <p>NIST SP800-22 测试标准包含15个测试项，每个测试项都是针对被测序列的某一特性进行检测的，如下图所示。图片引用自[2]</p>
 
 <p><img src="/assets/images/2015-05-11enflow.png" alt="image" /></p>
+
+<h3>NIST15种随机性测试简介</h3>
+
+<h4>1.频率测试(Monobit Test)</h4>
+
+<p>检验目的： 测试0和1在整个序列中所占的比例。如果0和1在整个序列中出现的频率都接近0.5，那么就是说在整个序列中0和1出现的概率基本一致，因此序列是随机的。</p>
+
+<p>检验过程：</p>
+
+<p>1.将序列中的0映射为“+1”，0映射为“-1”，然后对整个序列求和得到\(S_n\)</p>
+
+<p>2.计算统计检验量\(S_{obs}=\frac{|S_n|}{\sqrt{n}}\),其中\(n\)
+为序列长度</p>
+
+<p>3.计算P-value:</p>
+
+<p>$$P=erfc(\frac{S_{obs}}{\sqrt{2}})$$</p>
+
+<p>其中erfc(Complementary error function)定义为:</p>
+
+<p>$$erfc(z)=\frac{2}{\sqrt{\pi}} \int_{z}^{\infty} e^{-u^{2}} du$$</p>
+
+<p>数学原理：当测试次数充分多时，二项分布B(n,p)逼近正态分布N(np,npq)，\(S_n\)又叫做规范和，它被正则化后就服从正态分布了。
+$$Z_n=\frac{S_n-E(S_n)}{\sqrt{D(S_n)}} \rightarrow N(0,1)$$
+做假设检验：
+$$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
+如果Pvalue>0.01那么就说该序列为随机序列，反之则不是。如果Pvalue的值太小，那么就表明Sobs或者\(S_n\)较大引起的，表明序列中要么0特别多，要么1特别多，这样就不是随机的。</p>
+
+<h4>2.分块频数测试</h4>
+
+<p>检验目的：主要是看M位的字块中“1”出现的次数，如果比例接近为M/2那么就是随机的。当M=1时，变化为频数测试。</p>
+
+<p>测试过程：
+1. 将序列分为长度为M的N块，因此n=MN。
+2. 由于这N个相互独立的随机序列均服从标准正态分布，这N个服从标准正态分布随机变量的平方和，构成新的随机变量，服从卡方分布。自由度为N
+3.</p>
 
 <h4>特征提取与选择</h4>
 
@@ -522,7 +558,7 @@ public class Controller {
       <author></author>
       <guid>http://jasonzhuo.com//botnet-detection</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2015-05-08botnet.png" alt="image" />
-Botnet检测论文阅读笔记</p>
+Botnet检测论文阅读笔记,last update (2015.8.11)</p>
 
 <!-- more -->
 
@@ -632,6 +668,31 @@ The <strong>BotHunter</strong> algorithm presented very low values during the wh
 
 <blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
 
+<h3>论文[4]阅读笔记</h3>
+
+<p>一个区分现代Botnet和之前的僵尸网络的特征是结构化的覆盖拓扑结构使用的增加。结构化拓扑结构有利于增加botnet系统的稳定性，但同时也对其检测带来了新的突破口。</p>
+
+<p>论文作者提出了BotGrep检测算法，只通过peer节点之间的通信图来检测僵尸网络的节点。</p>
+
+<p>现有检测面临的挑战：随机端口，内容加密。背景流量越来越纷繁复杂，流量大数据导致算法需要重新设计。</p>
+
+<p> BotGrep算法输入：通信图，误用检测结果。输入误用检测结果的目标是为了区分P2P通信和Botnet。论文作者利用了一个“结构图”的特性叫做: <strong><em>fast mixintg time：</em></strong> i.e,the convergence time of random walks to a stationary distribution。来将僵尸网络的结构图从其余的通信图中分离出来。</p>
+
+<p>设原通信图为 \(G \subset =（V,E）\), \(G_p\)是在\(G\)中的P2P网络通信图 \(G_p \subset G \), \(G_n=G-G_p \)就是non-P2P通信图。作者最主要的idea就是从\(G \)中，分离出\(G_n\),\(G_p\)。基本思想就是因为P2P网络的拓扑结构是存在结构规律的，比背景的网络流量更具有结构性。在随机游走的情况下，P2P网络的mixing rate要比背景网络mixing rate更快。</p>
+
+<p>作者的主要步骤包括：</p>
+
+<ol>
+<li>过滤操作：开始输入的图可能包括百万级别的节点数量，在这一步中先抽取出小部分的P2P候选节点和false positive节点。</li>
+<li>运用<strong><em>SybilInfer</em></strong>聚类算法来对上一步中的P2P节点中的false positive节点去掉。</li>
+<li>最后一步用fast-mixing特征对P2P网络监测结果进行验证。</li>
+</ol>
+
+
+<p>下面详细讲解一下每一步：</p>
+
+<p><strong><em>过滤操作:</em></strong></p>
+
 <h4>参考文献</h4>
 
 <p>[1]Dainotti A, Pescape A, Claffy K C. Issues and future directions in traffic classification[J]. Network, IEEE, 2012, 26(1): 35-40.</p>
@@ -641,6 +702,8 @@ Elsevier. 2014. Vol 45, pp 100-123. http://dx.doi.org/10.1016/j.cose.2014.05.011
 
 <p>[3]Ertoz L, Eilertson E, Lazarevic A, Tan PN, Kumar V, Srivastava J, et al.
 Minds-minnesota intrusion detection system. In: Next generation data mining. MIT Press; 2004. pp. 199e218.</p>
+
+<p>[4]Nagaraja S, Mittal P, Hong C Y, et al. BotGrep: Finding P2P Bots with Structured Graph Analysis[C]//USENIX Security Symposium. 2010: 95-110.</p>
 ]]></content:encoded>
     </item>
     
@@ -719,12 +782,16 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 
 <h3>1.几个定义</h3>
 
+<p><strong>NS（Name Server）</strong>：记录是权威域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析。</p>
+
+<p><strong>A record</strong> A记录是名称解析的重要记录，它用于将特定的主机名映射到对应主机的IP地址上。你可以在DNS服务器中手动创建或通过DNS客户端动态更新来创建。</p>
+
 <dl>
-<dt><strong>Round-Robin DNS (RRDNS) </strong>* </dt>
+<dt><strong>Round-Robin DNS (RRDNS)</strong></dt>
 <dd>Round-robin的意思是循环的意思，顾名思义，这种DNS返回的A记录不只一个，返回的记录是一个列表，列表里面记录的先后顺序是循环出现的。</dd>
 <dt><strong>Content Distribution Networks (CDN)</strong></dt>
 <dd>中文名叫内容分发网络，和RRDNS比较类似，不过返回的记录的TTL值相对RRDNS更低。CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。</dd>
-<dt><strong><em>Fast-Flux Service Networks (FFSN)</em></strong></dt>
+<dt><strong>Fast-Flux Service Networks (FFSN)</strong></dt>
 <dd>FFSN更加创新地利用了RRDNS和CDN的上述特性，来降低恶意服务器被发现和关闭的概率。FFSN的特点下面会讨论。</dd>
 </dl>
 
@@ -740,7 +807,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 </ol>
 
 
-<h4>2.1 关于Fast flux第一篇论文</h4>
+<h4>2.1 关于Fast flux的第一篇论文[3]</h4>
 
 <p>Fastflux网络和普通网络对比：</p>
 
@@ -748,18 +815,23 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 
 <p>Single flux网络和Double flux网络对比（Double flux比Single flux更加复杂）：</p>
 
+<p><strong><em>doulbe flux 的A记录和NS记录都在变，而single flux网络的A记录变化而NS记录不变</em></strong></p>
+
 <p><img src="/assets/images/singledoubleflux.png" alt="image" /></p>
 
-<p>攻击者采用fast flux的动机主要有，（1）简单：仅仅需要1台mothership主机来serve master content还有DNS信息。（2）front-end 节点是对于攻击者来说是可以部分随时放弃的。（3）延长关键的backend core servers的生命周期。</p>
+<p>攻击者采用fast flux的动机主要有:（1）简单：仅仅需要1台mothership主机来serve master content还有DNS信息。（2）front-end 节点是对于攻击者来说是可以部分随时放弃的。（3）延长关键的backend core servers的生命周期。</p>
 
-<p>真实网络中的Fast flux网络攻击过程：</p>
+<p>真实网络中的Fast flux网络搭建过程：</p>
 
 <ol>
 <li>攻击者用伪造或者偷窃的银行卡信息购买一个域名（www.example.com）该域名可以和某银行的域名很相似（原因你懂的）。</li>
 <li>攻击者控制一部分主机群作为转发主机（Redirectors）或者临时租用一个僵尸网络。</li>
-<li>攻击者将Name server (NS)记录<a href="NS%EF%BC%88Name">^NS</a>公布，要么指向公开的DNS服务器，要么指向</li>
+<li>攻击者将Name server (NS)记录公布，要么指向公开的DNS服务器，要么指向受控的转发主机节点。</li>
+<li>搭建完成</li>
 </ol>
 
+
+<p>在真实网络中的Fast flux技术主要使用在基于HTTP协议的botnet[3]。</p>
 
 <h4>常见僵尸网络检测程序</h4>
 
