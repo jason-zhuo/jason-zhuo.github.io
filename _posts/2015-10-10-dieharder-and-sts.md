@@ -29,11 +29,11 @@ Dieharder是一个功能强大的软件，它是用来测试一序列伪随机�
 
 出现基本功能列表（dieharder所有的检测算法），-d 15便是测试内置发生器。
 
-![dieharder -l](/assets/images/2015-10-10.png)
+![dieharder -l](/Users/zhuozhongliu/JasonzhuoGithubIO/assets/images/2015-10-10.png)
 
 接着可以输入dieharder -g -1显示所有的发生器。
 
-![dieharder -g](/assets/images/2015-10-10-2.png)
+![dieharder -g](/Users/zhuozhongliu/JasonzhuoGithubIO/assets/images/2015-10-10-2.png)
 假如准备对第41进行测试，则输入dieharder -d 15 -g 41 -t 1000000,其中-t是选择发生器所产生序列的大小。
 	
 
@@ -63,7 +63,7 @@ Dieharder操作外部产生器产生的随机数流操作，在此详述：先�
 
 >2545911541
 
-![dieharder -g 201 -f BBS.dat –a](/assets/images/2015-10-10-3.png)
+![dieharder -g 201 -f BBS.dat –a](/Users/zhuozhongliu/JasonzhuoGithubIO/assets/images/2015-10-10-3.png)
 
 ###两者对比
 | Name        |针对目标          |得到结果 |文件大小 | 操作步骤|是否友好| 对数据随机性的严格程度|
@@ -72,8 +72,7 @@ Dieharder操作外部产生器产生的随机数流操作，在此详述：先�
 | Dieharder| 待验证其产生序列是否随机的随机数产生器|只有一个P-value结果，且没有中间过程量|面向文件容量较大，速度较为优秀| 输入命令较为令人费解，且需要对各操作目录比较熟悉，虽然简洁但不简单|操作步骤比较不友好，需要对软件有一定程度的理解|比较宽松 
 
 
-###后记
-操作过程sts要容易一些，该软件更方便新手操作。dieharder更为简洁，将所有操作凝练在一行，使用者要对该软件有一定程度的熟悉。如此一来，利用dieharder进行测试也是较为方便的，不过dieharder没有sts那样可以查找到中间量的数据，而且暂时还没有找到如何控制dieharder进行部分文件读入的操作。（补充：方法已找到，在后面直接接-t 数字即可，比如dieharder –g 201 –f BBS.dat –d 101 –t 10000.此处的意思是使用-g 201来读入BBS.dat文件，同时使用 -d 101来进行测试，其中只读取10000位）
+###后记操作过程sts要容易一些，该软件更方便新手操作。dieharder更为简洁，将所有操作凝练在一行，使用者要对该软件有一定程度的熟悉。如此一来，利用dieharder进行测试也是较为方便的，不过dieharder没有sts那样可以查找到中间量的数据，而且暂时还没有找到如何控制dieharder进行部分文件读入的操作。（补充：方法已找到，在后面直接接-t 数字即可，比如dieharder –g 201 –f BBS.dat –d 101 –t 10000.此处的意思是使用-g 201来读入BBS.dat文件，同时使用 -d 101来进行测试，其中只读取10000位）
 dieharder无疑是更强大的，暂时使用有些生涩，不过其内含算法要比sts多，如果希望向更深处探究无疑dieharder更好一些。
 使用两种软件对BBS.dat中等长的部分文件进行测试，就P-value而言，sts得出的值要略小一些。dieharder并没有展示其计算逻辑，但是应该也是对随机数进行测试，不过应该会对结果进行分析得出针对发生器的P-value。其网站上并不认同单独拿出一段数据测试其随机性是很好的手段，其认为应该从发生器的角度去思考，同时它对发生器的态度比较宽容，在P-value比较小的时候（小于0.01只是视为weak，小于0.01%才会被拒绝）它也承认这个发生器是合理的，而且weak级别的发生器也可以产生正常的随机数。所以单独就数据随机性检测而言，个人认为sts要严格一些。
 
