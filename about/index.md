@@ -10,20 +10,25 @@ comments: yes
 <article class="page"> 
   <div class="post-content">
   <div class="entry">
-在读程序猿一只。 	
+##Zhongliu Zhuo
 
-爱好算法设计，爱生活。
+![image](/assets/images/zzl.png)
 
-主攻方向：网络安全，匿名通信，网络追踪溯源
+####I’m a Ph.D. student from School of Computer Science and Engineering in University of Electronic Science and Technology of China (UESTC), supervised by Prof. Xiaosong Zhang and Prof. Jingzhong Zhang. I was an undergraduate at UESTC from 2009 to 2013. And before that, I spent three great years in No.7 High school in Chengdu.
 
-喜欢方向：人工智能，机器学习，大数据分析
-<hr>
+####Research Interests：  
+<li>Machine learning: Clustering algorithm, Classification algorithm</li>
+<li>Network theory: Complex network </li>
+<li>Network security: Traffic classification, Security&Privacy, Anonymous Communication, Malware detection and modeling</li>
 
-####联系方式：        
 
-个人邮箱: [jason_zhuo@iclould.com](mailto:jason_zhuo@iclould.com)     
-新浪微博: [灵犀一点00](http://weibo.com/zhongliuzhuo316/)
-github : [jason-zhuo](https://github.com/jason-zhuo) 
+####Contact：        
+
+E-Mail: [zhongliu.zhuo [at] gmail [dot] com](mailto:jason_zhuo@iclould.com)   
+  
+Weibo: [灵犀一点00](http://weibo.com/zhongliuzhuo316/)
+
+Github : [jason-zhuo](https://github.com/jason-zhuo) 
     </div>
 <footer>
 	<div class="clearfix"></div>

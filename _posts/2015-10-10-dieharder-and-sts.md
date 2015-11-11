@@ -2,7 +2,7 @@
 layout: post
 title: "Dieharder and STS"
 description: "Dieharder and STS"
-categories: [infosec]
+categories: [Infosec]
 tags: [encrypted flow]
 music: []
 

@@ -1,6 +1,13 @@
 [
 	
 		{
+		  "title"    : "Dieharder and STS",
+		  "categories" : "Infosec",
+		  "url"     : "/dieharder-and-sts/",
+		  "date"     : " 2015年10月10日"
+		} ,
+	
+		{
 		  "title"    : "Web Crawler Crawl4j",
 		  "categories" : "new stuff",
 		  "url"     : "/web-crawler-crawl4j/",
@@ -9,49 +16,49 @@
 	
 		{
 		  "title"    : "Random forest clustering",
-		  "categories" : "machine learning",
+		  "categories" : "Machine Learning",
 		  "url"     : "/random-forest-clustering/",
 		  "date"     : " 2015年23月05日"
 		} ,
 	
 		{
 		  "title"    : "Software Define Network",
-		  "categories" : "infosec",
+		  "categories" : "Infosec",
 		  "url"     : "/sdn/",
 		  "date"     : " 2015年14月05日"
 		} ,
 	
 		{
 		  "title"    : "Encrypted Traffic identification",
-		  "categories" : "infosec",
+		  "categories" : "Infosec",
 		  "url"     : "/encrypted-traffic-identification/",
 		  "date"     : " 2015年11月05日"
 		} ,
 	
 		{
 		  "title"    : "Botnet detection",
-		  "categories" : "infosec",
+		  "categories" : "Infosec",
 		  "url"     : "/botnet-detection/",
 		  "date"     : " 2015年08月05日"
 		} ,
 	
 		{
 		  "title"    : "Shadowsocks in Lab",
-		  "categories" : "infosec",
+		  "categories" : "Infosec",
 		  "url"     : "/shadowsocks-in-lab/",
 		  "date"     : " 2015年25月04日"
 		} ,
 	
 		{
 		  "title"    : "Botnet and fast flux",
-		  "categories" : "infosec",
-		  "url"     : "/Botnet%20and%20fast%20flux/",
+		  "categories" : "Infosec",
+		  "url"     : "/botnet-and-fast-flux/",
 		  "date"     : " 2015年25月04日"
 		} ,
 	
 		{
 		  "title"    : "Structure Risk Minimization,SRM",
-		  "categories" : "machine learning",
+		  "categories" : "Machine Learning",
 		  "url"     : "/structure-risk-minimizationsrm/",
 		  "date"     : " 2015年18月04日"
 		} ,
@@ -65,15 +72,15 @@
 	
 		{
 		  "title"    : "hello world again",
-		  "categories" : "machine learning",
+		  "categories" : "Machine Learning",
 		  "url"     : "/hello-world-again/",
 		  "date"     : " 2015年15月04日"
 		} ,
 	
 		{
 		  "title"    : "Big data Algorithm Report",
-		  "categories" : "report",
-		  "url"     : "/BigDatareport/",
+		  "categories" : "Report",
+		  "url"     : "/bigdatareport/",
 		  "date"     : " 2014年01月12日"
 		} ,
 	
@@ -86,14 +93,14 @@
 	
 		{
 		  "title"    : "Auto Blog Post",
-		  "categories" : "blogbuilding",
-		  "url"     : "/AutoBlogpost/",
+		  "categories" : "BlogBuilding",
+		  "url"     : "/autoblogpost/",
 		  "date"     : " 2014年19月10日"
 		} ,
 	
 		{
 		  "title"    : "Hello world",
-		  "categories" : "new stuff",
+		  "categories" : "New stuff",
 		  "url"     : "/hello-world/",
 		  "date"     : " 2014年18月10日"
 		} 

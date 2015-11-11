@@ -33,14 +33,14 @@
             <ul>
               <li class="cell"><a class="next" href="/">Home</a></li>
               <li class="cell"><a class="next" href="/categories/">Archives</a></li>
-              <li class="cell"><a class="next" href="/about/">About</a></li>
+              <li class="cell"><a class="next" href="/about/">About me</a></li>
               <li class="cell"><a class="next" href="/search/">Search</a></li>
-              <li class="cell"><a class="next" href="/feed.xml">RSS订阅我的博客</a></li>
+              <li class="cell"><a class="next" href="/feed.xml">RSS</a></li>
             </ul>
         </nav>
 
         <div class="widget weibo">
-            <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=2385225700&verifier=0cad5c7b&dpc=1"></iframe>   
+            <iframe width="100%" height="120" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=120&fansRow=2&ptype=1&speed=0&skin=7&isTitle=1&noborder=0&isWeibo=0&isFans=0&uid=2385225700&verifier=0cad5c7b&dpc=1"></iframe>  
         </div>
 
 
@@ -101,7 +101,7 @@ style="border-width:0" /></a>
                     
                     <a href="/tags/#Proxy，Shadowsocks" title="Proxy，Shadowsocks" rel="1">Proxy，Shadowsocks</a>
                     
-                    <a href="/tags/#encrypted flow" title="encrypted flow" rel="1">encrypted flow</a>
+                    <a href="/tags/#encrypted flow" title="encrypted flow" rel="2">encrypted flow</a>
                     
                     <a href="/tags/#SDN" title="SDN" rel="1">SDN</a>
                     
@@ -165,7 +165,7 @@ style="border-width:0" /></a>
 <span class="categories">
   分类
   
-  <a href="/categories/#infosec" title="infosec">infosec</a>&nbsp;
+  <a href="/categories/#Infosec" title="Infosec">Infosec</a>&nbsp;
   
 </span>
 
@@ -224,7 +224,7 @@ style="border-width:0" /></a>
 
 <p><img src="/assets/images/2015-05-11enflow.png" alt="image" /></p>
 
-<h3>NIST15种随机性测试简介</h3>
+<h3>NIST15种随机性测试简介[8]</h3>
 
 <h4>1.频率测试(Monobit Test)</h4>
 
@@ -256,9 +256,50 @@ $$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
 <p>检验目的：主要是看M位的字块中“1”出现的次数，如果比例接近为M/2那么就是随机的。当M=1时，变化为频数测试。</p>
 
 <p>测试过程：
-1. 将序列分为长度为M的N块，因此n=MN。
-2. 由于这N个相互独立的随机序列均服从标准正态分布，这N个服从标准正态分布随机变量的平方和，构成新的随机变量，服从卡方分布。自由度为N
-3.</p>
+1. 将序列分为长度为M的N块，因此n=MN
+2. 由于这N个相互独立的随机序列均服从标准正态分布，这N个服从标准正态分布随机变量的平方和，构成新的随机变量，服从卡方分布，其自由度为N
+3. 利用卡方分布的假设检验过程，判断原序列是否是随机的。</p>
+
+<p>该测试也是看Pvalue的值，如果Pvalue>0.01那么就说该序列为随机序列，反之则不是。</p>
+
+<h4>3.游程测试</h4>
+
+<p>检验目的： 游程是指一个没有间断的相同数序列。长度为k的游程包括k个相同单位。游程测试的目的是判断不同长度的“1”游程数目，以及“0”游程的数目是否跟理想的随机序列期望一致。具体来讲，就是看这样的“0”“1”子块之间震荡是否太快或者太慢。</p>
+
+<p>测试过程：</p>
+
+<ol>
+<li>计算检验前输入序列中“1”的出现频率</li>
+<li>判断游程测试的前提条件是否满足，如果不满足则退出测试。</li>
+<li>计算检验统计量Vn(obs), 其中\(V_{obs}\),0到1或者1到0的变化次数和。</li>
+<li>计算Pvalue的值</li>
+</ol>
+
+
+<p>数学原理：当测试次数充分多时，二项分布B(n,p)逼近正态分布N(np,npq)，\(V_{obs}\)又叫做规范和，它被正则化后就服从正态分布了,如果Vn(obs)的值很大，则表明震荡很快，反之表明震荡很慢。</p>
+
+<h4>4.块内最长游程检验</h4>
+
+<p>检验目的： 该检验主要是看长度为M-bits的字块长度中最长的“1”游程。检验目的是判断待检序列中的最长“1”游程长度是否同随机序列一致。</p>
+
+<p>测试过程：</p>
+
+<ol>
+<li>将序列分作长度为M-bit子块，程序里面规定了3种不同的字块长度，分别为8，128，10000，n= M*N</li>
+<li>将各个字块中的最长“1”游程频率列表</li>
+<li>计算卡方分布的P值</li>
+</ol>
+
+
+<h4>5.二元矩阵秩检验</h4>
+
+<p>检验目的： 该检验主要是看整个序列的分离子矩阵的秩。目的是核对源序列中固定长度子链间的线性依赖关系。</p>
+
+<h4>6.离散傅里叶变换检验</h4>
+
+<p>检验目的：本检验主要是看对序列进行分步傅里叶变换后的峰值高度。目的是探测待检验信号的周期性,以此揭示其与相应的随机信号之间的偏差程度。做法是观察超过 95%阈值的峰值数目与低于5%峰值的数目是否有显著不同。</p>
+
+<h4>未完待续。。。</h4>
 
 <h4>特征提取与选择</h4>
 
@@ -319,6 +360,8 @@ $$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
 <p>[6]Cao Z, Xiong G, Zhao Y, et al. A Survey on Encrypted Traffic Classification[M]//Applications and Techniques in Information Security. Springer Berlin Heidelberg, 2014: 73-81.</p>
 
 <p>[7]陈利,张利,班晓芳等.基于信息熵的加密会话检测方法[J].计算机科学,2015,42(1):142-143,174.DOI:10.11896/j.issn.1002-137X.2015.1.033.</p>
+
+<p>[8]Rukhin A, Soto J, Nechvatal J, et al. A statistical test suite for random and pseudorandom number generators for cryptographic applications[R]. Booz-Allen and Hamilton Inc Mclean Va, 2001.</p>
 
 <blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
 

@@ -33,14 +33,14 @@
             <ul>
               <li class="cell"><a class="next" href="/">Home</a></li>
               <li class="cell"><a class="next" href="/categories/">Archives</a></li>
-              <li class="cell"><a class="next" href="/about/">About</a></li>
+              <li class="cell"><a class="next" href="/about/">About me</a></li>
               <li class="cell"><a class="next" href="/search/">Search</a></li>
-              <li class="cell"><a class="next" href="/feed.xml">RSS订阅我的博客</a></li>
+              <li class="cell"><a class="next" href="/feed.xml">RSS</a></li>
             </ul>
         </nav>
 
         <div class="widget weibo">
-            <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=2385225700&verifier=0cad5c7b&dpc=1"></iframe>   
+            <iframe width="100%" height="120" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=120&fansRow=2&ptype=1&speed=0&skin=7&isTitle=1&noborder=0&isWeibo=0&isFans=0&uid=2385225700&verifier=0cad5c7b&dpc=1"></iframe>  
         </div>
 
 
@@ -101,7 +101,7 @@ style="border-width:0" /></a>
                     
                     <a href="/tags/#Proxy，Shadowsocks" title="Proxy，Shadowsocks" rel="1">Proxy，Shadowsocks</a>
                     
-                    <a href="/tags/#encrypted flow" title="encrypted flow" rel="1">encrypted flow</a>
+                    <a href="/tags/#encrypted flow" title="encrypted flow" rel="2">encrypted flow</a>
                     
                     <a href="/tags/#SDN" title="SDN" rel="1">SDN</a>
                     
@@ -165,7 +165,7 @@ style="border-width:0" /></a>
 <span class="categories">
   分类
   
-  <a href="/categories/#blogbuilding" title="blogbuilding">blogbuilding</a>&nbsp;
+  <a href="/categories/#BlogBuilding" title="BlogBuilding">BlogBuilding</a>&nbsp;
   
 </span>
 
@@ -200,9 +200,9 @@ style="border-width:0" /></a>
 <p>Shell脚本语言为实现自动化提供了良好帮助，真不愧为胶水语言，确实省事了很多。
 下面展示了我如何利用脚本语言来一键发表提交撰写好的博客内容。脚本内容比较简单，基本逻辑是先输入提交本次提交的评注，然后脚本会自动删除你在本地Git仓库中删除的文件，不然无法提交到远程Git库中。其中“--cached”表示只删除本地git仓库的文件内容，本地的文件还没有删除，所以--cached可以考虑去掉。最后3个命令基本上都和网上的教程差不多。代码虽然很简单，但是还是有一定作用。</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno"> 1</span> <span class="nb">echo</span> -n <span class="s2">&quot;Enter comment:&quot;</span>
+<p><figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno"> 1</span> <span class="nb">echo</span> -n <span class="s2">&quot;Enter comment:&quot;</span>
 <span class="lineno"> 2</span> <span class="nb">read  </span>comment
-<span class="lineno"> 3</span> <span class="nv">files</span><span class="o">=</span><span class="sb">`</span>git status <span class="p">|</span> grep deleted <span class="p">|</span> awk <span class="s1">&#39;{print \$2}&#39;</span><span class="sb">`</span>
+<span class="lineno"> 3</span> <span class="nv">files</span><span class="o">=</span><span class="sb"><code>&lt;/span&gt;git status &lt;span class="p"&gt;|&lt;/span&gt; grep deleted &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print \$2}&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;</code></span>
 <span class="lineno"> 4</span> <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${files}&quot;</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 <span class="lineno"> 5</span>    <span class="nb">echo</span> <span class="s2">&quot;nothing to remove&quot;</span>
 <span class="lineno"> 6</span>  <span class="k">else</span>
@@ -215,14 +215,12 @@ style="border-width:0" /></a>
 <span class="lineno">13</span> git add .
 <span class="lineno">14</span> git commit -m <span class="s2">&quot;$comment&quot;</span>
 <span class="lineno">15</span> git push origin master
-<span class="lineno">16</span> <span class="nb">exit </span>0</code></pre></div>
-
+<span class="lineno">16</span> <span class="nb">exit </span><span class="m">0</span>    </code></pre></figure></p>
 
 <p>给予该脚本可执行权限后，直接执行./Publish.sh即可轻松提交到远程Git仓库啦~</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">chmod +x Publish.sh
-./Publish.sh</code></pre></div>
-
+<p><figure class="highlight"><pre><code class="language-bash" data-lang="bash">chmod +x Publish.sh
+./Publish.sh</code></pre></figure></p>
 
 <p>效果图：</p>
 

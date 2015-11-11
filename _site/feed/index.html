@@ -7,8 +7,125 @@
     <title>Jaosonzhuo's blog</title>
     <link href="http://jasonzhuo.com//feed/" rel="self" />
     <link href="http://jasonzhuo.com/" />
-    <lastBuildDate>2015-09-29T10:32:26+08:00</lastBuildDate>
+    <lastBuildDate>2015-11-11T22:19:15+08:00</lastBuildDate>
     <webMaster>jason_zhuo@iclould.com</webMaster>
+    
+    <item>
+      <title>Dieharder and STS</title>
+      <link href="http://jasonzhuo.com//dieharder-and-sts/"/>
+      <pubDate>2015-10-10T00:00:00+08:00</pubDate>
+      <author></author>
+      <guid>http://jasonzhuo.com//dieharder-and-sts</guid>
+      <content:encoded><![CDATA[<h3>Random or not? Dieharder and STS</h3>
+
+<p><img src="http://i.stack.imgur.com/12L2d.gif" alt="image" />
+Dieharder以及STS 套件使用 coauthored by Zihao Li, Jason Zhuo</p>
+
+<!-- more -->
+
+
+<h3>1. 介绍</h3>
+
+<p>Dieharder是一个功能强大的软件，它是用来测试一序列伪随机数的随机性能的测试套件。
+Dieharder主要测试rng（随机数产生器）的性能，它里面整合了一部分随机数产生器。其大致原理还是对随机数序列进行测试，但是其过程是先选中发生器，然后由发生器产生一序列的随机数，最后对发生器进行评估。不过Dieharder允许产生器产生较大的随机数序列。Dieharder在第三版中增添了<strong>全套</strong>的sts对于随机数测试的逻辑，但是并没有使用其源代码。基本操作方面，Dieharder网页上面的介绍只提及了如何测试内置发生器性能的操作，对于其他并没有过多提及。基本操作比较简洁，但是不是特别友好，需要输入的命令必须要特别熟悉才能够在不打开操作列表（dieharder -l）和内置发生器列表(dieharder -g -1)，同时操作时命令行的格式并没有规定，不确定要如何输入，相关操作方面还在摸索。（如-d和-g的位置在某些情况下需要变换，此处并没有介绍）Sts功能较为单一，只是对随机数序列进行测试并评估其随机程度。但其步骤较为清晰且容易操作。简单来说，如果只是为了将加密后的数据包进行分析，无疑Sts是较为干脆的。这里不确定数据包加密算法是否可以在Dieharder上测试，因为不确定加密算法算不算是一个随机数发生器。如果是为了检测数据包是否被加密过，则Sts是一个好的选择。</p>
+
+<h3>2.基本操作演示</h3>
+
+<p>使用Sts的话，首先安装sts，然后在终端定位到其目录。输入：</p>
+
+<blockquote><p>./assess number</p></blockquote>
+
+<p>可以开始测试，此处number是单个流的大小。接着输入0选择输入文件，然后写入文件的目录加载文件，如（data/000）。在检测算法列表中选择相应算法，此处填1可以全选，0则选择某几个。某些算法会让使用者设置块大小，这个是在检测时会用到的参数，可以选择使用缺省值。然后输入你准备测试的流的数目，其大小在开始时就已设置，选中你所读入文件的储存格式，如AscII和二进制保存。然后在experience/Algorithm Testingz中的相应文件查看测试结果。
+对于Dieharder，可以先输入</p>
+
+<blockquote><p>dieharder -l</p></blockquote>
+
+<p>出现基本功能列表（dieharder所有的检测算法），-d 15便是测试内置发生器。</p>
+
+<p><img src="/Users/zhuozhongliu/JasonzhuoGithubIO/assets/images/2015-10-10.png" alt="dieharder -l" /></p>
+
+<p>接着可以输入dieharder -g -1显示所有的发生器。</p>
+
+<p><img src="/Users/zhuozhongliu/JasonzhuoGithubIO/assets/images/2015-10-10-2.png" alt="dieharder -g" />
+假如准备对第41进行测试，则输入dieharder -d 15 -g 41 -t 1000000,其中-t是选择发生器所产生序列的大小。</p>
+
+<p>Dieharder操作外部产生器产生的随机数流操作，在此详述：先载入到文件目录，对于文件分为AscII码和二进制存储分别对待。</p>
+
+<blockquote><p>使用dieharder -g 201 -f 文件名 -a，然后会输出结果；</p></blockquote>
+
+<p>对于AscII码文件，需输入</p>
+
+<blockquote><p>dieharder -g 202 -f 文件名 -a</p></blockquote>
+
+<p>同时，这个文件的头部应做适当修改，否则无法读取。（注：对于二进制文件测试命令 dieharder –g 201 –f 文件名 –a,此处的-a指的是将运行所有的算法来检测文件，如果希望指定某一种算法时，可以使用dieharder –g 201 –f 文件名 –d 数字，此方法对于AscII同样适用）</p>
+
+<p>头部修改举例：</p>
+
+<blockquote><p>generator mt19937_1999 seed = 1274511046</p>
+
+<p>type: d</p>
+
+<p>count: 100000</p>
+
+<p>numbit: 32</p>
+
+<p>3129711816</p>
+
+<p>85411969</p>
+
+<p>2545911541</p></blockquote>
+
+<p><img src="/Users/zhuozhongliu/JasonzhuoGithubIO/assets/images/2015-10-10-3.png" alt="dieharder -g 201 -f BBS.dat –a" /></p>
+
+<h3>两者对比</h3>
+
+<table>
+<thead>
+<tr>
+<th> Name        </th>
+<th style="text-align:center;">针对目标          </th>
+<th style="text-align:center;">得到结果 </th>
+<th style="text-align:center;">文件大小 </th>
+<th style="text-align:center;"> 操作步骤</th>
+<th style="text-align:center;">是否友好</th>
+<th style="text-align:center;"> 对数据随机性的严格程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STS     </td>
+<td style="text-align:center;"> 待检测其随机性的序列     </td>
+<td style="text-align:center;">   较为详细，有明确的中间过程量 </td>
+<td style="text-align:center;">  在处理大容量文件时速度一般</td>
+<td style="text-align:center;">步骤多但明确，且有详细注释</td>
+<td style="text-align:center;">操作较为友好</td>
+<td style="text-align:center;">较为严格</td>
+</tr>
+<tr>
+<td> Dieharder</td>
+<td style="text-align:center;"> 待验证其产生序列是否随机的随机数产生器</td>
+<td style="text-align:center;">只有一个P-value结果，且没有中间过程量</td>
+<td style="text-align:center;">面向文件容量较大，速度较为优秀</td>
+<td style="text-align:center;"> 输入命令较为令人费解，且需要对各操作目录比较熟悉，虽然简洁但不简单</td>
+<td style="text-align:center;">操作步骤比较不友好，需要对软件有一定程度的理解</td>
+<td style="text-align:center;">比较宽松</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>后记操作过程sts要容易一些，该软件更方便新手操作。dieharder更为简洁，将所有操作凝练在一行，使用者要对该软件有一定程度的熟悉。如此一来，利用dieharder进行测试也是较为方便的，不过dieharder没有sts那样可以查找到中间量的数据，而且暂时还没有找到如何控制dieharder进行部分文件读入的操作。（补充：方法已找到，在后面直接接-t 数字即可，比如dieharder –g 201 –f BBS.dat –d 101 –t 10000.此处的意思是使用-g 201来读入BBS.dat文件，同时使用 -d 101来进行测试，其中只读取10000位）</h3>
+
+<p>dieharder无疑是更强大的，暂时使用有些生涩，不过其内含算法要比sts多，如果希望向更深处探究无疑dieharder更好一些。
+使用两种软件对BBS.dat中等长的部分文件进行测试，就P-value而言，sts得出的值要略小一些。dieharder并没有展示其计算逻辑，但是应该也是对随机数进行测试，不过应该会对结果进行分析得出针对发生器的P-value。其网站上并不认同单独拿出一段数据测试其随机性是很好的手段，其认为应该从发生器的角度去思考，同时它对发生器的态度比较宽容，在P-value比较小的时候（小于0.01只是视为weak，小于0.01%才会被拒绝）它也承认这个发生器是合理的，而且weak级别的发生器也可以产生正常的随机数。所以单独就数据随机性检测而言，个人认为sts要严格一些。</p>
+
+<h4>Useful site :</h4>
+
+<p><a href="https://www.phy.duke.edu/~rgb/General/dieharder.php">Dieharder home page</a></p>
+
+<p><a href="https://www.random.org/">Random.org</a></p>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>Web Crawler Crawl4j</title>
@@ -451,7 +568,7 @@ public class Controller {
 
 <p><img src="/assets/images/2015-05-11enflow.png" alt="image" /></p>
 
-<h3>NIST15种随机性测试简介</h3>
+<h3>NIST15种随机性测试简介[8]</h3>
 
 <h4>1.频率测试(Monobit Test)</h4>
 
@@ -483,9 +600,50 @@ $$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
 <p>检验目的：主要是看M位的字块中“1”出现的次数，如果比例接近为M/2那么就是随机的。当M=1时，变化为频数测试。</p>
 
 <p>测试过程：
-1. 将序列分为长度为M的N块，因此n=MN。
-2. 由于这N个相互独立的随机序列均服从标准正态分布，这N个服从标准正态分布随机变量的平方和，构成新的随机变量，服从卡方分布。自由度为N
-3.</p>
+1. 将序列分为长度为M的N块，因此n=MN
+2. 由于这N个相互独立的随机序列均服从标准正态分布，这N个服从标准正态分布随机变量的平方和，构成新的随机变量，服从卡方分布，其自由度为N
+3. 利用卡方分布的假设检验过程，判断原序列是否是随机的。</p>
+
+<p>该测试也是看Pvalue的值，如果Pvalue>0.01那么就说该序列为随机序列，反之则不是。</p>
+
+<h4>3.游程测试</h4>
+
+<p>检验目的： 游程是指一个没有间断的相同数序列。长度为k的游程包括k个相同单位。游程测试的目的是判断不同长度的“1”游程数目，以及“0”游程的数目是否跟理想的随机序列期望一致。具体来讲，就是看这样的“0”“1”子块之间震荡是否太快或者太慢。</p>
+
+<p>测试过程：</p>
+
+<ol>
+<li>计算检验前输入序列中“1”的出现频率</li>
+<li>判断游程测试的前提条件是否满足，如果不满足则退出测试。</li>
+<li>计算检验统计量Vn(obs), 其中\(V_{obs}\),0到1或者1到0的变化次数和。</li>
+<li>计算Pvalue的值</li>
+</ol>
+
+
+<p>数学原理：当测试次数充分多时，二项分布B(n,p)逼近正态分布N(np,npq)，\(V_{obs}\)又叫做规范和，它被正则化后就服从正态分布了,如果Vn(obs)的值很大，则表明震荡很快，反之表明震荡很慢。</p>
+
+<h4>4.块内最长游程检验</h4>
+
+<p>检验目的： 该检验主要是看长度为M-bits的字块长度中最长的“1”游程。检验目的是判断待检序列中的最长“1”游程长度是否同随机序列一致。</p>
+
+<p>测试过程：</p>
+
+<ol>
+<li>将序列分作长度为M-bit子块，程序里面规定了3种不同的字块长度，分别为8，128，10000，n= M*N</li>
+<li>将各个字块中的最长“1”游程频率列表</li>
+<li>计算卡方分布的P值</li>
+</ol>
+
+
+<h4>5.二元矩阵秩检验</h4>
+
+<p>检验目的： 该检验主要是看整个序列的分离子矩阵的秩。目的是核对源序列中固定长度子链间的线性依赖关系。</p>
+
+<h4>6.离散傅里叶变换检验</h4>
+
+<p>检验目的：本检验主要是看对序列进行分步傅里叶变换后的峰值高度。目的是探测待检验信号的周期性,以此揭示其与相应的随机信号之间的偏差程度。做法是观察超过 95%阈值的峰值数目与低于5%峰值的数目是否有显著不同。</p>
+
+<h4>未完待续。。。</h4>
 
 <h4>特征提取与选择</h4>
 
@@ -546,6 +704,8 @@ $$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
 <p>[6]Cao Z, Xiong G, Zhao Y, et al. A Survey on Encrypted Traffic Classification[M]//Applications and Techniques in Information Security. Springer Berlin Heidelberg, 2014: 73-81.</p>
 
 <p>[7]陈利,张利,班晓芳等.基于信息熵的加密会话检测方法[J].计算机科学,2015,42(1):142-143,174.DOI:10.11896/j.issn.1002-137X.2015.1.033.</p>
+
+<p>[8]Rukhin A, Soto J, Nechvatal J, et al. A statistical test suite for random and pseudorandom number generators for cryptographic applications[R]. Booz-Allen and Hamilton Inc Mclean Va, 2001.</p>
 
 <blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
 ]]></content:encoded>
@@ -767,7 +927,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
     
     <item>
       <title>Botnet and fast flux</title>
-      <link href="http://jasonzhuo.com//Botnet%20and%20fast%20flux/"/>
+      <link href="http://jasonzhuo.com//botnet-and-fast-flux/"/>
       <pubDate>2015-04-25T00:00:00+08:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//Botnet and fast flux</guid>
@@ -1023,53 +1183,6 @@ Protocol- and Structure-Independent Botnet Detection</a></p>
 4. 内存计算框架Spark</p>
 
 <blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>hello world again</title>
-      <link href="http://jasonzhuo.com//hello-world-again/"/>
-      <pubDate>2015-04-15T00:00:00+08:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//hello-world-again</guid>
-      <content:encoded><![CDATA[<p>I'm back!</p>
-
-<!-- more -->
-
-
-<p>时隔了这么久没写过博客，感觉有点对不起起初建立博客的初衷。于是想把我的博客给恢复起来。今天尝试了向我的博客里面添加数学公式的方法：</p>
-
-<h3>添加行内公式</h3>
-
-<pre><code>\\(公式\\)
-</code></pre>
-
-<h3>添加行间公式</h3>
-
-<pre><code>$$公式$$
-</code></pre>
-
-<p>例如行间公式：\(\sum_{i\to 2}^i\)</p>
-
-<p>$$\sum_{i\to 2}^i$$</p>
-
-<p>具体来说实现比较简单：
-如果用Mou渲染Math公式，尝试在<strong>default.html</strong>加上如下js，表示让Mou去加载Mathjax的脚本</p>
-
-<p><code>&lt;script type="text/javascript"
- src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
-&lt;/script&gt;</code></p>
-
-<p>在试过上面的方法后，我还尝试了直接在mou编辑过程中加入上述代码：
-<img src="/assets/images/2015-04-16-mathequa.png" alt="image" /></p>
-
-<p>加入之后倒是可以一边编辑一边看到编辑结果，但是容易造成Mou在渲染过程中的卡顿，不推荐这样使用。</p>
-
-<p>编辑完成之后，在上传之前可以进行检查，把上述图中的代码加入就可以进行检查了。</p>
-
-<p>在此庆祝我的博客复活啦，以后就可以写写高大上的数学公式了~ 就这样了，碎觉碎觉，累死累活！</p>
-
-<blockquote><h2>... in mathematics you didn't understand things, you just get used to them. --J.von.Newmann </h2></blockquote>
 ]]></content:encoded>
     </item>
     
