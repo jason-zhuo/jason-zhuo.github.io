@@ -468,7 +468,7 @@ article .entry h6 {
 }
 article .entry img,
 article .entry video {
-  max-width: 530px;
+  max-width: 1100px;
   display: block;
   margin: 4px auto;
   -webkit-box-shadow: #999 1px 1px 4px;

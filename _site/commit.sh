@@ -1,17 +1,40 @@
 #!/bin/bash
 echo -n "Enter comment:"
 read  comment
-files=`git status -s | grep ?? | awk '{print \$2}'`
+
+filesd=`git status | grep deleted | awk '{print \$2}'`
 if [ "${files}" == "" ]; then
-	  echo "nothing to add"
+	  echo "nothing to remove"
 	else
-        for var in $files
+        for var in $filesd
         do
             #echo $var
-            git add $var
+            git rm --cached $var
         done
 fi
 
-git commit -m "$comment"
+filea=`git status -s | grep ?? | awk '{print \$2}'`
+if [ "${filea}" == "" ]; then
+	  echo "nothing to add"
+	else
+        for var in $filea
+        do
+            #echo $var
+            sudo git add $var
+        done
+fi
+
+filesm=`git status -s | grep M | awk '{print \$2}'`
+if [ "${filesm}" == "" ]; then
+	  echo "nothing to modify"
+	else
+        for var in $filesm
+        do
+            #echo $var
+            sudo git add $var
+        done
+fi
+
+#git commit -m "$comment"
 #git push origin master
 exit 0

@@ -14,24 +14,24 @@ if [ "${files}" == "" ]; then
 fi
 
 filea=`git status -s | grep ?? | awk '{print \$2}'`
-if [ "${files}" == "" ]; then
+if [ "${filea}" == "" ]; then
 	  echo "nothing to add"
 	else
         for var in $filea
         do
             #echo $var
-            git add $var
+            sudo git add $var
         done
 fi
 
 filesm=`git status -s | grep M | awk '{print \$2}'`
-if [ "${files2}" == "" ]; then
+if [ "${filesm}" == "" ]; then
 	  echo "nothing to modify"
 	else
         for var in $filesm
         do
             #echo $var
-            git add $var
+            sudo git add $var
         done
 fi
 

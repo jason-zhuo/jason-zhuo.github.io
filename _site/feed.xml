@@ -519,7 +519,7 @@ public class Controller {
       <item>
         <title>Encrypted Traffic identification</title>
         <description>&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-11enflow2.png&quot; alt=&quot;image&quot; /&gt;
-2015加密流量检测论文阅读笔记，持续更新（last update 2015.9.29）&lt;/p&gt;
+2015加密流量检测论文阅读笔记，持续更新（last update 2015.11.01）&lt;/p&gt;
 
 &lt;!-- more --&gt;
 
@@ -631,7 +631,7 @@ $$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
 
 &lt;p&gt;检验目的：本检验主要是看对序列进行分步傅里叶变换后的峰值高度。目的是探测待检验信号的周期性,以此揭示其与相应的随机信号之间的偏差程度。做法是观察超过 95%阈值的峰值数目与低于5%峰值的数目是否有显著不同。&lt;/p&gt;
 
-&lt;h4&gt;未完待续。。。&lt;/h4&gt;
+&lt;h4&gt;未完待续。。。to be continued&lt;/h4&gt;
 
 &lt;h4&gt;特征提取与选择&lt;/h4&gt;
 
