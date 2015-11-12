@@ -3,7 +3,7 @@ echo -n "Enter comment:"
 read  comment
 
 filesd=`git status | grep deleted | awk '{print \$2}'`
-if [ "${files}" == "" ]; then
+if [ "${filesd}" == "" ]; then
 	  echo "nothing to remove"
 	else
         for var in $filesd
