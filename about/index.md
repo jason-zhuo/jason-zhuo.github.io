@@ -25,7 +25,7 @@ comments: yes
 ##2.Research Interests 
 <li>Machine learning: Clustering algorithm, Classification algorithm</li>
 <li>Network theory: Complex network </li>
-<li>Network security: Traffic classification, Security&Privacy, Anonymous Communication, Malware detection and modeling</li>
+<li>Network security: Traffic classification, Security & Privacy, Anonymous Communication, Malware detection and modeling</li>
 
 ##3.Current Ongoing Projects:
 
