@@ -147,12 +147,24 @@ Jnetpcap不使用ZC/DNA特殊驱动的时候，仅用Jnetpcap+ Pfring模块，�
 
 ```
 Actual: 1479130 packets (812472290 bytes) sent in 4.06 seconds.Rated: 200116320.0 bps, 1526.77 Mbps, 364317.72 pps
-Statistics for network device: em1Attempted packets:         1479130Successful packets:        1479130Failed packets:            0Retried packets (ENOBUFS): 0Retried packets (EAGAIN):  0
+
+Statistics for network device: em1
+Attempted packets:         1479130
+Successful packets:        1479130
+Failed packets:            0
+Retried packets (ENOBUFS): 0
+Retried packets (EAGAIN):  0
 ```
 使用Jnetpcap抓包结果：
 
 ```
-	recv=93179, drop=139931, ifdrop=0	recv=201895, drop=721505, ifdrop=0	recv=338379, drop=736488, ifdrop=0	recv=490772, drop=736488, ifdrop=0	recv=660812, drop=736488, ifdrop=0	recv=663681, drop=736488, ifdrop=0	recv=663681, drop=736488, ifdrop=0
+	recv=93179, drop=139931, ifdrop=0
+		recv=201895, drop=721505, ifdrop=0
+		recv=338379, drop=736488, ifdrop=0
+		recv=490772, drop=736488, ifdrop=0
+		recv=660812, drop=736488, ifdrop=0
+		recv=663681, drop=736488, ifdrop=0
+		recv=663681, drop=736488, ifdrop=0
 ```
 
 	

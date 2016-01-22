@@ -159,12 +159,24 @@ recv=16655, drop=0, ifdrop=0&lt;/p&gt;
 实验中，我们将em1和em2直接串联，使用Tcpreplay结果：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;Actual: 1479130 packets (812472290 bytes) sent in 4.06 seconds.Rated: 200116320.0 bps, 1526.77 Mbps, 364317.72 pps
-Statistics for network device: em1Attempted packets:         1479130Successful packets:        1479130Failed packets:            0Retried packets (ENOBUFS): 0Retried packets (EAGAIN):  0
+
+Statistics for network device: em1
+Attempted packets:         1479130
+Successful packets:        1479130
+Failed packets:            0
+Retried packets (ENOBUFS): 0
+Retried packets (EAGAIN):  0
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;使用Jnetpcap抓包结果：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    recv=93179, drop=139931, ifdrop=0   recv=201895, drop=721505, ifdrop=0  recv=338379, drop=736488, ifdrop=0  recv=490772, drop=736488, ifdrop=0  recv=660812, drop=736488, ifdrop=0  recv=663681, drop=736488, ifdrop=0  recv=663681, drop=736488, ifdrop=0
+&lt;pre&gt;&lt;code&gt;    recv=93179, drop=139931, ifdrop=0
+        recv=201895, drop=721505, ifdrop=0
+        recv=338379, drop=736488, ifdrop=0
+        recv=490772, drop=736488, ifdrop=0
+        recv=660812, drop=736488, ifdrop=0
+        recv=663681, drop=736488, ifdrop=0
+        recv=663681, drop=736488, ifdrop=0
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;可以发现，仅用Jnetpcap+ Pfring模块，在高速网络环境下，我们发现丢包仍然很严重。达到了50%。&lt;/p&gt;
