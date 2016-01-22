@@ -90,8 +90,9 @@ Pfring 的安装过程可以参考这篇文章：[Pfring安装](http://www.cnblo
 实验所用的服务器是Dell R730，em1,em2是万兆网卡，em3是千兆网卡
 先卸载原来的网卡驱动，加载DNA驱动到em2网卡后是这样的：
 
-`[root@localhost ~]# ethtool -i em2`
-`driver: ixgbe
+```{r, engine='bash', count_lines}
+[root@localhost ~]# ethtool -i em2
+driver: ixgbe
 version: 4.1.5
 firmware-version: 0x800004cf, 15.0.28
 bus-info: 0000:01:00.1
@@ -99,10 +100,11 @@ supports-statistics: yes
 supports-test: yes
 supports-eeprom-access: yes
 supports-register-dump: yes
-supports-priv-flags: no`
-
-`[root@localhost ~]# ethtool -i em3`
-`driver: igb
+supports-priv-flags: no
+```
+```{r, engine='bash', count_lines}
+[root@localhost ~]# ethtool -i em3
+driver: igb
 version: 5.2.13-k
 firmware-version: 1.67, 0x80000b89, 15.0.28
 bus-info: 0000:06:00.0
@@ -110,9 +112,13 @@ supports-statistics: yes
 supports-test: yes
 supports-eeprom-access: yes
 supports-register-dump: yes
-supports-priv-flags: no`
+supports-priv-flags: no
+```
 
-运行我写的基于Jnetpcap的Java程序后，是这样的：
+
+
+
+运行我写的基于Jnetpcap的Java程序后，读取的硬件信息是这样的：
 
 1. flags=6, addresses=[[addr=[10], mask=[10], broadcast=null, dstaddr=null], [addr=[INET4:192.168.1.30], mask=[INET4:255.255.255.0], broadcast=[INET4:192.168.1.255], dstaddr=null], [addr=[17], mask=null, broadcast=[17], dstaddr=null]], name=em3, desc=**PF_RING**
 2. flags=6, addresses=[[addr=[17], mask=null, broadcast=[17], dstaddr=null]], name=em2, desc=**PF_RING ZC/DNA**
@@ -138,17 +144,18 @@ recv=16655, drop=0, ifdrop=0
 
 Jnetpcap不使用ZC/DNA特殊驱动的时候，仅用Jnetpcap+ Pfring模块，在高速网络环境下，我们发现丢包仍然很严重。
 实验中，我们将em1和em2直接串联，使用Tcpreplay结果：
-	
-	Actual: 1479130 packets (812472290 bytes) sent in 4.06 seconds.	Rated: 200116320.0 bps, 1526.77 Mbps, 364317.72 pps
 
-	Statistics for network device: em1	Attempted packets:         1479130
-		Successful packets:        1479130	Failed packets:            0
-		Retried packets (ENOBUFS): 0	Retried packets (EAGAIN):  0
-
+```{r, engine='bash', count_lines}
+Actual: 1479130 packets (812472290 bytes) sent in 4.06 seconds.Rated: 200116320.0 bps, 1526.77 Mbps, 364317.72 pps
+Statistics for network device: em1Attempted packets:         1479130Successful packets:        1479130Failed packets:            0Retried packets (ENOBUFS): 0Retried packets (EAGAIN):  0
+```
 使用Jnetpcap抓包结果：
 
+```{r, engine='bash', count_lines}
 	recv=93179, drop=139931, ifdrop=0	recv=201895, drop=721505, ifdrop=0	recv=338379, drop=736488, ifdrop=0	recv=490772, drop=736488, ifdrop=0	recv=660812, drop=736488, ifdrop=0	recv=663681, drop=736488, ifdrop=0	recv=663681, drop=736488, ifdrop=0
+```
 
+	
 可以发现，仅用Jnetpcap+ Pfring模块，在高速网络环境下，我们发现丢包仍然很严重。达到了50%。
 
 
