@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="" />
+    <title>PF_ring and Jnetpcap</title>
+    <meta name="name" content="Jaosonzhuo's blog" />
+    <meta name="description" content="" />
+    <meta name="keywords" content= "Network" />
+    <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/mystyle.css" />
+    <script src="http://libs.baidu.com/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+    
+
+  </head>
+  <body>
+    <div id="container">
+
+    <aside id="sidebar" class="alignleft">
+        <div class="navigationBar">
+            <a href="/">Jasonzhuo's Blog</a>
+        </div>
+
+        <nav class="widget" id="menu">
+            <ul>
+              <li class="cell"><a class="next" href="/">Home</a></li>
+              <li class="cell"><a class="next" href="/categories/">Archives</a></li>
+              <li class="cell"><a class="next" href="/about/">About me</a></li>
+              <li class="cell"><a class="next" href="/search/">Search</a></li>
+              <li class="cell"><a class="next" href="/feed.xml">RSS</a></li>
+            </ul>
+        </nav>
+
+        <div class="widget weibo">
+            <iframe width="100%" height="120" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=120&fansRow=2&ptype=1&speed=0&skin=7&isTitle=1&noborder=0&isWeibo=0&isFans=0&uid=2385225700&verifier=0cad5c7b&dpc=1"></iframe>  
+        </div>
+
+
+        <div class="widget gostats">
+            <h3 class="title"><B>Vistor Statistics</B></h3>
+
+            <div class="entry">
+<!-- GoStats Simple HTML Based Code -->
+<a target="_blank" title="访客计数器" href="http://gostats.cn"><img alt="访客计数器" 
+src="http://c5.gostats.cn/bin/count/a_1066403/t_4/i_102/z_1/show_visitors/counter.png" 
+style="border-width:0" /></a>
+<!-- End GoStats Simple HTML Based Code -->
+            </div>
+        </div>
+
+        <!-- <table class="widget ad" border="">
+            <tbody>
+                <tr>
+                    <td class="icon">
+                        <a href="/evermark"><img src="http://esoftmobile.com//evermark/icon.png"></a>                  
+                    </td>
+                    <td class="title">
+                        <a href="/evermark">Evermark</a>
+                    </td>
+                    <td class="button">
+                        <a target="_blank" href="https://itunes.apple.com/cn/app/evermark/id728159144?mt=8">下载</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>  -->
+
+        <div class="widget tagcloud">
+            <h3 class="title"><B>Useful Tags</B></h3>
+            <div class="entry">
+                <div id='tag_cloud'>
+                    
+                    <a href="/tags/#Hello world" title="Hello world" rel="1">Hello world</a>
+                    
+                    <a href="/tags/#Linux" title="Linux" rel="1">Linux</a>
+                    
+                    <a href="/tags/#Bash" title="Bash" rel="1">Bash</a>
+                    
+                    <a href="/tags/#Matlab" title="Matlab" rel="1">Matlab</a>
+                    
+                    <a href="/tags/#Bigdata" title="Bigdata" rel="1">Bigdata</a>
+                    
+                    <a href="/tags/#Math equation" title="Math equation" rel="1">Math equation</a>
+                    
+                    <a href="/tags/#Big data" title="Big data" rel="1">Big data</a>
+                    
+                    <a href="/tags/#SRM" title="SRM" rel="1">SRM</a>
+                    
+                    <a href="/tags/#Machine learning" title="Machine learning" rel="2">Machine learning</a>
+                    
+                    <a href="/tags/#Botnet" title="Botnet" rel="2">Botnet</a>
+                    
+                    <a href="/tags/#fast flux" title="fast flux" rel="1">fast flux</a>
+                    
+                    <a href="/tags/#Proxy，Shadowsocks" title="Proxy，Shadowsocks" rel="1">Proxy，Shadowsocks</a>
+                    
+                    <a href="/tags/#encrypted flow" title="encrypted flow" rel="2">encrypted flow</a>
+                    
+                    <a href="/tags/#SDN" title="SDN" rel="1">SDN</a>
+                    
+                    <a href="/tags/#Random forest" title="Random forest" rel="1">Random forest</a>
+                    
+                    <a href="/tags/#clustering" title="clustering" rel="1">clustering</a>
+                    
+                    <a href="/tags/#Crawler" title="Crawler" rel="1">Crawler</a>
+                    
+                    <a href="/tags/#Java" title="Java" rel="1">Java</a>
+                    
+                    <a href="/tags/#Network" title="Network" rel="1">Network</a>
+                    
+                </div>
+            </div>
+
+            <script src="/media/js/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script> 
+            <script language="javascript">
+            $.fn.tagcloud.defaults = {
+                size: {start: 1, end: 2, unit: 'em'}
+            };
+
+            $(function () {
+                $('#tag_cloud a').tagcloud();
+            });
+            </script>
+        </div>
+
+        <footer id="footer" class="inner">
+            <div class="copyright">
+            <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="https://github.com/jason-zhuo" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2016 <a href="/about/"></a>
+             </div>
+             <!-- <div class="copyright">
+                <script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fcbf651a0c9c199e73857441cc83b3884' type='text/javascript'%3E%3C/script%3E"));
+                </script>
+             </div> -->
+        </footer>
+
+    </aside>
+
+    <div id="hidden-navigationBar" class="navigationBar">
+      <a href="/">Jasonzhuo's Blog</a>
+    </div>
+
+    <div id="main-col" class="alignright">
+        <div id="wrapper">   
+    
+         <article class="post">
+<div class="post-content">
+
+
+
+
+<header>
+    <h1 class="title">PF_ring and Jnetpcap</h1>
+    <section class="meta">
+<span class="time">
+  <time datetime="2016-01-21">2016-01-21</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#new stuff" title="new stuff">new stuff</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Network" title="Network">Network</a>&nbsp;
+  
+</span>
+
+
+</section>    
+</header>
+
+<div class="entry">
+
+  <h3>基于Jnetpcap使用Pf_ring（PF_ring and Jnetpcap）</h3>
+
+<hr />
+
+<p><img src="/assets/images/Pfringjnetpcap.png" alt="image" />
+基于Jnetpcap的Pfring使用，以及网络数据包处理流程机制分析。</p>
+
+<!-- more -->
+
+
+<h2>1.PF ring 简介</h2>
+
+<p>PF_RING是Luca Deri发明的提高内核处理数据包效率，如Libpcap和TCPDUMP等，以及一些辅助性程序（如ntop查看并分析网络流量等）。PF_RING是一种新型的网络socket，它可以极大的改进包捕获的速度。</p>
+
+<h4>1.1 本文中的一些术语</h4>
+
+<p><strong>NAPI:</strong>  NAPI是Linux新的网卡数据处理API，NAPI是综合中断方式与轮询方式的技术，NAPI 在高负载的情况下可以产生更好的性能，它避免了为每个传入的帧都产生中断。参考这个链接<a href="http://blog.csdn.net/zhangskd/article/details/21627963">NAPI</a></p>
+
+<p><strong>Zero copy (ZC):</strong> 简单一点来说，零拷贝就是一种避免 CPU 将数据从一块存储拷贝到另外一块存储的技术。</p>
+
+<p><strong>NPU:</strong>网络处理器</p>
+
+<p><strong>DMA</strong>:直接内存存取, Direct Memory Access, 它允许不同速度的硬件装置来沟通，而不需要依赖于 CPU 的大量中断负载。</p>
+
+<p><strong>Linux 网络栈</strong>：如下图所示，它简单地为用户空间的应用程序提供了一种访问内核网络子系统的方法。
+<img src="https://www.ibm.com/developerworks/cn/linux/l-linux-networking-stack/figure2.gif" alt="enter image description here" /></p>
+
+<h2>2. Libpcap抓包原理</h2>
+
+<p>Libpcap的包捕获机制就是在数据链路层加一个旁路处理。当一个数据包到达网络接口时，libpcap首先利用已经创建的Socket从链路层驱动程序中获得该数据包的拷贝，再通过Tap函数将数据包发给BPF过滤器。BPF过滤器根据用户已经定义好的过滤规则对数据包进行逐一匹配，匹配成功则放入内核缓冲区(一次拷贝)，并传递给用户缓冲区（又一次拷贝），匹配失败则直接丢弃。如果没有设置过滤规则，所有数据包都将放入内核缓冲区，并传递给用户层缓冲区。</p>
+
+<p><img src="/assets/images/Libpcap.jpg" alt="image" /></p>
+
+<p>高速复杂网络环境下libpcap丢包的原因主要有以下两个方面：</p>
+
+<ol>
+<li>Cpu处于频繁中断状态，造成接收数据包效率低下。</li>
+<li>数据包被多次拷贝，浪费了大量时间和资源。从网卡驱动到内核，再从内核到用户空间。</li>
+</ol>
+
+
+<h4>为啥用Pfring呢</h4>
+
+<p>随着信息技术的发展，1 Gbit/s，10 Gbit/s 以及 100 Gbit/s 的网络会越来越普及，那么零拷贝技术也会变得越来越普及，这是因为网络链接的处理能力比 CPU 的处理能力的增长要快得多。高速网络环境下， CPU 就有可能需要花费几乎所有的时间去拷贝要传输的数据，而没有能力再去做别的事情，这就产生了性能瓶颈。</p>
+
+<h2>3.PF_RING驱动家族</h2>
+
+<p>这些驱动（在PF_RING/driver/PF_RING-aware中可用）设计用于提高数据包捕获，它把
+数据包直接放入到PF_RING中，不经过标准Linux数据包分发机制。</p>
+
+<h3>3.1 DNA</h3>
+
+<p>对于那些希望在CPU利用率为0%（拷贝包到主机）情况下需要最大数据包捕获速度的用户来说，可以使用DNA(Direct NIC Access)驱动，它允许数据直接从网络接口上读取，它以零拷贝的方式同时绕过Linux 内核和 PF_RING模块。</p>
+
+<p>左边这个图解释：<strong>Vanilla PF_RING</strong> 从NIC上通过Linux NAPI获取数据包拷贝。拷贝到PFring 环状缓存空间。然后用户空间的应用会从环状缓存空间读取数据包。从图中可以看出<strong>Vanilla PF_RING</strong> 有两次polling操作，一次从NIC到环状缓存空间（Linux 内核里面），另外一次从环状缓存空间到用户程序。</p>
+
+<p>左边这个图，相对于传统的方式来说。首先Application使用的是mmap方式，较标准版本的Libpcap效率更高。Libpcap标准版是目前使用最多的用于从内核拷贝数据包到用户层的库，而libpcap-mmap是libpcap的一个改进版本。传统libpcap使用固定大小的存储缓冲器和保持缓冲器来完成数据包从内核到用户层的传递，而libpcap-mmap设计了一个大小可以配置的循环缓冲器，允许用户程序和内核程序同时对该循环缓冲器的不同数据区域进行直接的读取。其次，PF_ring使用的是NAPI，而不是Libpcap中使用的DMA方式调用系统函数netif_rx()将数据包从网卡拷贝到内核缓存。</p>
+
+<p>右边这个图解释：<strong>DNA</strong>模式下通过NIC 的NPU(网络处理器)拷贝数据包到网卡上的缓存空间。然后直接通过DMA方式到用户层，同时绕过了PF_RING模块和Linux 内核缓存。官网已经证明了DNA方式能有更快的处理速率<a href="http://www.ntop.org/products/packet-capture/pf_ring/">Performance</a>。</p>
+
+<p><img src="http://img.blog.csdn.net/20140622013115968?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZG9nMjUw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="DNAandNAPI" /></p>
+
+<p>让人多少有点遗憾的是，该方式并不是可以随意使用的，根据其License，提供免费下载，但是以二进制形式提供测试版本的库（也就是说使用5分钟或者达到一定包的处理数量之后软件就停了），如果需要长期使用，需要购买解锁的代码。</p>
+
+<blockquote><p>ERROR: You do not seem to have a valid DNA license for eth0 [Intel 1 Gbit e1000e family].
+We're now working in demo mode with packet capture
+and transmission limited to 0 day(s) 00:05:00</p></blockquote>
+
+<p>下图展示的是传统数据发送的整个过程，图片引用自<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-zerocopy1/">ibm.com</a>。
+<img src="http://www.ibm.com/developerworks/cn/linux/l-cn-zerocopy1/image001.jpg" alt="传统使用 read 和 write 系统调用的数据传输" /></p>
+
+<h3>3.2 PF_RING-aware (ZC support)</h3>
+
+<p>这个模块在路径 PF_RING/driver/PF_RING-aware下（带有zc后缀）。根据官方手册介绍，An interface in ZC mode provides the same performance as DNA. Zero Copy(ZC)。ZC和DNA实际上都是绕过Linux 内核和 PF_RING模块，这些模式下Linux内核将看不到任何数据包。</p>
+
+<p><img src="http://i2.wp.com/www.ntop.org/wp-content/uploads/2011/08/pfring_mod.png?w=80%25" alt="PFring" /></p>
+
+<h3>3.3 ZC</h3>
+
+<p>PF ring 还有一个ZC模块。什么ZC，DNA，pfring-aware是有点乱，不好分清楚。ZC模块可以看做是DNA的后续版本（“It can be considered as the successor of DNA/LibZero that offers a single and consistent API implementing simple building blocks (queue, worker and pool) that can be used from threads, applications and virtual machines.”）。PF_RING ZC comes with a <strong>new generation of PF_RING aware drivers</strong>。感觉这个ZC新模块与DNA差别不大。</p>
+
+<h2>4. Libpfring and Libpcap and Jnetpcap</h2>
+
+<p>怎么让我们的其他应用程序使用pfring的高速特性呢？官方文档中说，Legacy statically-linked pcap-based applications need to be recompiled against the new PF_RING-enabled libpcap.a in order to take advantage of PF_RING. Do not expect to use PF_RING without recompiling your existing application. 也就是说需要和 PF_RING-enabled的 libpcap.a 进行重新编译应用程序才能够使用pfring的高速特性。</p>
+
+<p>项目运用中，我打算使用JAVA程序来写一个高速的网络数据包处理程序。由于JAVA采用的是Jnetpcap，Jnetpcap是Libpcap的封装。而原本Libpcap本来不是支持Pfring的。因此，如果要用Java调用Pfring，就必须采用支持Pfring的Libpcap，而不是原本安装的Libpcap。所以，需要把原来的Libpcap卸载，安装Pfring的Libpcap。</p>
+
+<pre><code>rmp -qa libpcap //查看Libpcap
+rpm -e libpcap //删除Libpcap
+</code></pre>
+
+<p>Pfring 的安装过程可以参考这篇文章：<a href="http://www.cnblogs.com/tswcypy/p/3941619.html">Pfring安装</a></p>
+
+<p>实验所用的服务器是Dell R730，em1,em2是万兆网卡，em3是千兆网卡
+先卸载原来的网卡驱动，加载DNA驱动到em2网卡后是这样的：</p>
+
+<p><code>[root@localhost ~]# ethtool -i em2</code>
+<code>driver: ixgbe
+version: 4.1.5
+firmware-version: 0x800004cf, 15.0.28
+bus-info: 0000:01:00.1
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: yes
+supports-register-dump: yes
+supports-priv-flags: no</code></p>
+
+<p><code>[root@localhost ~]# ethtool -i em3</code>
+<code>driver: igb
+version: 5.2.13-k
+firmware-version: 1.67, 0x80000b89, 15.0.28
+bus-info: 0000:06:00.0
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: yes
+supports-register-dump: yes
+supports-priv-flags: no</code></p>
+
+<p>运行我写的基于Jnetpcap的Java程序后，是这样的：</p>
+
+<ol>
+<li>flags=6, addresses=[[addr=[10], mask=[10], broadcast=null, dstaddr=null], [addr=[INET4:192.168.1.30], mask=[INET4:255.255.255.0], broadcast=[INET4:192.168.1.255], dstaddr=null], [addr=[17], mask=null, broadcast=[17], dstaddr=null]], name=em3, desc=<strong>PF_RING</strong></li>
+<li>flags=6, addresses=[[addr=[17], mask=null, broadcast=[17], dstaddr=null]], name=em2, desc=<strong>PF_RING ZC/DNA</strong></li>
+<li>flags=6, addresses=[[addr=[17], mask=null, broadcast=[17], dstaddr=null]], name=em1, desc=<strong>PF_RING ZC/DNA</strong></li>
+</ol>
+
+
+<p>可以看到，em1,em2由于加载了Pfring的特殊驱动，其描述已经变成了<strong>PF_RING ZC/DNA</strong>，em3由于还是用的原来的驱动，所以只有Pfring。</p>
+
+<p>使用Java调用<strong>PF_RING ZC/DNA</strong>，如果没有Lisence, 仍然会出现刚才所讲的错误信息。
+需要注意的是调用ZC的时候需要将原来：</p>
+
+<p><code>Pcap.openlive(device.getName())</code></p>
+
+<p>改为</p>
+
+<p><code>Pcap.openlive(“ZC:”+device.getName())</code></p>
+
+<p>奇怪的是，我用tcpreplay 最高速发送：1479130个包的时候
+jnetpcap接收到16655个包之后就没有了，至今不知道原因。
+recv=0, drop=0, ifdrop=0
+recv=16655, drop=0, ifdrop=0
+recv=16655, drop=0, ifdrop=0
+recv=16655, drop=0, ifdrop=0</p>
+
+<p>Jnetpcap不使用ZC/DNA特殊驱动的时候，仅用Jnetpcap+ Pfring模块，在高速网络环境下，我们发现丢包仍然很严重。
+实验中，我们将em1和em2直接串联，使用Tcpreplay结果：</p>
+
+<pre><code>Actual: 1479130 packets (812472290 bytes) sent in 4.06 seconds. Rated: 200116320.0 bps, 1526.77 Mbps, 364317.72 pps
+
+Statistics for network device: em1  Attempted packets:         1479130
+    Successful packets:        1479130  Failed packets:            0
+    Retried packets (ENOBUFS): 0    Retried packets (EAGAIN):  0
+</code></pre>
+
+<p>使用Jnetpcap抓包结果：</p>
+
+<pre><code>recv=93179, drop=139931, ifdrop=0   recv=201895, drop=721505, ifdrop=0  recv=338379, drop=736488, ifdrop=0  recv=490772, drop=736488, ifdrop=0  recv=660812, drop=736488, ifdrop=0  recv=663681, drop=736488, ifdrop=0  recv=663681, drop=736488, ifdrop=0
+</code></pre>
+
+<p>可以发现，仅用Jnetpcap+ Pfring模块，在高速网络环境下，我们发现丢包仍然很严重。达到了50%。</p>
+
+<h3>4.1Pf ring 工作模式</h3>
+
+<p>PF_RING有3中工作模式：   pf_ring有三种透明模式（transparent_mode）。为0时走的是Linux标准的NAPI包处理流程；    为1时，包既走Linux标准包处理流程，也copy给pf_ring一份； 为2时，驱动只将包拷贝给pf_ring，内核则不会接收到这些包，1和2模式需要pf_ring特殊的网卡驱动的支持。NOTE from other website：</p>
+
+<ul>
+<li>默认为transparent=0，数据包通过标准的linux接口接收。任何驱动都可以使用该模式</li>
+<li>transparent=1（使用于vanila和PF_RING-aware驱动程序），数据包分别拷贝到PF_RING和标准linux网络协议栈各一份</li>
+<li>transparent=2（PF_RING-aware驱动程序），数据包近拷贝到PF_RING,而不会拷贝到标准的linux网络协议栈（tcpdump不会看到任何数据包）。</li>
+<li>不要同时使用模式1和模式2到vanila驱动，否则将会抓到任何数据包。
+
+<h3>4.2 Pf ring 包过滤</h3>
+
+<p>pf_ring 普通模式下支持传统的BPF过滤器，由于DNA模式下，不再使用NAPI Poll，所以PF_RING的数据包过滤功能就不支持了，目前可以使用硬件层的数据包过滤，但只有intel的 82599网卡支持。Jnetpcap只能在pf_ring 普通模式下工作，因此只能够用BPF过滤器。</p></li>
+</ul>
+
+
+<blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
+
+
+  <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2016-01-21</span><br>
+  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jasonzhuo.com"><strong>Jasonzhuo's Blog</strong></a></span>
+  </p>
+</div>
+
+<footer>
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_renren"></a>
+  <a href="http://www.jiathis.com/share?uid=1976264" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1976264" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
+<!-- UY END -->
+</footer>
+</div>
+</article>
+
+<section class="pageselect">
+<br/>
+<span class="pre-span">  
+  <a  href="" >已经是第一篇 </a>
+</span>
+<span class="next-span">
+  <a  href="/dieharder-and-sts/" class="pageNav"  >下一篇&nbsp;-&nbsp;Dieharder and STS </a>
+</span>
+<span class="mobile-pre-span">  
+  <a  href="" >已经是第一篇 </a>
+</span>
+<span class="mobile-next-span">
+  <a  href="/dieharder-and-sts/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+
+
+
+  
+        
+        </div>
+    </div>
+
+    </div>
+  </body>
+</html>

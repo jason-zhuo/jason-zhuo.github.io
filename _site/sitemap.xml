@@ -14,15 +14,11 @@
     </url>
     
     <url>
-        <loc>http://jasonzhuo.com//</loc>
-    </url>
-    
-    <url>
         <loc>http://jasonzhuo.com//feed/</loc>
     </url>
     
     <url>
-        <loc>http://jasonzhuo.com//about/</loc>
+        <loc>http://jasonzhuo.com//</loc>
     </url>
     
     <url>
@@ -38,6 +34,14 @@
     </url>
     
     <url>
+        <loc>http://jasonzhuo.com//about/</loc>
+    </url>
+    
+    <url>
+        <loc>http://jasonzhuo.com//tags/index%E5%89%AF%E6%9C%AC/</loc>
+    </url>
+    
+    <url>
         <loc>http://jasonzhuo.com//search.json</loc>
     </url>
     
@@ -46,6 +50,10 @@
     </url>
     
 
+    
+    <url>
+        <loc>http://jasonzhuo.com//pfring-and-jnetpcap/</loc>
+    </url>
     
     <url>
         <loc>http://jasonzhuo.com//dieharder-and-sts/</loc>

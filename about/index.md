@@ -19,7 +19,7 @@ comments: yes
 
 
 ##1.Introduction
-####I’m a Ph.D. student from School of Computer Science and Engineering in University of Electronic Science and Technology of China (UESTC), supervised by Prof. Xiaosong Zhang and Prof. Jingzhong Zhang. I was an undergraduate at UESTC from 2009 to 2013. And before that, I spent three great years in No.7 high school in Chengdu.
+####I’m a Ph.D. student and a CCF student member from School of Computer Science and Engineering in University of Electronic Science and Technology of China (UESTC), supervised by Prof. Xiaosong Zhang and Prof. Jingzhong Zhang. I was an undergraduate at UESTC from 2009 to 2013. And before that, I spent three great years in No.7 high school in Chengdu.
 
 
 ##2.Research Interests 
@@ -32,12 +32,10 @@ comments: yes
 Topic: Traffic analysis and classification 
 
 
->####Description: We implemented a new multi granularity traffic analyzing platform, which has the advantage to extract hidden features exist among flows or packets. Future works include revising current platform and adding more plugins into our platform, such as botnet detection plugins, anonymous traffic analyze plugins etc.  
+>####Description: We implemented a new multi-granularity traffic analyzing platform, which has the advantage to extract hidden features exist among flows or packets. Future works include revising current platform and adding more plugins into our platform, such as botnet detection plugins, anonymous traffic analyze plugins etc. Currently, we are studying the architecture of ntopng, to make a web interface to our system. 
 
 
 ![image](/assets/images/loc.png)
-
-
 
 Topic: Data field Clustering
 
@@ -52,14 +50,9 @@ Topic: Data field Clustering
 Below is a list of software that I used during my research:
 <li>Java IDE: IntelliJ IEDA, Eclipse</li>
 <li>Machine Learning: Weka, Matlab, Apache Spark </li>
-<li>Traffic tools: Wireshark, [Traffic Identification Engine(TIE)](http://tie.comics.unina.it/doku.php?id=topmenu:home), [Pfring](http://www.ntop.org/products/packet-capture/pf_ring/), [jnetpcap](http://jnetpcap.com/), [fullstats1.0](http://www.cl.cam.ac.uk/research/srg/netos/projects/brasil/downloads/index.html), [NetAI](http://caia.swin.edu.au/urp/dstc/netai/)</li>
+<li>Traffic tools: Wireshark, [Traffic Identification Engine(TIE)](http://tie.comics.unina.it/doku.php?id=topmenu:home), [Pfring](http://www.ntop.org/products/packet-capture/pf_ring/), [jnetpcap](http://jnetpcap.com/), [fullstats1.0](http://www.cl.cam.ac.uk/research/srg/netos/projects/brasil/downloads/index.html), [NetAI](http://caia.swin.edu.au/urp/dstc/netai/), [Ntopng](http://www.ntop.org/products/traffic-analysis/ntop/)</li>
 <li>Anonymous tools: [Tor](https://www.torproject.org/), [Orchid](https://subgraph.com/orchid/index.en.html), [Experimentor](https://crysp.uwaterloo.ca/software/exptor/), [Shadow](https://shadow.github.io/), [I2P](https://geti2p.net/en/)</li>
 <li>Others: Vmware, [STS](http://csrc.nist.gov/groups/ST/toolkit/rng/documentation_software.html) </li>
-
-##5.Life 
-
-![image](/assets/images/mylife.png)
-
 
 
 ##5.Contact：        
@@ -84,7 +77,7 @@ Github : [jason-zhuo](https://github.com/jason-zhuo)
 
 
 
-##### last update Nov. 12, 2015 
+##### last update Jan. 22, 2016 
 
  </div>
 <footer>
