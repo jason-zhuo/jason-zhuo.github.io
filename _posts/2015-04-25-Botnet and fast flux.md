@@ -11,6 +11,9 @@ Botnet and fast flux 特征介绍；Botminer论文初看,僵尸网络论文阅�
 <!-- more -->
 ##Botnet and fast flux
 
+last update: 2016.3.5  增加了Fast flux 和 CDN之间的区别
+
+
 -----
 ###1.几个定义
 
@@ -27,12 +30,15 @@ Botnet and fast flux 特征介绍；Botminer论文初看,僵尸网络论文阅�
 **Fast-Flux Service Networks (FFSN)**
 : FFSN更加创新地利用了RRDNS和CDN的上述特性，来降低恶意服务器被发现和关闭的概率。FFSN的特点下面会讨论。
 
+
 ------
 ###2.Fast flux特征
 1. **不重复的IP地址数量**：通常情况来说合法DNS查询不重复的IP地址为1~3个，而fast flux查询结果中会有5~6个，以确保至少有一个IP可以连接。
 2. **NS数量**：NS数量是指在单一次DNS 查询中所得到的NS （Name server）数量。客户端与DNS 主机进行查询时,可能透过快速变动网域技术掩护DNS 主机,因此NS Records 与NS 的A Records 可能有多笔记录,相较之下,合法的FQDN 其NS Records 与NS 的A Records比较少。
 3. **ASN数量与注册时间**：指对ASN进行查询时，主机使用的IP所属的ASN是否属于同一个单位。由于CDN主机使用的IP所属的ASN多属于同一个单位，而fast flux主机大多分散在世界各地，与CDN向比较之下，主机使用的IP所属的ASN属于不同单位。注册时间能够缩小选取范围。
 4. **Domain age**:指合法网站记录的TTL时间相对于恶意网站更长；恶意网站的FQDN与对应的IP记录不会长时间存留电脑，电脑必须时常进行DNS查询，以更新记录。RFC1912建议TTL最小为1~5天，这么长！而FFSN的TTL值一般小于600秒。但是一般不使用TTL值来判定FFSN，因为这样的误报率比较高，合法使用的CDN也会返回比较低的TTL值。因此TTL值一般用来区分FFSN/CDN和RRDNS.
+
+
 
 ####2.1 关于Fast flux的第一篇论文[3]
 Fastflux网络和普通网络对比：
@@ -119,6 +125,10 @@ Single flux网络和Double flux网络对比（Double flux比Single flux更加复
 
 ![image](/assets/images/botnetyear.png)
 
+
+###补充内容
+
+Fast-Flux网络比較多的NS，故其数量会比一般的DNS查詢所得到还多，而查询ASN（自治域）的原因主要是因为这些IP大多是分散在世界各地的受害主机，与CDN相比之下，会有明显的差异，因为CDN使用的IP所屬ASN多属于同一个单位，而Fast flux不是。此外Holz et al.不使用TTL作为特征理由是其不容易將Fast-Flux网络与CDN做区别，因为CDN也使用了很短的TTL。
 
 
 

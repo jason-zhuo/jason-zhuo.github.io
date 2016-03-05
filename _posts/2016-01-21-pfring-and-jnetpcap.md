@@ -12,8 +12,11 @@ music: []
 ![image](/assets/images/Pfringjnetpcap.png)
 基于Jnetpcap的Pfring使用，以及网络数据包处理流程机制分析。
 <!-- more -->
+1. last update 2016.3.5  修正l句子不通顺的地方。
+
+
 ##1.PF ring 简介
-PF\_RING是Luca Deri发明的提高内核处理数据包效率，如Libpcap和TCPDUMP等，以及一些辅助性程序（如ntop查看并分析网络流量等）。PF\_RING是一种新型的网络socket，它可以极大的改进包捕获的速度。
+PF\_RING是Luca Deri发明的提高内核处理数据包效率的网络数据包捕获程序，如Libpcap和TCPDUMP等。PF\_RING是一种新型的网络socket，它可以极大的改进包捕获的速度。
 
 ####1.1 本文中的一些术语
 **NAPI:**  NAPI是Linux新的网卡数据处理API，NAPI是综合中断方式与轮询方式的技术，NAPI 在高负载的情况下可以产生更好的性能，它避免了为每个传入的帧都产生中断。参考这个链接[NAPI](http://blog.csdn.net/zhangskd/article/details/21627963)
