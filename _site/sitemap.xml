@@ -22,7 +22,7 @@
     </url>
     
     <url>
-        <loc>http://jasonzhuo.com//tags/</loc>
+        <loc>http://jasonzhuo.com//categories/</loc>
     </url>
     
     <url>
@@ -30,11 +30,7 @@
     </url>
     
     <url>
-        <loc>http://jasonzhuo.com//categories/</loc>
-    </url>
-    
-    <url>
-        <loc>http://jasonzhuo.com//about/</loc>
+        <loc>http://jasonzhuo.com//tags/</loc>
     </url>
     
     <url>
@@ -50,6 +46,10 @@
     </url>
     
 
+    
+    <url>
+        <loc>http://jasonzhuo.com//tordns/</loc>
+    </url>
     
     <url>
         <loc>http://jasonzhuo.com//pfring-and-jnetpcap/</loc>

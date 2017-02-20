@@ -33,7 +33,6 @@
             <ul>
               <li class="cell"><a class="next" href="/">Home</a></li>
               <li class="cell"><a class="next" href="/categories/">Archives</a></li>
-              <li class="cell"><a class="next" href="/about/">About me</a></li>
               <li class="cell"><a class="next" href="/search/">Search</a></li>
               <li class="cell"><a class="next" href="/feed.xml">RSS</a></li>
             </ul>
@@ -115,6 +114,8 @@ style="border-width:0" /></a>
                     
                     <a href="/tags/#Network" title="Network" rel="1">Network</a>
                     
+                    <a href="/tags/#Tor" title="Tor" rel="1">Tor</a>
+                    
                 </div>
             </div>
 
@@ -133,7 +134,7 @@ style="border-width:0" /></a>
         <footer id="footer" class="inner">
             <div class="copyright">
             <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="https://github.com/jason-zhuo" target="_blank" title="项目主页">GitHub</a>
-             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2016 <a href="/about/"></a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2017 <a href="/about/"></a>
              </div>
              <!-- <div class="copyright">
                 <script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fcbf651a0c9c199e73857441cc83b3884' type='text/javascript'%3E%3C/script%3E"));
@@ -194,6 +195,8 @@ style="border-width:0" /></a>
 
 
 <h2>Botnet and fast flux</h2>
+
+<p>last update: 2016.3.5  增加了Fast flux 和 CDN之间的区别</p>
 
 <hr />
 
@@ -341,6 +344,10 @@ style="border-width:0" /></a>
 <h5>常见僵尸网络程序及其时间</h5>
 
 <p><img src="/assets/images/botnetyear.png" alt="image" /></p>
+
+<h3>补充内容</h3>
+
+<p>Fast-Flux网络比較多的NS，故其数量会比一般的DNS查詢所得到还多，而查询ASN（自治域）的原因主要是因为这些IP大多是分散在世界各地的受害主机，与CDN相比之下，会有明显的差异，因为CDN使用的IP所屬ASN多属于同一个单位，而Fast flux不是。此外Holz et al.不使用TTL作为特征理由是其不容易將Fast-Flux网络与CDN做区别，因为CDN也使用了很短的TTL。</p>
 
 <h4>参考文献</h4>
 

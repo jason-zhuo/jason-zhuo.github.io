@@ -7,13 +7,67 @@
     <title>Jaosonzhuo's blog</title>
     <link href="http://jasonzhuo.com//feed/" rel="self" />
     <link href="http://jasonzhuo.com/" />
-    <lastBuildDate>2016-01-22T13:44:49+08:00</lastBuildDate>
+    <lastBuildDate>2017-02-20T17:05:18-06:00</lastBuildDate>
     <webMaster>jason_zhuo@iclould.com</webMaster>
+    
+    <item>
+      <title>“On Tor DNS“</title>
+      <link href="http://jasonzhuo.com//tordns/"/>
+      <pubDate>2017-02-19T00:00:00-06:00</pubDate>
+      <author></author>
+      <guid>http://jasonzhuo.com//TorDNS</guid>
+      <content:encoded><![CDATA[<p><img src="https://nymity.ch/tor-dns/img/overview.png" alt="image" />
+The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.18)</p>
+
+<!-- more -->
+
+
+<h4>作者论文的主要贡献</h4>
+
+<ol>
+<li>提出了一种找Tor出口节点使用的DNS服务器的方法</li>
+<li>提出了名为DefecTor攻击方法，该方法属于关联攻击（correlation attack）的一种，用于溯源</li>
+<li>在TorPS上分析了该新攻击方法对Tor用户造成的影响</li>
+<li>提出了一种更好的衡量（evaluate）关联攻击的方法</li>
+</ol>
+
+
+<h4>Tor DNS解析过程</h4>
+
+<p>首先Tor的DNS都是从Tor网络中走的，这点是Tor client （web browser）预设值，目的是防止DNS外泄。因为Tor不能够代理UDP流量，所以Tor proxy将DNS request 包装进CELL中。 浏览器将解析地址传给Tor client proxy， 然后Tor client 选择一个可以用的出口节点，并与其建立连接（应该是3跳连接，不是1跳连接，参考Tor spec）, Tor出口节点解析后，才会与目地网站建立TCP连接，成功之后返回Relay_connected cell. 另外一种DNS解析方法是构建Relay_resolve cell, 这个不同在于没有后续的TCP连接。</p>
+
+<p>Tor出口节点会根据其主机配置进行DNS解析，主机的DNS解析一般流程 参考这里：<a href="http://blog.csdn.net/wy5761/article/details/19485761">Linux DNS</a></p>
+
+<p>作者在文章中指出：大约4成的DNS流量都去了谷歌的DNS(8.8.8.8), 第二多的就是去本地DNS服务器解析。</p>
+
+<h4>Defctor 攻击模型</h4>
+
+<p><img src="http://i1-news.softpedia-static.com/images/news2/if-it-wanted-google-could-deanonymize-a-large-number-of-tor-connections-508863-3.png" alt="image" /></p>
+
+<p>如上图，攻击者的位置有两个（需要同时满足）： 1） 出口节点和DNS服务器之间（或者攻击者控制了DNS服务器） 2）在用户或者Tor guard之间（或者控制了Tor guard）</p>
+
+<p>作者在论文中对：1）用户使用Tor访问哪些网站，2）多久访问一次这些网站，进行了统计，3）如何对Tor出口节点的DNS缓存进行了考虑。发现了如下结论：</p>
+
+<p><strong>1）用户访问的网站服从幂律分布</strong></p>
+
+<p><strong>2）作者实验使用的Tor出口节点大概每5分钟发出102次DNS请求（中位数），然后作者根据Tor带宽进行推测，真实网络中Tor出口节点大概每5分钟发出119.3次DNS请求（中位数），一次网站访问大概会平均造成10.3到不同域名的DNS请求，因此得出每十分钟大概可以发现23.2个不同网站。</strong></p>
+
+<p><strong>3）Tor client 会缓存DNS请求，TTL最小为60s,最大为30分钟（目前统一为60s）。作者利用60s的滑动窗口，就可以发现所有的DNS请求，无论它是否缓存过。</strong></p>
+
+<p>作者使用的Tor浏览器来发送DNS请求，但不使流量通过Tor网络，其目的在于为了防止原来有些顶会所讨论的Tor拒绝服务情况。作者意图通过DNS来判断用户所访问的网站，实现了一个Naive classifer, 主要通过<strong>unique domains: domains that are unique to a particular website</strong>。 作者通过对DNS请求进行特征提取（extractdns），主要提取了observed domains, TTLs and IP-addresses这三个特征。然后利用dns2site.go将生成的dns list map 到 具体的 site。</p>
+
+<p>作者另外还根据DNS请求进行了额外的特征提取，从而可以利用Tao Wang 的 KNN算法进行分类。因此在这个实验中，作者利用了Tao Wang论文中所提出的一些特征，共1225个，然后利用Wa-KNN进行权重训练，最后进行分类。</p>
+
+<h4>Refs</h4>
+
+<p>[1] https://nymity.ch/tor-dns/</p>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>PF_ring and Jnetpcap</title>
       <link href="http://jasonzhuo.com//pfring-and-jnetpcap/"/>
-      <pubDate>2016-01-21T00:00:00+08:00</pubDate>
+      <pubDate>2016-01-21T00:00:00-06:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//pfring-and-jnetpcap</guid>
       <content:encoded><![CDATA[<h3>基于Jnetpcap使用Pf_ring（PF_ring and Jnetpcap）</h3>
@@ -26,9 +80,14 @@
 <!-- more -->
 
 
+<ol>
+<li>last update 2016.3.5  修正l句子不通顺的地方。</li>
+</ol>
+
+
 <h2>1.PF ring 简介</h2>
 
-<p>PF_RING是Luca Deri发明的提高内核处理数据包效率，如Libpcap和TCPDUMP等，以及一些辅助性程序（如ntop查看并分析网络流量等）。PF_RING是一种新型的网络socket，它可以极大的改进包捕获的速度。</p>
+<p>PF_RING是Luca Deri发明的提高内核处理数据包效率的网络数据包捕获程序，如Libpcap和TCPDUMP等。PF_RING是一种新型的网络socket，它可以极大的改进包捕获的速度。</p>
 
 <h4>1.1 本文中的一些术语</h4>
 
@@ -212,7 +271,7 @@ Retried packets (EAGAIN):  0
     <item>
       <title>Dieharder and STS</title>
       <link href="http://jasonzhuo.com//dieharder-and-sts/"/>
-      <pubDate>2015-10-10T00:00:00+08:00</pubDate>
+      <pubDate>2015-10-10T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//dieharder-and-sts</guid>
       <content:encoded><![CDATA[<h3>Random or not? Dieharder and STS</h3>
@@ -329,7 +388,7 @@ Dieharder主要测试rng（随机数产生器）的性能，它里面整合了�
     <item>
       <title>Web Crawler Crawl4j</title>
       <link href="http://jasonzhuo.com//web-crawler-crawl4j/"/>
-      <pubDate>2015-07-12T00:00:00+08:00</pubDate>
+      <pubDate>2015-07-12T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//web-crawler-crawl4j</guid>
       <content:encoded><![CDATA[<h3>基于Crawl4j的网页爬虫（Web crawler based on Crawl4j）</h3>
@@ -536,7 +595,7 @@ public class Controller {
     <item>
       <title>Random forest clustering</title>
       <link href="http://jasonzhuo.com//random-forest-clustering/"/>
-      <pubDate>2015-05-23T00:00:00+08:00</pubDate>
+      <pubDate>2015-05-23T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//random-forest-clustering</guid>
       <content:encoded><![CDATA[<h3>随机森林聚类（Random forest clustering）</h3>
@@ -657,7 +716,7 @@ public class Controller {
     <item>
       <title>Software Define Network</title>
       <link href="http://jasonzhuo.com//sdn/"/>
-      <pubDate>2015-05-14T00:00:00+08:00</pubDate>
+      <pubDate>2015-05-14T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//sdn</guid>
       <content:encoded><![CDATA[<h3>软件定义网络初探</h3>
@@ -726,7 +785,7 @@ public class Controller {
     <item>
       <title>Encrypted Traffic identification</title>
       <link href="http://jasonzhuo.com//encrypted-traffic-identification/"/>
-      <pubDate>2015-05-11T00:00:00+08:00</pubDate>
+      <pubDate>2015-05-11T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//encrypted-traffic-identification</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2015-05-11enflow2.png" alt="image" />
@@ -913,7 +972,7 @@ $$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
     <item>
       <title>Botnet detection</title>
       <link href="http://jasonzhuo.com//botnet-detection/"/>
-      <pubDate>2015-05-08T00:00:00+08:00</pubDate>
+      <pubDate>2015-05-08T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//botnet-detection</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2015-05-08botnet.png" alt="image" />
@@ -1048,10 +1107,6 @@ The <strong>BotHunter</strong> algorithm presented very low values during the wh
 </ol>
 
 
-<p>下面详细讲解一下每一步：</p>
-
-<p><strong><em>过滤操作:</em></strong></p>
-
 <h4>参考文献</h4>
 
 <p>[1]Dainotti A, Pescape A, Claffy K C. Issues and future directions in traffic classification[J]. Network, IEEE, 2012, 26(1): 35-40.</p>
@@ -1069,7 +1124,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
     <item>
       <title>Shadowsocks in Lab</title>
       <link href="http://jasonzhuo.com//shadowsocks-in-lab/"/>
-      <pubDate>2015-04-25T00:00:00+08:00</pubDate>
+      <pubDate>2015-04-25T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//shadowsocks-in-lab</guid>
       <content:encoded><![CDATA[<p><img src="https://dn-teddysun.qbox.me/wp-content/uploads/2015/shadowsocks_logo.png" alt="image" />
@@ -1127,7 +1182,7 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
     <item>
       <title>Botnet and fast flux</title>
       <link href="http://jasonzhuo.com//botnet-and-fast-flux/"/>
-      <pubDate>2015-04-25T00:00:00+08:00</pubDate>
+      <pubDate>2015-04-25T00:00:00-05:00</pubDate>
       <author></author>
       <guid>http://jasonzhuo.com//Botnet and fast flux</guid>
       <content:encoded><![CDATA[<p>Botnet and fast flux 特征介绍；Botminer论文初看,僵尸网络论文阅读笔记（last update:2015.8.10）</p>
@@ -1136,6 +1191,8 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 
 
 <h2>Botnet and fast flux</h2>
+
+<p>last update: 2016.3.5  增加了Fast flux 和 CDN之间的区别</p>
 
 <hr />
 
@@ -1284,6 +1341,10 @@ Minds-minnesota intrusion detection system. In: Next generation data mining. MIT
 
 <p><img src="/assets/images/botnetyear.png" alt="image" /></p>
 
+<h3>补充内容</h3>
+
+<p>Fast-Flux网络比較多的NS，故其数量会比一般的DNS查詢所得到还多，而查询ASN（自治域）的原因主要是因为这些IP大多是分散在世界各地的受害主机，与CDN相比之下，会有明显的差异，因为CDN使用的IP所屬ASN多属于同一个单位，而Fast flux不是。此外Holz et al.不使用TTL作为特征理由是其不容易將Fast-Flux网络与CDN做区别，因为CDN也使用了很短的TTL。</p>
+
 <h4>参考文献</h4>
 
 <p><a href="https://www.usenix.org/legacy/event/sec08/tech/full_papers/gu/gu_html/">[1]BotMiner: Clustering Analysis of Network Traffic for
@@ -1292,56 +1353,6 @@ Protocol- and Structure-Independent Botnet Detection</a></p>
 <p>[2]Rodríguez-Gómez R A, Maciá-Fernández G, García-Teodoro P. Survey and taxonomy of botnet research through life-cycle[J]. ACM Computing Surveys (CSUR), 2013, 45(4): 45.</p>
 
 <p>[3]Enemy K Y. Fast-Flux Service Networks[J]. The Honey net Project and Research Alliance, 2007.</p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Structure Risk Minimization,SRM</title>
-      <link href="http://jasonzhuo.com//structure-risk-minimizationsrm/"/>
-      <pubDate>2015-04-18T00:00:00+08:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//structure-risk-minimizationsrm</guid>
-      <content:encoded><![CDATA[<p><img src="/assets/images/2015-04-18-StatML.png" alt="image" />
-本周学术交流，张老师给我们介绍了结构风险最小化原理，这篇博客对交流内容进行了精炼和总结。</p>
-
-<!-- more -->
-
-
-<h2>结构风险最小化</h2>
-
-<hr />
-
-<p>基于数据的机器学习有2个方法，第1个是经典的统计估计方法，通过训练样本来估计参数值，代表是R.A Fisher 的统计理论（线性回归）。但我们经常做的预测真的<strong>靠谱</strong>吗？答案是，不靠谱，因为我们在做预测的时候，引入了一个很强的假设条件———样本集要满足独立同分布条件（iid-independent identically distribulted）。</p>
-
-<p>第2个方法是V.Vapnik等人提出的统计学习理论。该理论也被称作VC理论，最重要的概念就是VC维。VC维~函数复杂度~是一个正整数（也叫做函数容量）。函数复杂度越大，预测效果越差。</p>
-
-<p>$$R_{exp}=\int L(y,f)p(x,y)dxdy \leq \frac{1}{m} \sum_i^{m} {(y_i-f(x_i))}^2 +\psi(\frac{V(f)}{m})$$</p>
-
-<p>其中\(V(f)\)就是函数VC维，m为样本个数。上式表明在样本一定的情况下，VC维越高，期望风险越大。</p>
-
-<p>统计学习理论-结构风险最小化SRM:<br/>
-        $$期望风险&lt;=经验风险 + 置信度$$</p>
-
-<p>这里简单介绍一下Vladimir Vapnik。Vladimir Vapnik是俄国人，1936年出生。1964年，他于莫斯科的控制科学学院获得博士学位。毕业后，他一直在该校工作直到1990年，这期间他作为不多（估计在国内可能有点那个），但是1991加入贝尔实验室之后，他在1995年发明了SVM。从此，他就出名了，2006年当上了美国科学院院士。
-<img src="/assets/smilies/16.gif" alt="image" /></p>
-
-<blockquote><p>所谓的结构风险最小化就是在保证分类精度（经验风险）的同时，降低学习机器的 VC 维，可以使学习机器在整个样本集上的期望风险得到控制。</p></blockquote>
-
-<p>见图：
-<img src="http://img.my.csdn.net/uploads/201105/29/0_1306659245j5ZS.gif" alt="image" /></p>
-
-<p>张老师随后介绍了SVM中最著名的核方法。将低维度转化到高维度，计算复杂度却和低维度差不多。这太牛了，佩服Mercer。张老师补充到，这个是1911年提出来的（当时清王朝刚被推翻，国内可能无人潜心科研吧），之后Mercer的论文成为了睡美人，直到后来被Vapnik发现。</p>
-
-<p><strong>核函数</strong></p>
-
-<p>$$&lt;\psi(x),\psi(y)>=k(x,y)$$</p>
-
-<p>核函数的作用</p>
-
-<p>$$R^{n} \to H^{\infty}$$
-(H为Hilbert空间)</p>
-
-<p>非线性问题<strong>一定</strong>能够线性化</p>
 ]]></content:encoded>
     </item>
     

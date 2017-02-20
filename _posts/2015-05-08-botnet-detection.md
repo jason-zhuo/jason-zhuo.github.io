@@ -118,10 +118,6 @@ BotHunter是经过修改过的Snort软件。主要增加了两个插件，一个
 3. 最后一步用fast-mixing特征对P2P网络监测结果进行验证。
 
 
-下面详细讲解一下每一步：
-
-***过滤操作:***
-
 ####参考文献
 [1]Dainotti A, Pescape A, Claffy K C. Issues and future directions in traffic classification[J]. Network, IEEE, 2012, 26(1): 35-40.
 
