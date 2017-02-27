@@ -9,7 +9,7 @@ music: []
 
 ---
 
-![image]()
+![image](https://cdn-images-1.medium.com/max/1800/1*3BB0kiPsh2ftMT9dKg9_GA.jpeg)
 Go language using and some thoughts, last update (2017.2.23)
 <!-- more -->
 
