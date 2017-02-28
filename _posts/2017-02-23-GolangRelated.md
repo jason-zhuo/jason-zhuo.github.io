@@ -1,9 +1,9 @@
 ---
 layout: post
-title: “Go language using“
-description: "Paper reading"
-categories: [New stuff]
-tags: [Go]
+title: Docker and Go lang
+description: “how to play with those two things”
+categories: [new stuff]
+tags: [Go,Docker]
 group: archive
 music: []
 
@@ -14,7 +14,7 @@ Go language using and some thoughts, last update (2017.2.23)
 <!-- more -->
 
 ###本文概要
-本文主要介绍Go语言的使用，以及整理我所看到的一些资料。
+本文主要介绍Go语言以及Docker的使用，以及整理我所看到的一些资料。
 
 ###开篇
 
@@ -38,11 +38,75 @@ Go language using and some thoughts, last update (2017.2.23)
 ####DNS 数据搜集
 在论文The effect of DNS on Tor’s Anonymity 中， 作者对Alexa top 100 million网站的DNS数据抓取采用了Go+docker的模式来进行。 作者实现了一个server来分任务给位于dockers中的workers. server服务端和docker客户端都采用的Go语言进行编写。 sever负责将alexa 网站地址传给worker，然后通过RPC调用将worker搜集到的pcap返回并保存。
 
+####Docker network traffic dumping
+在默认情况下，从docker里面搜集网络数据会是怎么样的呢？我们来试试:
+>docker exec --privileged -it myubuntu /bin/bash
+>
+>ifconfig eth0 promisc
+
+从docker 里面 ping 8.8.8.8 并同时开启tcpdump 发现如下结果：
+
+![image](/assets/images/2017227pcapdocker.png)
+
+结果发现只有该容器自身的网络数据包。论文作者正是利用了这样的一种网络隔离性，来达到利用多个Docker同时搜集DNS流量的目的。这样做的的好处是可以并发进行数据搜集，加快流量搜集速度。
 
 
 
+####图示
+
+如果我们可以这样来搜集网络数据包，岂不是很效率，事半功倍。
+
+![image](/assets/images/2017227dockerss.png)
 
 
+####其他
+Docker 上面无需再要我们手工搭建环境了，模拟web请求可以用xvfb-run命令来达到虚拟屏幕输出，这样就可以从命令行访问网站了。xvfb-run好像在ubuntu 16.04上运行不了firefox，论文中作者使用的是Tor browser 5.5.4, 配置Tor browser 使用其他代理 
+
+####Docker 常见命令
+
+清除历史的containers
+
+```
+docker stop $(docker ps -a -q) 
+
+docker rm $(docker ps -a -q)
+
+```
+
+Reset所有
+
+```
+pkill docker
+iptables -t nat -F
+ifconfig docker0 down
+brctl delbr docker0
+docker -d
+
+```
+
+开启Docker sslocal 
+
+
+```
+容器里面抓包需要权限 
+docker run --privileged --name sslocal -d jasonzhuo/sslocal2 ./start.sh <IP:Port>
+docker run --privileged --name sslocal -it jasonzhuo/sslocal2 /bin/bash
+
+```
+
+其他常用的
+
+```
+重命名 docker tag server:latest myname/server:latest 
+提交修改 docker commit [CONTAINER_ID] test/name
+删除镜像 docker rmi xxx 
+删除容器 docker rm xx
+拷贝到容器 docker cp foo.txt mycontainer:/foo.txt
+拷贝到主机 docker cp mycontainer:/foo.txt foo.txt
+开一个新的terminal(假设现在在运行的container ID 为12345)
+docker exec -it 12345 /bin/bash
+
+```
 
 ####Refs
 [1] https://www.zhihu.com/question/21409296
