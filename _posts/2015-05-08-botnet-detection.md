@@ -49,8 +49,8 @@ CAMNEP利用NetFlow分析网络异常流量也存在一些限制条件，如需�
 CAMNEP的可信模型类似于Kmeans中的聚类。模型计算每个Netflow到每个可信簇类中心(Centroid)的距离。
 
 
-####2. BGlus
-BGlus是基于行为的僵尸网络检测方法。其基本思想是先对已知的僵尸网络流量进行模型抽象，然后在网络上寻找相似的流量。
+####2. BClus
+BClus是基于行为的僵尸网络检测方法。其基本思想是先对已知的僵尸网络流量进行模型抽象，然后在网络上寻找相似的流量。
 其基本步骤如下：
 
  1. 将Netflows按时间窗口进行分割
@@ -62,7 +62,7 @@ BGlus是基于行为的僵尸网络检测方法。其基本思想是先对已知
  
 关于作者在第二步中为什么这么做。作者假设这样做会产生新的patterns，可以帮助我们识别僵尸网络，这样做偏向于基于主机的行为分析。
 
-作者在BGlus中运用的是EM聚类算法（作者假设不同的流量产生于相同的分布）和JRIP分类算法。
+作者在BClus中运用的是EM聚类算法（作者假设不同的流量产生于相同的分布）和JRIP分类算法。
 
 ####3. BotHunter
 BotHunter是基于状态序列的匹配方法。它有一个关联分析引擎来分析恶意软件当前的状态过程。检测的特征过程包括：inbound scanning, exploit usage, egg download, outbound bot coordination dialog, outbound attack propagation. 

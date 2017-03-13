@@ -51,7 +51,7 @@ $$C_F(i)= \sum_{t=1}^{t=k} V_F(t)B_i(t)$$
 
 一个例子：
 
-![image](/assets/images/FlowSketch.png)
+![image](/assets/images/2017-03-10FlowSketch.png)
 
 最后根据符号函数得到该流的sketch 为 101, 如何后续还有数据包进出的话，那么就在101的基础之上向后同理进行计算，如上图省略号所示。
 
@@ -91,7 +91,7 @@ $$P_e(F1,F2) \le \frac{\sum_t \epsilon (t) * \epsilon (t) }{|C_F(i)|^2}$$
 
 流量关联攻击可以帮助我们找到两个相似的流。论文[2][3]创新地将[1]的方法运用到追踪溯源中，其具体做法如下图所示。
 
-![image](/assets/images/FlowcorrelationAttack.png)
+![image](/assets/images/2017-03-10FlowcorrelationAttack.png)
 
 
 攻击者是passive listener，在入口和出口处对流量进行Hash(其实和[1]中的流量sketches很类似，有些小不同后面会介绍)，然后找到哪个user访问了target website，从而达到溯源目的。
@@ -100,13 +100,13 @@ $$P_e(F1,F2) \le \frac{\sum_t \epsilon (t) * \epsilon (t) }{|C_F(i)|^2}$$
 
 **[3]的算法如下：**
 
-![image](/assets/images/binaryHash1.png)
+![image](/assets/images/2017-03-10binaryHash1.png)
 
 算法[3]和[2]的不同之处就在于，[3]的B增量是以字节大小表示的，[2]是以包的个数表示的，由于报文填充机制，所以[2]没有利用包的大小信息。
 
 **[2]的算法如下：**
 
-![image](/assets/images/binaryhash.png)
+![image](/assets/images/2017-03-10binaryhash.png)
 
 1. Line 1: 初始化binary hash 向量
 2. Line 2: 为每个time window 提取该窗口的包数量
