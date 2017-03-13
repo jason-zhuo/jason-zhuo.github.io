@@ -116,6 +116,18 @@ style="border-width:0" /></a>
                     
                     <a href="/tags/#Tor" title="Tor" rel="1">Tor</a>
                     
+                    <a href="/tags/#Go" title="Go" rel="1">Go</a>
+                    
+                    <a href="/tags/#Docker" title="Docker" rel="1">Docker</a>
+                    
+                    <a href="/tags/#Deep Learning" title="Deep Learning" rel="1">Deep Learning</a>
+                    
+                    <a href="/tags/#Malware" title="Malware" rel="1">Malware</a>
+                    
+                    <a href="/tags/#IP traceback" title="IP traceback" rel="1">IP traceback</a>
+                    
+                    <a href="/tags/#flow hashing" title="flow hashing" rel="1">flow hashing</a>
+                    
                 </div>
             </div>
 
@@ -188,10 +200,20 @@ style="border-width:0" /></a>
 <div class="entry">
 
   <p><img src="https://nymity.ch/tor-dns/img/overview.png" alt="image" />
-The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.18)</p>
+The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.23)</p>
 
 <!-- more -->
 
+
+<h4>我又回来了</h4>
+
+<p>之前在忙各种出国手续，写论文，做实验之类的事情，博客从去年8月到现在都没更新过，想想也是太烂龙了。最近翻到一本《精进：如何成为一个很厉害的人》，发现写博客还有如下功效，遂立即开始写作（以后也要坚持才行）：</p>
+
+<blockquote><p><strong>写博客（写作）是一种典型的知识构建活动，或者更准确的说，是一种对知识的重构活动。</strong></p>
+
+<p>在阅读时，我们对信息的输入和纳入（读论文），常常满足于从一个“浅表”的层面去理解它们。 但是在写作时，也就是进行信息输出的时候，我们必须去分析知识的“深层结构”，观察和调用知识与知识之间的深层关联，不然我们无法自如地将它们组织起来。因为一篇文章要被人读懂、要把人说服，需要缜密的思维、清晰的表达和详实的依据，这些都要求我们队知识的编码和组织达到一个相对较高的水平才行。</p></blockquote>
+
+<p>自己下来多理解一下才行，开始写！</p>
 
 <h4>作者论文的主要贡献</h4>
 
@@ -202,6 +224,8 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.1
 <li>提出了一种更好的衡量（evaluate）关联攻击的方法</li>
 </ol>
 
+
+<p><strong>本篇内容主要讲贡献2</strong>，后面逐步更新</p>
 
 <h4>Tor DNS解析过程</h4>
 
@@ -215,7 +239,15 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.1
 
 <p><img src="http://i1-news.softpedia-static.com/images/news2/if-it-wanted-google-could-deanonymize-a-large-number-of-tor-connections-508863-3.png" alt="image" /></p>
 
-<p>如上图，攻击者的位置有两个（需要同时满足）： 1） 出口节点和DNS服务器之间（或者攻击者控制了DNS服务器） 2）在用户或者Tor guard之间（或者控制了Tor guard）</p>
+<p>如上图，攻击者的位置有两个（需要同时满足）：</p>
+
+<p>1）出口节点和DNS服务器之间（或者攻击者控制了DNS服务器）</p>
+
+<p>2）在用户或者Tor guard之间（或者控制了Tor guard）</p>
+
+<p>关联攻击，同时对比1）和2）处的流量，达到溯源目的是这篇文章的主要思想。不同的是该文章对比的是DNS流量，传统的方法是对比TCP流量。</p>
+
+<h4>实验方法</h4>
 
 <p>作者在论文中对：1）用户使用Tor访问哪些网站，2）多久访问一次这些网站，进行了统计，3）如何对Tor出口节点的DNS缓存进行了考虑。发现了如下结论：</p>
 
@@ -225,9 +257,13 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.1
 
 <p><strong>3）Tor client 会缓存DNS请求，TTL最小为60s,最大为30分钟（目前统一为60s）。作者利用60s的滑动窗口，就可以发现所有的DNS请求，无论它是否缓存过。</strong></p>
 
-<p>作者使用的Tor浏览器来发送DNS请求，但不使流量通过Tor网络，其目的在于为了防止原来有些顶会所讨论的Tor拒绝服务情况。作者意图通过DNS来判断用户所访问的网站，实现了一个Naive classifer, 主要通过<strong>unique domains: domains that are unique to a particular website</strong>。 作者通过对DNS请求进行特征提取（extractdns），主要提取了observed domains, TTLs and IP-addresses这三个特征。然后利用dns2site.go将生成的dns list map 到 具体的 site。</p>
+<p>作者使用的Tor浏览器来发送DNS请求，但不使流量通过Tor网络，其目的在于为了防止原来有些顶会所讨论的Tor拒绝服务情况。作者意图通过DNS来判断用户所访问的网站，实现了一个Naive classifer, 主要通过<strong>unique domains: domains that are unique to a particular website</strong>。 作者通过对DNS请求进行特征提取（extractdns），主要提取了observed domains, TTLs and IP-addresses这三个特征。然后利用dns2site（Go脚本代码）将生成的dns list map 到 具体的 site（具体算法是利用投票进行的）。</p>
 
-<p>作者另外还根据DNS请求进行了额外的特征提取，从而可以利用Tao Wang 的 KNN算法进行分类。因此在这个实验中，作者利用了Tao Wang论文中所提出的一些特征，共1225个，然后利用Wa-KNN进行权重训练，最后进行分类。</p>
+<p>作者另外还根据DNS请求进行了额外的特征提取，从而可以利用Tao Wang 的 KNN算法进行分类。因此在这个实验中，作者利用了Tao Wang论文中所提出的一些特征，共1225个，然后利用Wa-KNN进行权重训练，最后进行分类。 我感觉入口节点处采用的是KNN，出口节点采用的是Naive classifer。</p>
+
+<h4>分析作者搜集DNS流量的实验平台框架（工程）</h4>
+
+<p>作者搜集Alexa前100万的DNS流量，无论是从数量级还是工程难度来说都是具有一定挑战的。笔者饶有兴趣的看了一下大神们的做法，将一些要点记录在这里。</p>
 
 <h4>Refs</h4>
 
@@ -269,13 +305,13 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="" >已经是第一篇 </a>
+  <a  href="/golangrelated/" class="pageNav" >上一篇&nbsp;-&nbsp;Docker and Go lang  </a>
 </span>
 <span class="next-span">
   <a  href="/pfring-and-jnetpcap/" class="pageNav"  >下一篇&nbsp;-&nbsp;PF_ring and Jnetpcap </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="" >已经是第一篇 </a>
+  <a  href="/golangrelated/" class="pageNav" >上一篇 </a>
 </span>
 <span class="mobile-next-span">
   <a  href="/pfring-and-jnetpcap/" class="pageNav"  >下一篇</a>

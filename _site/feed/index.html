@@ -7,8 +7,381 @@
     <title>Jaosonzhuo's blog</title>
     <link href="http://jasonzhuo.com//feed/" rel="self" />
     <link href="http://jasonzhuo.com/" />
-    <lastBuildDate>2017-02-20T17:05:18-06:00</lastBuildDate>
+    <lastBuildDate>2017-03-13T11:36:58-05:00</lastBuildDate>
     <webMaster>jason_zhuo@iclould.com</webMaster>
+    
+    <item>
+      <title>Flow sketching and traffic correlation attack</title>
+      <link href="http://jasonzhuo.com//flow-sketching-and-traceback/"/>
+      <pubDate>2017-03-10T00:00:00-06:00</pubDate>
+      <author></author>
+      <guid>http://jasonzhuo.com//Flow sketching and traceback</guid>
+      <content:encoded><![CDATA[<p><img src="/assets/images/2017-03-10IPtracebackandFlowsketch.png" alt="image" />
+Recent paper reading on traffic correlation attack and flow skeching, last update (2017.3.13)</p>
+
+<!-- more -->
+
+
+<h3>1. 本文概要</h3>
+
+<p>Paper Reading notes on:</p>
+
+<ol>
+<li><strong>Online Sketching of Network Flows for Real-Time Stepping-Stone Detection[1]</strong></li>
+<li><strong>Traffic confirmation attacks despite noise[2]</strong></li>
+<li><strong>Tracking encrypted VoIP calls via robust hashing of network flow[3]</strong></li>
+</ol>
+
+
+<h3>2. Background</h3>
+
+<h4>2.1 Stepping stone</h4>
+
+<p>直接翻译过来叫做垫脚石攻击，感觉有点奇怪。</p>
+
+<blockquote><p>垫脚石（Stepping stone）: The intermediate hosts used for traffic laundering are known as stepping stones. 垫脚石就是攻击者利用一系列中间主机作为跳板，为了掩盖攻击者的真实身份和位置的一种攻击方式。</p></blockquote>
+
+<p>垫脚石攻击的检测：在网络设备中记录流的一些信息。然后根据关联算法，能够找到真正的攻击源。传统的垫脚石攻击检测算法记录流的一些基本特征，例如流的包数量，包间隔时间等等。 但是传统的垫脚石攻击检测对丢包，噪声和网络环境变化并不能很好适用。（However, they provide very limited or no resistance to some of the aforementioned timing perturbations, especially packet drops/retransmissions and chaff.）而且传统的垫脚石攻击检测算法相对于本文的算法保存了更多的信息，不利于大量流量的数据处理，因此流量关联算法的时间复杂度比较高 O（m*n）, m是出去方向的流个数，n是进入方向的流量个数。</p>
+
+<h4>2.2切比雪夫不等式（Chebyshev inequality）</h4>
+
+<p>若随机变量X的数学期望、方差分别为E(X)及D(X)，则对任何\(\epsilon >0\)，成立</p>
+
+<p>$$P(|X-E(X)| \ge \epsilon) \le \frac{D(X)}{\epsilon^{2}}$$</p>
+
+<p>几何解释及意义详见： https://www.zhihu.com/question/27821324</p>
+
+<h3>3.流量Sketch计算和表示方法</h3>
+
+<p>实时的流量关联：在网络边界上，记录出入的active流的信息。active流在文章中设置的是60s的超时时间。如果在时刻\(t\)，出去方向的第\(i\)号流\(E_i (t)\)，和进入方向的第\(j\)号流\(I_j (t)\), 满足\(Diff_t(E_i (t),I_j (t)) &lt; \epsilon \) 那么这两个流就被关联起来了。 Diff方法在文章中采用的汉明距离，然后两个流的sketches都是用binary的形式进行保存的。 采用新的表示方法，节约了保存空间，提高了计算效率。</p>
+
+<p>一个流的Sketch是如何进行计算的呢？这里的high-level idea是将流量的packet-timing 特征进行线性变换，如果两个输入向量相似那么新产生的这两个向量也会相似。 具体做法是将一个流的传输分为k个time slots，每个time slot (t) 统计传输的包的数量 \(V_F(t)\), 然后每个time slot (t)对应一个随机映射函数（也可以是随机数）。 再计算k个累计的包传输数量和 \(C_F(i)\) (i=1,2,...,k), 最后根据\(C_F(i)\) 的符号进行编码（大于0的编码为1，小于等于0的编码为0），最终形成一个长度为k的0，1序列。</p>
+
+<p>$$C_F(i)= \sum_{t=1}^{t=k} V_F(t)B_i(t)$$</p>
+
+<p>一个例子：</p>
+
+<p><img src="/assets/images/FlowSketch.png" alt="image" /></p>
+
+<p>最后根据符号函数得到该流的sketch 为 101, 如何后续还有数据包进出的话，那么就在101的基础之上向后同理进行计算，如上图省略号所示。</p>
+
+<h4>3.1流量Sketch的基本性质</h4>
+
+<p>假设两个Flow，F1和F2相似，那么F1和F2的最后sketch也应相似。但是现实中基本不存在两个流完全一样，那么这两流的sketches的比特错误的概率大小\(P_{e}(F1,F2)\) 应该较低才满足相似的规定。比特错误的引入归根结底是因为\(V_F(t)\)，那么我们定义F1,F2包数量之间的不同为：</p>
+
+<p>$$\epsilon =V_F2(t)-V_F1(t)$$</p>
+
+<p>带入上式（\(C_F(i)\)的那个）</p>
+
+<p>那么有</p>
+
+<p>$$C_F2(i) = C_F1(i)+ \sum B_i(t) \epsilon (t)$$</p>
+
+<p>要使得两个bit异号，那么上述\(C_F2(i)\)， \(C_F1(i)\)得异号。 那么异号的条件就是 \(|\sum B<em>{i}(t) \varepsilon (t)| > C</em>{F1}(i)\) 以及 \(\sum B_i(t) \epsilon (t)\) 和 \(C_F1(i)\)</p>
+
+<p>最后根据切比雪夫不等式（省略一些步骤）得到一个重要不等式：</p>
+
+<p>$$P_e(F1,F2) \le \frac{\sum_t \epsilon (t) * \epsilon (t) }{|C_F(i)|^2}$$</p>
+
+<p>上式表明，F1, F2 的包数量之间的不同越大（分子），那么比特错误的概率就越高。 反之，如果 \(|C_F1(i)|\)的个数增多（即线性变换的随机基向量越多），那么表明这两个流的sketches 比特错误的概率越低，从而一定程度上降低了sketches对噪声的敏感程度。</p>
+
+<p>注明：web版latex公式上下标有点问题，文中公式有可能存在错误.</p>
+
+<h3>4.流量Sketch搜索</h3>
+
+<p>基本上文中采用的是空间换时间的方法，将原来的O(mn)算法，降低到 \(O(n +\sqrt{mn})\)</p>
+
+<h4>Refs</h4>
+
+<p>[1] Coskun B, Memon N D. Online Sketching of Network Flows for Real-Time Stepping-Stone Detection[C]//ACSAC. 2009: 473-483.</p>
+
+<p>[2]Hayes J. traffic confirmation attacks despite noise[J]. arXiv preprint arXiv:1601.04893, 2016.</p>
+
+<p>[3]Coskun B, Memon N. Tracking encrypted VoIP calls via robust hashing of network flows[C]//Acoustics Speech and Signal Processing (ICASSP), 2010 IEEE International Conference on. IEEE, 2010: 1818-1821.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Malware traffic analysis</title>
+      <link href="http://jasonzhuo.com//malwaretrafficanalysis/"/>
+      <pubDate>2017-03-01T00:00:00-06:00</pubDate>
+      <author></author>
+      <guid>http://jasonzhuo.com//MalwareTrafficAnalysis</guid>
+      <content:encoded><![CDATA[<p><img src="http://ef67fc04ce9b132c2b32-8aedd782b7d22cfe0d1146da69a52436.r14.cf1.rackcdn.com/in-britain-malware-most-foul-showcase_image-5-a-8255.jpg" alt="image" />
+Nazca: Detecting Malware Distribution in Large-Scale Networks, last update (2017.3.3)</p>
+
+<!-- more -->
+
+
+<h3>1. 本文概要</h3>
+
+<p>Paper Reading notes on:</p>
+
+<p><strong>Nazca: Detecting Malware Distribution in Large-Scale Networks</strong></p>
+
+<h3>2. 传统方法</h3>
+
+<p>drive-by download attack 的过程可以被分为3个步骤：</p>
+
+<ol>
+<li>利用阶段（exploitation phase）: 通过利用漏洞让客户机执行shellcode代码</li>
+<li>安装阶段（installation phase）: shellcode被执行，开始从远程下载恶意软件</li>
+<li>控制阶段 （control phase）: 恶意软件产生流量与控制端进行通信</li>
+</ol>
+
+
+<p>传统论文方法大多数工作主要是针对阶段1，3进行检测，如检测跨站脚本，挂马网页等，然后就是从主机发出的流量进行检测，如IDS，杀毒软件等。</p>
+
+<h3>3. 论文特色</h3>
+
+<ol>
+<li>传统恶意软件检测算法主要在检测恶意软件已经被下载到用户电脑上之后产生的流量, 然而很少有研究去检测恶意软件是从哪儿被下载的。(针对阶段2)</li>
+<li>提出了Nazca检测系统，detects infections in large scale networks。</li>
+<li>利用了图的关联特性，可以检测出未知的malware，0-day</li>
+</ol>
+
+
+<h3>4. Nazca工作原理</h3>
+
+<p>通常在阶段2，shellcode会发出HTTP请求，并从远程服务器下载恶意软件。由于是HTTP请求，和其他正常的请求很类似，所以很难被发现。论文的intuition 就是：好吧，少量的恶意软件我可能发现不了，但是很多主机都在请求某个恶意软件，那么就很可疑了。（Instead, when considering many malware downloads together – performed by different hosts, but related to a single campaign – a malware distribution infrastructure becomes visible. ）</p>
+
+<p>Nazca主要负责在一个网络中检测HTTP请求，更具体的是下载可执行软件的HTTP请求。和普通HTTP下载不同的是，恶意软件下载有很多防御技术，1）domain fluxing, 2) malware repackaging 3) malware droppers for multiple installations. 作者表示，其方法可以对上述防御技术兼容。</p>
+
+<p>Nazca检测主要分为两个部分，1）candidate selection 用 4.1，4.2节提出的方法检测一系列URIs，这些URIs表现出一些恶意行为。 2) Detection step, 运用1）产生的URIs，构建恶意邻居图，如果一个节点在恶意邻居图里面，那么这个图的其他节点很有可能也是恶意的。 可以看出1）这个步骤是为了过滤掉正常的，剩下恶意的方便后续分析。</p>
+
+<h4>4.1 Nazca检测内容和特征提取</h4>
+
+<p>Nazca检查MIME类型<a href="Content-type">^1</a>只要不在白名单中，那么就会提取：</p>
+
+<ol>
+<li>目的IP和源IP</li>
+<li>目的端口和源端口</li>
+<li>URI</li>
+<li>HTTP头部的User-Agent</li>
+<li>解压后文件的前 k 字节的哈希值</li>
+</ol>
+
+
+<p>论文focuses on HTTP 流量是因为：we observed that it is the protocol of choice for the  vast majority of malware in current circulations.</p>
+
+<h4>4.2 恶意域名检测</h4>
+
+<p>恶意软件为了躲避杀毒软件的查杀，使用不同的技术(malware hosting tries to evade blacklisting by using multiple domains, servers, payloads, file names, and URL paths)，作者在论文中针对恶意软件的：1）server-side polymorphism 2）multiple domains 进行了分析和处理。</p>
+
+<p>所谓 server-side polymorphism就是恶意软件使用不同的加密key对软件进行加密或者攻击者准备多种变种恶意软件，每次下载不同的软件，从而达到绕过杀毒软件的signature库的目的。 作者使用的检测方法是：看一个下载记录与URI的关联情况，以及从URI处下载不同软件的数量。</p>
+
+<p>检测恶意的CDN（区分正常的和恶意的CDN是非常重要的）。</p>
+
+<p>检测步骤：</p>
+
+<ol>
+<li><strong>检测CDNs</strong></li>
+</ol>
+
+
+<p>如果相同1个文件的hash值对应多个不同的URIs，那么这些URIs的域名就属于一个簇。如果不同的2个簇里面都至少存在一个相同的域名，那么这两个簇就被连接起来。最后形成的这些簇就是CDNs.</p>
+
+<ol>
+<li><strong>区分恶意和正常CDNs</strong></li>
+</ol>
+
+
+<p>采用方法：机器学习</p>
+
+<p>提取特征：1） <strong>域名关联度</strong>: 有些恶意软件作者用同一个IP hosts 不同的 domains，那么这个特征就是： hosts数目除以domains数。 2） <strong>不同的TLD域名个数</strong>：合法的CDN通常使用一个TLD,恶意的CDN通常使用多个不同的TLD(开源软件镜像除外)  3）<strong>匹配的URI和文件个数</strong>：合法的CDNs通常为了高效维护，采用的目录结构和文件名都一样。相反恶意软件为了防止blacklisting，通常采用不同的文件名和URI。 4）<strong>同一域名下的不同URI数量</strong>：恶意软件的网站目录结构复杂性低于其他正常域名（有例外，但很少）。 5）<strong>文件类型</strong>：正常CDNs通常有不同的文件类型，然而恶意的CDN通常只有可执行文件。</p>
+
+<h3>4.3 构建恶意邻居图</h3>
+
+<blockquote><p><strong>恶意邻居图</strong>：指关于某个可疑候选者一系列的恶意行为图（无向图）。</p></blockquote>
+
+<p>节点内容包括：IP地址，域名，FQDN(Fully Qualified Domain Name)s, URLs, URL paths, file names，下载文件的hash值。</p>
+
+<p>初始节点可以是一个恶意的域名，或者恶意的FQDN。当一个新的节点来的时候，要把其加入图中，依据的是节点之间的关系：要么是URL相同，要么是域名相同等等。</p>
+
+<p>论文作者根据这个生成的图，为每个恶意候选者计算一个分数。如果图中的恶意节点（经过阈值判断过）较多的话，那么这个节点很肯能就是恶意的。同时从图的连接性来看，可以关联出不能被其他方法检测出来的未知恶意软件。</p>
+
+<h3>4.4 适用范围</h3>
+
+<p>论文方法适用于HTTP based malwares。 不能够检测HTTPS，加密协议， 不能够检测依赖于其他正常网站（Google Drive, Dropbox等）来发布的恶意软件。</p>
+
+<h4>Refs</h4>
+
+<p>[1] Invernizzi L, Miskovic S, Torres R, et al. Nazca: Detecting Malware Distribution in Large-Scale Networks[C]//NDSS. 2014, 14: 23-26.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Deep Learning</title>
+      <link href="http://jasonzhuo.com//deeplearning/"/>
+      <pubDate>2017-03-01T00:00:00-06:00</pubDate>
+      <author></author>
+      <guid>http://jasonzhuo.com//Deeplearning</guid>
+      <content:encoded><![CDATA[<p><img src="https://www.gitbook.com/cover/book/deep-learning-cn/deep-learning-cn.jpg?build=1461768620204" alt="image" />
+Deep learning stuff, last update (2017.3.1)</p>
+
+<!-- more -->
+
+
+<h3>本文概要</h3>
+
+<p>本文主要介绍Deep learning 和整理我所看到的一些资料，持续更新 (Keep updating, once I have time)。</p>
+
+<h3>深度学习的优势与不足</h3>
+
+<p>优点：</p>
+
+<ol>
+<li>在研究中可以发现，如果在原有的特征中加入这些自动学习得到的特征可以大大提高精确度，甚至在分类问题中比目前最好的分类算法效果还要好[3]</li>
+<li>非监督学习</li>
+</ol>
+
+
+<p>缺点：</p>
+
+<ol>
+<li>深度学习的一个主要优势在于可以利用海量训练数据（即大数据），但是依赖于反向传播算法，仍然对计算量有很高的要求。</li>
+<li>比起统计方法来说 那当然就是模型难以诠释，找出来的 Feature 对人而言并不直观。</li>
+</ol>
+
+
+<h3>Tensorflow</h3>
+
+<p>使用Tensorflow需要知道：</p>
+
+<blockquote><p>The central unit of data in TensorFlow is the <strong>tensor</strong>. Tensorflow基础数据单元，其rank就是训练数据的维度 (训练数据是几维的)</p>
+
+<p>A <strong>computational graph</strong> is a series of TensorFlow operations arranged into a graph of nodes. 计算图？</p>
+
+<p>To actually evaluate the nodes, we must run the computational graph within a session. <strong>A session</strong> encapsulates the control and state of the TensorFlow runtime. 计算评估模型需要一次会话</p>
+
+<p><strong>A placeholder</strong> is a promise to provide a value later. 就是说数据现在没有，以后有了再提供
+，先登记一下</p>
+
+<p><strong>A Variable</strong> tf.Variable变量， tf.constant常量，变量是没有初始化的，常量是一调用就被初始化了的，然后就不变了。变量如果需要初始化，需要调用</p></blockquote>
+
+<pre><code class="python">init = tf.global_variables_initializer()
+sess.run(init)
+</code></pre>
+
+<h4>Refs</h4>
+
+<p>[1] LeCun Y, Bengio Y, Hinton G. Deep learning[J]. Nature, 2015, 521(7553): 436-444.</p>
+
+<p>[2] 将Keras作为tensorflow的精简接口 https://keras-cn.readthedocs.io/en/latest/blog/keras_and_tensorflow/</p>
+
+<p>[3] http://blog.csdn.net/zouxy09/article/details/8775524</p>
+
+<p>[Cuda install guide ] https://www.tensorflow.org/versions/master/get_started/os_setup#optional-install-cuda-gpus-on-linux</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Docker and Go lang</title>
+      <link href="http://jasonzhuo.com//golangrelated/"/>
+      <pubDate>2017-02-23T00:00:00-06:00</pubDate>
+      <author></author>
+      <guid>http://jasonzhuo.com//GolangRelated</guid>
+      <content:encoded><![CDATA[<p><img src="https://cdn-images-1.medium.com/max/1800/1*3BB0kiPsh2ftMT9dKg9_GA.jpeg" alt="image" />
+Go language using and some thoughts, last update (2017.2.23)</p>
+
+<!-- more -->
+
+
+<h3>1. 本文概要</h3>
+
+<p>本文主要介绍Go语言以及Docker的使用，以及整理我所看到的一些资料。</p>
+
+<h3>2. 开篇</h3>
+
+<p>我们经常听到一句话</p>
+
+<blockquote><p>其实这个年代你用什么编程语言都可以，只要能够熟练运用。</p></blockquote>
+
+<p>精通一门语言对于我们学计算机的人来说确实够用了，我们掌握的其实不是语言，而是语言背后的逻辑思想（算法）。但事实上笔者认为在编程语言上还是需要有一定的选择，物尽其用，觉得用什么语言方便实现就用什么语言。本来笔者也是不想学Go编程语言的，但是看到其优越的特性，感觉不学的话会跟不上时代了。</p>
+
+<p>论文The effect of DNS on Tor’s Anonymity 中使用了Go语言进行代码编写。作者搜集Alexa前100万的DNS流量，无论是从数量级还是工程难度来说都是具有一定挑战的。这篇blog就是学习一下大神是如何利用Go的优势的。</p>
+
+<h3>3. Go语言</h3>
+
+<p>网上说了很多关于Go语言的优劣势分析，稍微谷歌一下就行了。这里我只总结一下我觉得Go语言的优势吧(部分参考[1])。</p>
+
+<ol>
+<li><strong>部署简单</strong>。Go 编译生成的是一个静态可执行文件，除了 glibc 外没有其他外部依赖。这让部署变得异常方便：目标机器上只需要一个基础的系统和必要的管理、监控工具，完全不需要操心应用所需的各种包、库的依赖关系，大大减轻了维护的负担。 <strong>笔者点评：人生苦短，何必浪费时间搭建环境呢，配置环境变量呢！这个特性无敌</strong></li>
+<li><strong>服务器，并发编程实现容易，上手简单。</strong></li>
+<li><strong>跨平台支持</strong>。在mac上编译的go运用程序，可以跑在各种类型的操作系统上，而且目标操作系统都不需要Go编译环境。 <strong>笔者点评：我也非常喜欢这个特性，java还得装jvm才能跨平台</strong></li>
+</ol>
+
+
+<h3>4. DNS 数据搜集</h3>
+
+<p>在论文The effect of DNS on Tor’s Anonymity 中， 作者对Alexa top 100 million网站的DNS数据抓取采用了Go+docker的模式来进行。 作者实现了一个server来分任务给位于dockers中的workers. server服务端和docker客户端都采用的Go语言进行编写。 sever负责将alexa 网站地址传给worker，然后通过RPC调用将worker搜集到的pcap返回并保存。</p>
+
+<h4>4.1 Docker network traffic dumping</h4>
+
+<p>在默认情况下，从docker里面搜集网络数据会是怎么样的呢？我们来试试:</p>
+
+<blockquote><p>docker exec --privileged -it myubuntu /bin/bash</p>
+
+<p>ifconfig eth0 promisc</p></blockquote>
+
+<p>从docker 里面 ping 8.8.8.8 并同时开启tcpdump 发现如下结果：</p>
+
+<p><img src="/assets/images/2017227pcapdocker.png" alt="image" /></p>
+
+<p>结果发现只有该容器自身的网络数据包。论文作者正是利用了这样的一种网络隔离性，来达到利用多个Docker同时搜集DNS流量的目的。这样做的的好处是可以并发进行数据搜集，加快流量搜集速度。</p>
+
+<h4>图示</h4>
+
+<p>如果我们可以这样来搜集网络数据包，岂不是很效率，事半功倍。</p>
+
+<p><img src="/assets/images/2017227dockerss.png" alt="image" /></p>
+
+<h3>5. 其他</h3>
+
+<p>Docker 上面无需再要我们手工搭建环境了，模拟web请求可以用xvfb-run命令来达到虚拟屏幕输出，这样就可以从命令行访问网站了。xvfb-run好像在ubuntu 16.04上运行不了firefox，论文中作者使用的是Tor browser 5.5.4, 配置Tor browser 使用其他代理</p>
+
+<h3>6. Docker 常见命令</h3>
+
+<p>清除历史的containers</p>
+
+<pre><code>docker stop $(docker ps -a -q) 
+
+docker rm $(docker ps -a -q)
+</code></pre>
+
+<p>Reset所有</p>
+
+<pre><code>pkill docker
+iptables -t nat -F
+ifconfig docker0 down
+brctl delbr docker0
+docker -d
+</code></pre>
+
+<p>开启Docker sslocal</p>
+
+<pre><code>容器里面抓包需要权限 
+docker run --privileged --name sslocal -d jasonzhuo/sslocal2 ./start.sh &lt;IP:Port&gt;
+docker run --privileged --name sslocal -it jasonzhuo/sslocal2 /bin/bash
+</code></pre>
+
+<p>其他常用的</p>
+
+<pre><code>重命名 docker tag server:latest myname/server:latest 
+提交修改 docker commit [CONTAINER_ID] test/name
+删除镜像 docker rmi xxx 
+删除容器 docker rm xx
+拷贝到容器 docker cp foo.txt mycontainer:/foo.txt
+拷贝到主机 docker cp mycontainer:/foo.txt foo.txt
+开一个新的terminal(假设现在在运行的container ID 为12345)
+docker exec -it 12345 /bin/bash
+</code></pre>
+
+<h4>Refs</h4>
+
+<p>[1] https://www.zhihu.com/question/21409296</p>
+]]></content:encoded>
+    </item>
     
     <item>
       <title>“On Tor DNS“</title>
@@ -17,10 +390,20 @@
       <author></author>
       <guid>http://jasonzhuo.com//TorDNS</guid>
       <content:encoded><![CDATA[<p><img src="https://nymity.ch/tor-dns/img/overview.png" alt="image" />
-The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.18)</p>
+The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.23)</p>
 
 <!-- more -->
 
+
+<h4>我又回来了</h4>
+
+<p>之前在忙各种出国手续，写论文，做实验之类的事情，博客从去年8月到现在都没更新过，想想也是太烂龙了。最近翻到一本《精进：如何成为一个很厉害的人》，发现写博客还有如下功效，遂立即开始写作（以后也要坚持才行）：</p>
+
+<blockquote><p><strong>写博客（写作）是一种典型的知识构建活动，或者更准确的说，是一种对知识的重构活动。</strong></p>
+
+<p>在阅读时，我们对信息的输入和纳入（读论文），常常满足于从一个“浅表”的层面去理解它们。 但是在写作时，也就是进行信息输出的时候，我们必须去分析知识的“深层结构”，观察和调用知识与知识之间的深层关联，不然我们无法自如地将它们组织起来。因为一篇文章要被人读懂、要把人说服，需要缜密的思维、清晰的表达和详实的依据，这些都要求我们队知识的编码和组织达到一个相对较高的水平才行。</p></blockquote>
+
+<p>自己下来多理解一下才行，开始写！</p>
 
 <h4>作者论文的主要贡献</h4>
 
@@ -31,6 +414,8 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.1
 <li>提出了一种更好的衡量（evaluate）关联攻击的方法</li>
 </ol>
 
+
+<p><strong>本篇内容主要讲贡献2</strong>，后面逐步更新</p>
 
 <h4>Tor DNS解析过程</h4>
 
@@ -44,7 +429,15 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.1
 
 <p><img src="http://i1-news.softpedia-static.com/images/news2/if-it-wanted-google-could-deanonymize-a-large-number-of-tor-connections-508863-3.png" alt="image" /></p>
 
-<p>如上图，攻击者的位置有两个（需要同时满足）： 1） 出口节点和DNS服务器之间（或者攻击者控制了DNS服务器） 2）在用户或者Tor guard之间（或者控制了Tor guard）</p>
+<p>如上图，攻击者的位置有两个（需要同时满足）：</p>
+
+<p>1）出口节点和DNS服务器之间（或者攻击者控制了DNS服务器）</p>
+
+<p>2）在用户或者Tor guard之间（或者控制了Tor guard）</p>
+
+<p>关联攻击，同时对比1）和2）处的流量，达到溯源目的是这篇文章的主要思想。不同的是该文章对比的是DNS流量，传统的方法是对比TCP流量。</p>
+
+<h4>实验方法</h4>
 
 <p>作者在论文中对：1）用户使用Tor访问哪些网站，2）多久访问一次这些网站，进行了统计，3）如何对Tor出口节点的DNS缓存进行了考虑。发现了如下结论：</p>
 
@@ -54,9 +447,13 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.1
 
 <p><strong>3）Tor client 会缓存DNS请求，TTL最小为60s,最大为30分钟（目前统一为60s）。作者利用60s的滑动窗口，就可以发现所有的DNS请求，无论它是否缓存过。</strong></p>
 
-<p>作者使用的Tor浏览器来发送DNS请求，但不使流量通过Tor网络，其目的在于为了防止原来有些顶会所讨论的Tor拒绝服务情况。作者意图通过DNS来判断用户所访问的网站，实现了一个Naive classifer, 主要通过<strong>unique domains: domains that are unique to a particular website</strong>。 作者通过对DNS请求进行特征提取（extractdns），主要提取了observed domains, TTLs and IP-addresses这三个特征。然后利用dns2site.go将生成的dns list map 到 具体的 site。</p>
+<p>作者使用的Tor浏览器来发送DNS请求，但不使流量通过Tor网络，其目的在于为了防止原来有些顶会所讨论的Tor拒绝服务情况。作者意图通过DNS来判断用户所访问的网站，实现了一个Naive classifer, 主要通过<strong>unique domains: domains that are unique to a particular website</strong>。 作者通过对DNS请求进行特征提取（extractdns），主要提取了observed domains, TTLs and IP-addresses这三个特征。然后利用dns2site（Go脚本代码）将生成的dns list map 到 具体的 site（具体算法是利用投票进行的）。</p>
 
-<p>作者另外还根据DNS请求进行了额外的特征提取，从而可以利用Tao Wang 的 KNN算法进行分类。因此在这个实验中，作者利用了Tao Wang论文中所提出的一些特征，共1225个，然后利用Wa-KNN进行权重训练，最后进行分类。</p>
+<p>作者另外还根据DNS请求进行了额外的特征提取，从而可以利用Tao Wang 的 KNN算法进行分类。因此在这个实验中，作者利用了Tao Wang论文中所提出的一些特征，共1225个，然后利用Wa-KNN进行权重训练，最后进行分类。 我感觉入口节点处采用的是KNN，出口节点采用的是Naive classifer。</p>
+
+<h4>分析作者搜集DNS流量的实验平台框架（工程）</h4>
+
+<p>作者搜集Alexa前100万的DNS流量，无论是从数量级还是工程难度来说都是具有一定挑战的。笔者饶有兴趣的看了一下大神们的做法，将一些要点记录在这里。</p>
 
 <h4>Refs</h4>
 
@@ -779,580 +1176,6 @@ public class Controller {
 <p><img src="/assets/images/2015-05-15SDN4.png" alt="image" /></p>
 
 <p>最近实验室采购设备，调研至此感觉SDN好像不需要特殊设备呢？我们只需要在不同host上运行不同的程序，甚至不同的操作系统，以方便网络安全实验。不过现在有很多厂家在做SDN控制器，还有支持Openflow协议的交换机，但都还不成熟。目前业界尚未发布完全符合 OpenFlow 协议规范的芯片，所以说感觉没必要买一些不成熟的产品。就多买几台性能还行的服务器，交换机，其余硬件资源没必要，在剩下的就是手动搭建工作了。</p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Encrypted Traffic identification</title>
-      <link href="http://jasonzhuo.com//encrypted-traffic-identification/"/>
-      <pubDate>2015-05-11T00:00:00-05:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//encrypted-traffic-identification</guid>
-      <content:encoded><![CDATA[<p><img src="/assets/images/2015-05-11enflow2.png" alt="image" />
-2015加密流量检测论文阅读笔记，持续更新（last update 2015.11.01）</p>
-
-<!-- more -->
-
-
-<h4>目前还有效的加密流量识别方法</h4>
-
-<ol>
-<li>基于端口号的，局限性很大但某些场景仍然有效。</li>
-<li>基于内容签名的。有些加密协议有固定特殊的内容特征。</li>
-<li>基于流特征的。加密协议在进行密钥协商时具有特殊过程。</li>
-<li>基于主机行为的。从主机行为来看加密协议的建立过程，局限性仍然很大。</li>
-</ol>
-
-
-<hr />
-
-<h4>论文[1]作者的方法</h4>
-
-<p>上述方法的局限性较大。论文[1]中作者采用了随机度测试的方法来对加密流量进行识别。首先作者利用了\(l_{1}-norm\) regularized 逻辑斯特回归来选择<strong>sparse</strong>特征（特征中有很多0值），然后利用了ELM来对加密流量进行识别，选择ELM的原因是其具有更好的识别效果和更快的识别速度。</p>
-
-<p>作者在论文[1]中利用随机度测试方法获取了188维度的特征，然后利用一范数正则化方法对特征进行降维。最后再利用ELM学习算法，对加密流量进行识别。</p>
-
-<p>识别效果和支持向量数据描述(support vector data description)SVDD以及GMM方法进行了对比。可见作者采用了one-class分类。最后的结果是识别率大概在80%左右。</p>
-
-<h4>随机度测试与加密方法</h4>
-
-<p>如何衡量加密算法的强弱好坏呢。有一种方法就是加密密文需要通过一定的随机度测试，输出的密文需要是随机的，或者近似随机的，这样的加密效果才好。衡量随机度的参数P-value越大则随机的可能性越高。参考：<a href="http://www.zhihu.com/question/20222653">知乎：如何评价一个伪随机数生成算法的优劣</a></p>
-
-<p>下图比较形象的说明了随机数测试的问题<a href="https://www.random.org/analysis/">cited from https://www.random.org/analysis/ </a>
-<img src="https://www.random.org/analysis/dilbert.jpg" alt="Cited " />
-现在随机度测试的方法很多，如：NIST test set, DiEHARD test set等等，其中以美国国家标准与技术研究所的NIST最为著名：<a href="http://csrc.nist.gov/groups/ST/toolkit/rng/documentation_software.html">NIST传送门</a>，<a href="http://blog.csdn.net/Tom_VS_Jerry/article/details/26086099">NIST安装过程介绍</a></p>
-
-<p>NIST SP800-22 测试标准包含15个测试项，每个测试项都是针对被测序列的某一特性进行检测的，如下图所示。图片引用自[2]</p>
-
-<p><img src="/assets/images/2015-05-11enflow.png" alt="image" /></p>
-
-<h3>NIST15种随机性测试简介[8]</h3>
-
-<h4>1.频率测试(Monobit Test)</h4>
-
-<p>检验目的： 测试0和1在整个序列中所占的比例。如果0和1在整个序列中出现的频率都接近0.5，那么就是说在整个序列中0和1出现的概率基本一致，因此序列是随机的。</p>
-
-<p>检验过程：</p>
-
-<p>1.将序列中的0映射为“+1”，0映射为“-1”，然后对整个序列求和得到\(S_n\)</p>
-
-<p>2.计算统计检验量\(S_{obs}=\frac{|S_n|}{\sqrt{n}}\),其中\(n\)
-为序列长度</p>
-
-<p>3.计算P-value:</p>
-
-<p>$$P=erfc(\frac{S_{obs}}{\sqrt{2}})$$</p>
-
-<p>其中erfc(Complementary error function)定义为:</p>
-
-<p>$$erfc(z)=\frac{2}{\sqrt{\pi}} \int_{z}^{\infty} e^{-u^{2}} du$$</p>
-
-<p>数学原理：当测试次数充分多时，二项分布B(n,p)逼近正态分布N(np,npq)，\(S_n\)又叫做规范和，它被正则化后就服从正态分布了。
-$$Z_n=\frac{S_n-E(S_n)}{\sqrt{D(S_n)}} \rightarrow N(0,1)$$
-做假设检验：
-$$P-value = 2[1-\phi(|S_{obs}|)]=erfc(\frac{s(obs)}{\sqrt{n}})$$
-如果Pvalue>0.01那么就说该序列为随机序列，反之则不是。如果Pvalue的值太小，那么就表明Sobs或者\(S_n\)较大引起的，表明序列中要么0特别多，要么1特别多，这样就不是随机的。</p>
-
-<h4>2.分块频数测试</h4>
-
-<p>检验目的：主要是看M位的字块中“1”出现的次数，如果比例接近为M/2那么就是随机的。当M=1时，变化为频数测试。</p>
-
-<p>测试过程：
-1. 将序列分为长度为M的N块，因此n=MN
-2. 由于这N个相互独立的随机序列均服从标准正态分布，这N个服从标准正态分布随机变量的平方和，构成新的随机变量，服从卡方分布，其自由度为N
-3. 利用卡方分布的假设检验过程，判断原序列是否是随机的。</p>
-
-<p>该测试也是看Pvalue的值，如果Pvalue>0.01那么就说该序列为随机序列，反之则不是。</p>
-
-<h4>3.游程测试</h4>
-
-<p>检验目的： 游程是指一个没有间断的相同数序列。长度为k的游程包括k个相同单位。游程测试的目的是判断不同长度的“1”游程数目，以及“0”游程的数目是否跟理想的随机序列期望一致。具体来讲，就是看这样的“0”“1”子块之间震荡是否太快或者太慢。</p>
-
-<p>测试过程：</p>
-
-<ol>
-<li>计算检验前输入序列中“1”的出现频率</li>
-<li>判断游程测试的前提条件是否满足，如果不满足则退出测试。</li>
-<li>计算检验统计量Vn(obs), 其中\(V_{obs}\),0到1或者1到0的变化次数和。</li>
-<li>计算Pvalue的值</li>
-</ol>
-
-
-<p>数学原理：当测试次数充分多时，二项分布B(n,p)逼近正态分布N(np,npq)，\(V_{obs}\)又叫做规范和，它被正则化后就服从正态分布了,如果Vn(obs)的值很大，则表明震荡很快，反之表明震荡很慢。</p>
-
-<h4>4.块内最长游程检验</h4>
-
-<p>检验目的： 该检验主要是看长度为M-bits的字块长度中最长的“1”游程。检验目的是判断待检序列中的最长“1”游程长度是否同随机序列一致。</p>
-
-<p>测试过程：</p>
-
-<ol>
-<li>将序列分作长度为M-bit子块，程序里面规定了3种不同的字块长度，分别为8，128，10000，n= M*N</li>
-<li>将各个字块中的最长“1”游程频率列表</li>
-<li>计算卡方分布的P值</li>
-</ol>
-
-
-<h4>5.二元矩阵秩检验</h4>
-
-<p>检验目的： 该检验主要是看整个序列的分离子矩阵的秩。目的是核对源序列中固定长度子链间的线性依赖关系。</p>
-
-<h4>6.离散傅里叶变换检验</h4>
-
-<p>检验目的：本检验主要是看对序列进行分步傅里叶变换后的峰值高度。目的是探测待检验信号的周期性,以此揭示其与相应的随机信号之间的偏差程度。做法是观察超过 95%阈值的峰值数目与低于5%峰值的数目是否有显著不同。</p>
-
-<h4>未完待续。。。to be continued</h4>
-
-<h4>特征提取与选择</h4>
-
-<p>作者在文中利用NIST测试套件，通过不同的参数调节产生不同的测试小项，总共提取了188维度的特征。然后作者利用稀疏特征提取(Sparse Feature selection)。并在逻辑斯特回归中加入了1范数罚参。</p>
-
-<h4>ELM 简介</h4>
-
-<p>传统的SVM和神经网络需要人们进行干预，学习速度较慢，学习泛化能力也比较差。极限学习机具有较快的学习速度以及良好的泛化性能。然而，它的性能还可以得到很大提高，主要基于两个原因[3]：(1)极限学习机网络中的隐层节点可以减少；(2)网络参数不必每次都调节。</p>
-
-<p>我感觉ELM和传统神经网络学习过程中最大的区别就在于如何求解最小化损失函数。传统的神经网络在学习过程中，学习算法需要在迭代过程中调整所有参赛。而在ELM算法中，直接通过求H的广义逆矩阵，输出权重\(\beta\)就可以被确定。</p>
-
-<p>为啥不需要调节参数了呢，原来Huang 已经证明了具有随机制定的输入权值、隐层阈值和非零激活函数的单隐层前馈神经网络可以<strong>普遍近似</strong>任何具有紧凑输入集的连续函数。由此可以看出，输入权值和隐层阈值可以不必调节[3]。</p>
-
-<p>另外可以参考<a href="http://blog.csdn.net/google19890102/article/details/18222103">ELM算法简介</a></p>
-
-<p>以及<a href="http://www.ntu.edu.sg/home/egbhuang/">ELM intro</a></p>
-
-<p>还有<a href="http://blog.csdn.net/itplus/article/details/9277721">ELM算法基础</a></p>
-
-<h4>论文[6]阅读笔记</h4>
-
-<p>作者在文章中介绍了加密流量识别的基本情况，强调了最近的进展和未来的发展可能会遇到的挑战。文章中指出，加密流量类型主要集中在：SSH，VPN，SSL,加密P2P，加密VoIP，匿名网络流量。</p>
-
-<p>仅仅粗粒度区分加密和非加密流量是远远不够的，现实世界迫切需要的是从加密中获取应用层类型。这显然是相当复杂的工作，许多方法的综合运用才可能达到该目的。另外，协议混淆（traffic obfuscation）和流量变形（traffic morph）可以达到绕过基于机器学习的统计分类的效果，同样是未来的挑战之一。论文没有开放下载，只读了其中能看到的部分，就已经读到的内容来看，感觉文章综述很一般。</p>
-
-<h3>SSL/TLS应用层流量识别</h3>
-
-<h4>1.论文[4]阅读笔记</h4>
-
-<p>在未加密情况下识别应用层类型是比较成熟的，然而在加密情况下识别就相对困难许多。</p>
-
-<p>作者在文章中提出了使用随机指纹（<em>stochastic fingerprints</em>）来识别SSL/TLS会话过程中的应用类型。指纹是基于一阶马尔可夫链的，然后马尔可夫链的参数是通过训练集合学习得到的。由于参数的不同性，该方法能有效的检测出应用层类型，以及异常的SSL会话过程。</p>
-
-<p>该方法和一些其他的SSL指纹识别方法比较类似，也是利用SSL/TLS握手过程中的头部信息。不同之处在于作者利用的是基于马尔可夫链随机指纹，将不同应用层类型的SSL/TLS握手过程的状态转移形成带有不同参数的马尔科夫状态转移链。作者在论文中对12项常用的SSL类型进行了建模：例如PayPal,Twitter,Skype等等。</p>
-
-<h4>2.论文[5]阅读笔记</h4>
-
-<p>传统的基于载荷的和机器学习的方法给系统造成的负载较大。作者提出了利用基于指纹和统计分析的混合方法来解决该问题。作者首先使用指纹来检测出SSL/TLS，然后再利用统计分析来找出确定的应用层类型。实验结果表明，该方法能够99%识别SSL/TLS流量，并达到F-score为94.52%的应用层识别效果。</p>
-
-<p>作者识别SSL/TLS流量的方法主要还是基于流量关键字段特征，这点和普通方法没区别。作者将SSL/TLS流量识别出来之后，又用了贝叶斯方法来对加密流的特征进行学习，统计特征包括：平均包长度，最大最小包长度，平均包到达间隔时间，流持续时间，流所包括的包数量。总体感觉创新不是很大。</p>
-
-<h4>3.论文[7]阅读笔记</h4>
-
-<p>论文作者根据加密会话数据内容中常见字符和非常见字符出现概率相近，非加密会话常见字符出现次数多，而非常见字符出现次数少的现象，设计了一个根据信息熵的加密会话识别方法。作者认为，不同加密会话信息熵的统计结果服从正态分布，加密会话的信息熵取值范围由均值\(\mu\)和方差\(\sigma\)决定。作者提出了字符信息熵值H，只要在\(H\in [\mu-2\sigma, \mu+2\sigma] \)，则认为是加密会话。字符信息熵值和普通信息熵值在计算形式上只有一个分母上的差别，和我原来看过的一篇论文比较类似。另外，作者并没有说明为什么取2倍的置信域而不是3倍置信域，均值和方差的设置是经过大量实验取的经验数据，而没有较为科学的取值依据。论文并未有很好地说明为什么在拥塞网络环境下，识别准确率会降低的原因。</p>
-
-<h4>参考文献</h4>
-
-<p>[1]Meng J, Yang L, Zhou Y, et al. Encrypted Traffic Identification Based on Sparse Logistical Regression and Extreme Learning Machine[M]//Proceedings of ELM-2014 Volume 2. Springer International Publishing, 2015: 61-70.</p>
-
-<p>[2]侯佳音, 萧宝瑾. 随机数测试标准与随机数发生器性能的关系[J]. 2012.</p>
-
-<p>[3]王建功. 基于极限学习机的多网络学习[J]. 2010.</p>
-
-<p>[4]Korczynski M, Duda A. Markov chain fingerprinting to classify encrypted traffic[C]//INFOCOM, 2014 Proceedings IEEE. IEEE, 2014: 781-789.</p>
-
-<p>[5]Sun G L, Xue Y, Dong Y, et al. An novel hybrid method for effectively classifying encrypted traffic[C]//Global Telecommunications Conference (GLOBECOM 2010), 2010 IEEE. IEEE, 2010: 1-5.</p>
-
-<p>[6]Cao Z, Xiong G, Zhao Y, et al. A Survey on Encrypted Traffic Classification[M]//Applications and Techniques in Information Security. Springer Berlin Heidelberg, 2014: 73-81.</p>
-
-<p>[7]陈利,张利,班晓芳等.基于信息熵的加密会话检测方法[J].计算机科学,2015,42(1):142-143,174.DOI:10.11896/j.issn.1002-137X.2015.1.033.</p>
-
-<p>[8]Rukhin A, Soto J, Nechvatal J, et al. A statistical test suite for random and pseudorandom number generators for cryptographic applications[R]. Booz-Allen and Hamilton Inc Mclean Va, 2001.</p>
-
-<blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Botnet detection</title>
-      <link href="http://jasonzhuo.com//botnet-detection/"/>
-      <pubDate>2015-05-08T00:00:00-05:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//botnet-detection</guid>
-      <content:encoded><![CDATA[<p><img src="/assets/images/2015-05-08botnet.png" alt="image" />
-Botnet检测论文阅读笔记,last update (2015.8.11)</p>
-
-<!-- more -->
-
-
-<h4>僵尸网络检测方法面临的问题</h4>
-
-<p>和流量识别所面临的问题类似[1]，僵尸网络的检测同样也缺乏公开可用的测试数据集合通用的测试评估方法。在论文[2]中，作者提出了僵尸网络检测面临的问题：原有僵尸网络检测论文都只是提出了一种新方法，但是都没有做横向对比。其原因主要是因为分享包含僵尸网络流量数据比较困难，缺乏好的数据集，缺乏科学有效的对比方法等。</p>
-
-<p>作者在论文[2]中首次提出了他们的解决办法，并对3种常见的僵尸网络检测手段在自己收集整理的数据集合上做了横向对比。作者还将数据集合公开出来，极大的方便了其他研究人员的继续研究------<a href="http://mcfp.weebly.com/the-ctu-13-dataset-a-labeled-dataset-with-botnet-normal-and-background-traffic.html">数据集传送门</a>。</p>
-
-<p>原有的论文都是自己提出了一种方法后，自己搜集了一些数据集进行测试。这些数据集往往很难获取，数据集合的真实性也难以保证和真实网络环境类似。同时，自己构造的数据集很难和其他方法进行对比。（不同的方法针对的数据集特征可能会大相径庭）除了数据集的问题之外，很多僵尸检测的论文中的评价指标仅局限于FPR，或者使用的是不同的评价定义方式，这给方法之间的评比造成困难。</p>
-
-<h4>1. CAMNEP</h4>
-
-<p>CAMNEP(Cooperative Adaptive Mechanism for NEtwork Protection) 是一个基于异常检测的网络行为的分析系统。系统包括了state of art的异常检测方法。
-主要包括3部分：</p>
-
-<ol>
-<li>异常检测器： 通过多种异常检测模块，对网络行为进行分析</li>
-<li>信任模型：上一个输出的结果会和信任模型进行对比。信任模型会将Netflow根据其异常值和代表的事件类型聚集为不同类别。并持续对异常值进行更新来达到减少误报率。</li>
-<li>异常聚集器：结果汇总，对每个异常检测器的判定结果加权平均等。</li>
-</ol>
-
-
-<p>CAMNEP利用NetFlow分析网络异常流量也存在一些限制条件，如需要网络设备对NetFlow的支持，需要分析NetFlow数据的工具软件，需要网络管理员准确区分正常流量数据和异常流量数据等。</p>
-
-<h5>1.1异常检测模块</h5>
-
-<p>下面介绍的异常检测模块是经过对原来算法的改进或者修改实现的，可能会和原来论文中的方法有差异。
-<strong>MINDS</strong>[3]，一个入侵检测模块，提取的特征包括：1.相同源IP地址发出的Netflow数，2.到达相同Host的Netflow数，3.从相同端口号到达相同Host的Netflow数，4.从相同Host到达相同端口号的Netflow数. 某种情况下（Context）下的异常值，为上述四个特征到正常样本的距离。最后的Global distance是各个Context下异常值的sum of their squares.</p>
-
-<p><strong>Xu et al. 2005</strong> 提出的方法是将来自同一个源IP地址的Netflow进行特征提取。特征包括：1. 正则化后的源端口熵值（Normalized entropy of the source ports），2. 正则化后的目的IP地址熵值，3. 正则化后的目的端口熵值。某种情况下（Context）下的异常值，为上述3个特征到正常样本的距离。最后的distance同样是各个Context下异常值的sum of their squares.</p>
-
-<p><strong>Lakhina volume</strong> 原文章是来自Sigcomm的文章，针对的是Network-wide的异常检测。在[1]中作者修改了其中一部分，其主要思想是将来自同一个源IP地址的数据流用PCA方法分为正常流和非正常流，因为正常流占了绝大多数成分而异常流只存在少部分。</p>
-
-<p><strong>Lakhina entropy</strong> 基于上述PCA的思想，但是采用了和xu et al.类似的特征。</p>
-
-<p><strong>TAPS 2006</strong> 与上述方法都不相同。该方法针对的是横向和纵向端口扫描。该方法的基本思想还是通过提取特征，然后设置特征阈值。超过一定的阈值则判断为扫描行为。</p>
-
-<p><strong>KGB 2012</strong> 基于的是  Lakhina 的工作，也是利用的PCA来分解每个源IP产生的特征向量。</p>
-
-<p><strong>Flag</strong> 和KGB方法类似，只不过输入的特征向量不同。Flag是基于来自同一个IP地址的TCP标志柱状图 。该检测器就是寻找一个连续的TCP标志异常组合。</p>
-
-<h5>1.2可信模型建立</h5>
-
-<p>CAMNEP的可信模型类似于Kmeans中的聚类。模型计算每个Netflow到每个可信簇类中心(Centroid)的距离。</p>
-
-<h4>2. BGlus</h4>
-
-<p>BGlus是基于行为的僵尸网络检测方法。其基本思想是先对已知的僵尸网络流量进行模型抽象，然后在网络上寻找相似的流量。
-其基本步骤如下：</p>
-
-<ol>
-<li>将Netflows按时间窗口进行分割</li>
-<li>将分割后的Netflows按照相同的源IP进行组合</li>
-<li>对不同的源IP流量进行聚类</li>
-<li>该步只针对训练阶段：对僵尸网络聚类进行ground truth 打标签</li>
-<li>该步只针对训练阶段：利用僵尸网络簇训练一个分类器。</li>
-<li>该步只针对测试阶段：利用分类器来检测聚类结果中的僵尸网络簇</li>
-</ol>
-
-
-<p>关于作者在第二步中为什么这么做。作者假设这样做会产生新的patterns，可以帮助我们识别僵尸网络，这样做偏向于基于主机的行为分析。</p>
-
-<p>作者在BGlus中运用的是EM聚类算法（作者假设不同的流量产生于相同的分布）和JRIP分类算法。</p>
-
-<h4>3. BotHunter</h4>
-
-<p>BotHunter是基于状态序列的匹配方法。它有一个关联分析引擎来分析恶意软件当前的状态过程。检测的特征过程包括：inbound scanning, exploit usage, egg download, outbound bot coordination dialog, outbound attack propagation.</p>
-
-<p>BotHunter是经过修改过的Snort软件。主要增加了两个插件，一个是SCADE(statistical scan anomaly detection engine) ,另外一个是SLADE(statistical payload anomaly detection engine)</p>
-
-<p>下面穿插对比一下几个检测器：
-<strong>Bothunter</strong>: Vertical Correlation. Correlation on the behaviors of single host.
-<strong>Botsniffer</strong>: Horizontal Correlation. On centralized C&amp;C botnets
-<strong>Botminer</strong>: Extension on Botsniffer, no limitations on the C&amp;C types.</p>
-
-<h4>4. 数据集构建</h4>
-
-<p>论文中作者构建的数据集具有以下特点：</p>
-
-<ol>
-<li>是真实的僵尸网络程序，而不是仿真</li>
-<li>数据集中包括未知流量</li>
-<li>数据集中存在类标，方便训练和方法效果评估</li>
-<li>包括多种僵尸网络流量</li>
-<li>包括多个僵尸主机同时被感染的情况</li>
-<li>包括Netflow文件用来保护用户隐私</li>
-</ol>
-
-
-<p>作者在一台虚拟主机上设置了僵尸网络程序，这台主机唯一产生僵尸网络流量。然后作者将该虚拟主机和校园网络桥接，并分别在虚拟主机上抓包和校园网络某一台路由器上抓包。虚拟主机产生的流量是用于做类标记的。作者相信最好的办法是抓真实攻击的数据包，因此作者并没有在互联网入口处设置过滤。这样做真的好吗？</p>
-
-<p>作者利用Argus软件将Pcap文件转换为Netflow文件。Netflow文件包括了以下一些字段：开始时间，结束时间，持续时间，源IP，目的IP,源端口，目的端口，目的IP，状态，SToS，总包数，总包大小。</p>
-
-<h4>5.对比结果</h4>
-
-<blockquote><p><strong>BClus</strong> showed large FPR values on most scenarios but also large TPR.
-The <strong>CAMNEP</strong> method had a low FPR during most of the scenarios but at the expense of a low TPR.
-The <strong>BotHunter</strong> algorithm presented very low values during the whole scenario despite that there were ten bots being executed.</p></blockquote>
-
-<p> 看来<strong>BotHunter</strong>的检测效果在作者所做的实验中表现一般，因此作者在结论中评价也相对含蓄。</p>
-
-<blockquote><p>BotHunter method showed that in real environments it could still be useful to have blacklists of known malicious IP addresses</p></blockquote>
-
-<hr />
-
-<blockquote><p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p></blockquote>
-
-<h3>论文[4]阅读笔记</h3>
-
-<p>一个区分现代Botnet和之前的僵尸网络的特征是结构化的覆盖拓扑结构使用的增加。结构化拓扑结构有利于增加botnet系统的稳定性，但同时也对其检测带来了新的突破口。</p>
-
-<p>论文作者提出了BotGrep检测算法，只通过peer节点之间的通信图来检测僵尸网络的节点。</p>
-
-<p>现有检测面临的挑战：随机端口，内容加密。背景流量越来越纷繁复杂，流量大数据导致算法需要重新设计。</p>
-
-<p> BotGrep算法输入：通信图，误用检测结果。输入误用检测结果的目标是为了区分P2P通信和Botnet。论文作者利用了一个“结构图”的特性叫做: <strong><em>fast mixintg time：</em></strong> i.e,the convergence time of random walks to a stationary distribution。来将僵尸网络的结构图从其余的通信图中分离出来。</p>
-
-<p>设原通信图为 \(G \subset =（V,E）\), \(G_p\)是在\(G\)中的P2P网络通信图 \(G_p \subset G \), \(G_n=G-G_p \)就是non-P2P通信图。作者最主要的idea就是从\(G \)中，分离出\(G_n\),\(G_p\)。基本思想就是因为P2P网络的拓扑结构是存在结构规律的，比背景的网络流量更具有结构性。在随机游走的情况下，P2P网络的mixing rate要比背景网络mixing rate更快。</p>
-
-<p>作者的主要步骤包括：</p>
-
-<ol>
-<li>过滤操作：开始输入的图可能包括百万级别的节点数量，在这一步中先抽取出小部分的P2P候选节点和false positive节点。</li>
-<li>运用<strong><em>SybilInfer</em></strong>聚类算法来对上一步中的P2P节点中的false positive节点去掉。</li>
-<li>最后一步用fast-mixing特征对P2P网络监测结果进行验证。</li>
-</ol>
-
-
-<h4>参考文献</h4>
-
-<p>[1]Dainotti A, Pescape A, Claffy K C. Issues and future directions in traffic classification[J]. Network, IEEE, 2012, 26(1): 35-40.</p>
-
-<p>[2]An empirical comparison of botnet detection methods" Sebastian Garcia, Martin Grill, Honza Stiborek and Alejandro Zunino. Computers and Security Journal,
-Elsevier. 2014. Vol 45, pp 100-123. http://dx.doi.org/10.1016/j.cose.2014.05.011</p>
-
-<p>[3]Ertoz L, Eilertson E, Lazarevic A, Tan PN, Kumar V, Srivastava J, et al.
-Minds-minnesota intrusion detection system. In: Next generation data mining. MIT Press; 2004. pp. 199e218.</p>
-
-<p>[4]Nagaraja S, Mittal P, Hong C Y, et al. BotGrep: Finding P2P Bots with Structured Graph Analysis[C]//USENIX Security Symposium. 2010: 95-110.</p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Shadowsocks in Lab</title>
-      <link href="http://jasonzhuo.com//shadowsocks-in-lab/"/>
-      <pubDate>2015-04-25T00:00:00-05:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//shadowsocks-in-lab</guid>
-      <content:encoded><![CDATA[<p><img src="https://dn-teddysun.qbox.me/wp-content/uploads/2015/shadowsocks_logo.png" alt="image" />
-好多童鞋搞不清楚我在实验室搭建的Shadowsocks如何使用，在这里给你们科普一下，知道原理之后使用起来就更加顺心了，保证一口气科研就到天亮哦~</p>
-
-<!-- more -->
-
-
-<h4>注明：以下高能内容转载自<a href="http://vc2tea.com/whats-shadowsocks/">vc2tea的博客</a></h4>
-
-<p>在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户.</p>
-
-<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-01.png" alt="image" /></p>
-
-<p>然后有一天，GFW 就出现了，他像一个收过路费的强盗一样夹在了在用户和服务之间，每当用户需要获取信息，都经过了 GFW，GFW将它不喜欢的内容统统过滤掉，于是客户当触发 GFW 的过滤规则的时候，就会收到 Connection Reset 这样的响应内容，而无法接收到正常的内容.</p>
-
-<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-02.png" alt="image" /></p>
-
-<p>聪明的人们想到了利用境外服务器代理的方法来绕过 GFW 的过滤，其中包含了各种HTTP代理服务、Socks服务、VPN服务, <strong>Tor</strong>, <strong>Freegate</strong> … 其中以 ssh tunnel 的方法比较有代表性</p>
-
-<ol>
-<li>首先用户和境外服务器基于 ssh 建立起一条加密的通道</li>
-<li>用户通过建立起的隧道进行代理，通过 ssh server 向真实的服务发起请求</li>
-<li>服务通过 ssh server，再通过创建好的隧道返回给用户</li>
-</ol>
-
-
-<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-03.png" alt="image" /></p>
-
-<p>由于 ssh 本身就是基于 RSA 加密技术，所以 GFW 无法从数据传输的过程中的加密数据内容进行关键词分析，避免了被重置链接的问题，但由于创建隧道和数据传输的过程中，ssh 本身的特征是明显的，所以 GFW 一度通过分析连接的特征进行干扰，导致 ssh 存在被定向进行干扰的问题。</p>
-
-<p>这时候<strong>shadowsocks</strong>横空出世。简单看来，shadowsocks是将原来 ssh 创建的 Socks5 协议拆开成 server 端和 client 端，所以下面这个原理图基本上和利用 ssh tunnel 大致类似。</p>
-
-<h4>shadowsocks工作原理</h4>
-
-<p>1、6) 客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题</p>
-
-<p>2、5) ss-local 和 ss-server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的TCP包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密</p>
-
-<p>3、4) ss-server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回</p>
-
-<p><img src="http://vc2tea.com/public/upload/whats-shadowsocks-04.png" alt="image" /></p>
-
-<hr />
-
-<p>截止目前，笔者所使用最流畅、最稳定的就是shadowsocks，一口气翻墙不费劲，以后再也不用操心翻墙了。传送门：<a href="https://github.com/shadowsocks/shadowsocks">shadowsocks下载地址</a></p>
-
-<p>在我们实验室中，翻墙代理设置可以为网关的IP地址192.168.1.1，也可以为本地127.0.0.1地址。唯一区别就是上图中SS Local代理程序运行的位置不同，（刘博士懂了撒~）。在实验室环境中，童鞋们可以自己设置利用本机的代理，也可以使用阿江搭建在网关上的SS Local代理，效果一致。没有在实验室的童鞋就只能靠自己本地代理啦。最后使用的时候需要设置为Socks5代理类型就可以正常使用了。
-<img src="/assets/smilies/37.gif" id="similey">
-(css inline 表情，深夜特别鸣谢刘博士)
-<img src="/assets/smilies/28.gif" id="similey"></p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Botnet and fast flux</title>
-      <link href="http://jasonzhuo.com//botnet-and-fast-flux/"/>
-      <pubDate>2015-04-25T00:00:00-05:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//Botnet and fast flux</guid>
-      <content:encoded><![CDATA[<p>Botnet and fast flux 特征介绍；Botminer论文初看,僵尸网络论文阅读笔记（last update:2015.8.10）</p>
-
-<!-- more -->
-
-
-<h2>Botnet and fast flux</h2>
-
-<p>last update: 2016.3.5  增加了Fast flux 和 CDN之间的区别</p>
-
-<hr />
-
-<h3>1.几个定义</h3>
-
-<p><strong>NS（Name Server）</strong>：记录是权威域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析。</p>
-
-<p><strong>A record</strong> A记录是名称解析的重要记录，它用于将特定的主机名映射到对应主机的IP地址上。你可以在DNS服务器中手动创建或通过DNS客户端动态更新来创建。</p>
-
-<dl>
-<dt><strong>Round-Robin DNS (RRDNS)</strong></dt>
-<dd>Round-robin的意思是循环的意思，顾名思义，这种DNS返回的A记录不只一个，返回的记录是一个列表，列表里面记录的先后顺序是循环出现的。</dd>
-<dt><strong>Content Distribution Networks (CDN)</strong></dt>
-<dd>中文名叫内容分发网络，和RRDNS比较类似，不过返回的记录的TTL值相对RRDNS更低。CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。</dd>
-<dt><strong>Fast-Flux Service Networks (FFSN)</strong></dt>
-<dd>FFSN更加创新地利用了RRDNS和CDN的上述特性，来降低恶意服务器被发现和关闭的概率。FFSN的特点下面会讨论。</dd>
-</dl>
-
-<hr />
-
-<h3>2.Fast flux特征</h3>
-
-<ol>
-<li><strong>不重复的IP地址数量</strong>：通常情况来说合法DNS查询不重复的IP地址为1~3个，而fast flux查询结果中会有5~6个，以确保至少有一个IP可以连接。</li>
-<li><strong>NS数量</strong>：NS数量是指在单一次DNS 查询中所得到的NS （Name server）数量。客户端与DNS 主机进行查询时,可能透过快速变动网域技术掩护DNS 主机,因此NS Records 与NS 的A Records 可能有多笔记录,相较之下,合法的FQDN 其NS Records 与NS 的A Records比较少。</li>
-<li><strong>ASN数量与注册时间</strong>：指对ASN进行查询时，主机使用的IP所属的ASN是否属于同一个单位。由于CDN主机使用的IP所属的ASN多属于同一个单位，而fast flux主机大多分散在世界各地，与CDN向比较之下，主机使用的IP所属的ASN属于不同单位。注册时间能够缩小选取范围。</li>
-<li><strong>Domain age</strong>:指合法网站记录的TTL时间相对于恶意网站更长；恶意网站的FQDN与对应的IP记录不会长时间存留电脑，电脑必须时常进行DNS查询，以更新记录。RFC1912建议TTL最小为1~5天，这么长！而FFSN的TTL值一般小于600秒。但是一般不使用TTL值来判定FFSN，因为这样的误报率比较高，合法使用的CDN也会返回比较低的TTL值。因此TTL值一般用来区分FFSN/CDN和RRDNS.</li>
-</ol>
-
-
-<h4>2.1 关于Fast flux的第一篇论文[3]</h4>
-
-<p>Fastflux网络和普通网络对比：</p>
-
-<p><img src="/assets/images/fastflux.png" alt="image" /></p>
-
-<p>Single flux网络和Double flux网络对比（Double flux比Single flux更加复杂）：</p>
-
-<p><strong><em>doulbe flux 的A记录和NS记录都在变，而single flux网络的A记录变化而NS记录不变</em></strong></p>
-
-<p><img src="/assets/images/singledoubleflux.png" alt="image" /></p>
-
-<p>攻击者采用fast flux的动机主要有:（1）简单：仅仅需要1台mothership主机来serve master content还有DNS信息。（2）front-end 节点是对于攻击者来说是可以部分随时放弃的。（3）延长关键的backend core servers的生命周期。</p>
-
-<p>真实网络中的Fast flux网络搭建过程：</p>
-
-<ol>
-<li>攻击者用伪造或者偷窃的银行卡信息购买一个域名（www.example.com）该域名可以和某银行的域名很相似（原因你懂的）。</li>
-<li>攻击者控制一部分主机群作为转发主机（Redirectors）或者临时租用一个僵尸网络。</li>
-<li>攻击者将Name server (NS)记录公布，要么指向公开的DNS服务器，要么指向受控的转发主机节点。</li>
-<li>搭建完成</li>
-</ol>
-
-
-<p>在真实网络中的Fast flux技术主要使用在基于HTTP协议的botnet[3]。</p>
-
-<h4>常见僵尸网络检测程序</h4>
-
-<table>
-<thead>
-<tr>
-<th> Name        </th>
-<th style="text-align:center;">TYPE                       </th>
-<th style="text-align:center;">Protocols </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>BotSniffer     </td>
-<td style="text-align:center;"> centralized servers     </td>
-<td style="text-align:center;">   IRC,HTTP </td>
-</tr>
-<tr>
-<td> BotHunter      </td>
-<td style="text-align:center;"> structure independent  </td>
-<td style="text-align:center;">Protocol independent </td>
-</tr>
-<tr>
-<td> Botminer </td>
-<td style="text-align:center;"> structure independent  </td>
-<td style="text-align:center;">    Protocol independent       </td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>3.BotMiner 初看</h3>
-
-<h5>BotMiner的系统架构</h5>
-
-<p><img src="/assets/images/2015-04-19-botminer.png" alt="Structure of Botminer" /></p>
-
-<h4>论文中的一些定义</h4>
-
-<dl>
-<dt><strong>A平面</strong></dt>
-<dd>主要检测恶意行为模型,文章用Snort检测某主机的行为,主机的扫描行为用的是Bothunter的SCADE，下载地址：<a href="http://www.bothunter.net/">Cyber-TA.BotHunter Free Internet Distribution Page, 2008. </a>。文章采用两种异常检测模式，一种是高频率异常扫描次数，另外一种是带加权的失败连接次数。</dd>
-<dt><strong>C平面</strong></dt>
-<dd>网络通信关系模型和流特征模型</dd>
-<dt><strong>AC跨平面关联</strong></dt>
-<dd>发现AC平面之间的某种关联关系，僵尸网络评分s(h)</dd>
-<dt><strong>C平面的聚类</strong></dt>
-<dd>  定义 C-flow 为一段时间E内具有相同源IP，目的IP和目的端口的网络流</dd>
-</dl>
-
-<p><strong>C-flow的一些特征</strong></p>
-
-<ol>
-<li>FPH: the number of flows per hour.</li>
-<li>PPF: the number of packets per flow</li>
-<li>BPP: the average number of bytes per packets</li>
-<li>BPS: the average number of bytes per second</li>
-</ol>
-
-
-<h3>4.论文[2]阅读笔记</h3>
-
-<p>该论文和之前僵尸网络研究的不同之处在于，之前的survey文章主要集中研究不同僵尸网络的技术细节，例如架构，通信协议，检测方法。这些研究只是僵尸网络某一方面的partial understanding，很难从全面的角度来了解问题。</p>
-
-<p>文章根据僵尸网络的生命周期对僵尸网络进行建模。僵尸网络的生命周期（线性）如下图所示：每个状态都可以额外引入隐藏操作（Complementary Hidding Mechanism):例如</p>
-
-<ol>
-<li>Multi-hopping（多跳链路）通常是不同地区的多重代理。</li>
-<li>Ciphering(加密)：SpamThru,Zeus采用的加密通道进行通信，Phatbot利用的是WASTE P2P私有加密协议。</li>
-<li>Binary obfuscation(二进制混淆)：防止逆向分析得出僵尸网络程序的行为特征和其他信息</li>
-<li>polymorphism(变形):通常实现了多种版本的源代码，但是基本功能保持不变。这样就可以绕过基于特征码检测的杀毒软件。（Phabot,Zeus采用了这种方法）</li>
-<li>IP spoofing(IP 地址伪造)：在DoS攻击中经常使用。</li>
-<li>Email-spoofing: 用错误的发件人地址发送邮件，在钓鱼攻击中经常使用。</li>
-<li>Fast-flux: 对于Fast-flux的拥有者，重要的是要有大量的代理，以及代理位置的异质性。</li>
-</ol>
-
-
-<p><img src="/assets/images/botnetlifecycle.png" alt="image" /></p>
-
-<ol>
-<li>Conception阶段主要去设计和实现一个特定目标的僵尸网络。MEECES为僵尸网络常见的构建动机（Money, Entertainment, Ego, Cause, Entrance to social groups, Status）</li>
-<li>Recruitment阶段主要是将僵尸网络程序运行在一个传统的主机上。</li>
-<li>Interaction阶段主要包括（1）bots和botmaster之间的通信过程 （2）秘密通信链路框架，来维护和统计bots。</li>
-<li>Marketing阶段主要用于传播僵尸网络程序</li>
-<li>攻击执行：攻击包括DDoS,Spam,click fraud（Search engine spam）, phishing，Data stealing等。</li>
-<li>攻击成功</li>
-</ol>
-
-
-<h5>常见僵尸网络程序及其时间</h5>
-
-<p><img src="/assets/images/botnetyear.png" alt="image" /></p>
-
-<h3>补充内容</h3>
-
-<p>Fast-Flux网络比較多的NS，故其数量会比一般的DNS查詢所得到还多，而查询ASN（自治域）的原因主要是因为这些IP大多是分散在世界各地的受害主机，与CDN相比之下，会有明显的差异，因为CDN使用的IP所屬ASN多属于同一个单位，而Fast flux不是。此外Holz et al.不使用TTL作为特征理由是其不容易將Fast-Flux网络与CDN做区别，因为CDN也使用了很短的TTL。</p>
-
-<h4>参考文献</h4>
-
-<p><a href="https://www.usenix.org/legacy/event/sec08/tech/full_papers/gu/gu_html/">[1]BotMiner: Clustering Analysis of Network Traffic for
-Protocol- and Structure-Independent Botnet Detection</a></p>
-
-<p>[2]Rodríguez-Gómez R A, Maciá-Fernández G, García-Teodoro P. Survey and taxonomy of botnet research through life-cycle[J]. ACM Computing Surveys (CSUR), 2013, 45(4): 45.</p>
-
-<p>[3]Enemy K Y. Fast-Flux Service Networks[J]. The Honey net Project and Research Alliance, 2007.</p>
 ]]></content:encoded>
     </item>
     

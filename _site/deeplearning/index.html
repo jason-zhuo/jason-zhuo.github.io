@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="" />
-    <title>Jaosonzhuo's blog</title>
+    <title>Deep Learning</title>
     <meta name="name" content="Jaosonzhuo's blog" />
-    <meta name="description" content="Jasonzhuo's blog" />
-    <meta name="keywords" content= "" />
+    <meta name="description" content="“Start to learn deep learning”" />
+    <meta name="keywords" content= "Deep Learning" />
     <meta name="ujianVerification" content="109d1a9f6085ee6606156bc3aa65a955" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link href="/feed/" rel="alternate" title="" type="application/atom+xml" />
@@ -163,19 +163,147 @@ style="border-width:0" /></a>
     <div id="main-col" class="alignright">
         <div id="wrapper">   
     
-         
+         <article class="post">
+<div class="post-content">
 
 
 
 
-<nav id="pagination">
+<header>
+    <h1 class="title">Deep Learning</h1>
+    <section class="meta">
+<span class="time">
+  <time datetime="2017-03-01">2017-03-01</time>
+</span>
 
+ | 
+<span class="categories">
+  分类
   
-
-
+  <a href="/categories/#Machine Learning" title="Machine Learning">Machine Learning</a>&nbsp;
   
-</nav>
+</span>
 
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Deep Learning" title="Deep Learning">Deep Learning</a>&nbsp;
+  
+</span>
+
+
+</section>    
+</header>
+
+<div class="entry">
+
+  <p><img src="https://www.gitbook.com/cover/book/deep-learning-cn/deep-learning-cn.jpg?build=1461768620204" alt="image" />
+Deep learning stuff, last update (2017.3.1)</p>
+
+<!-- more -->
+
+
+<h3>本文概要</h3>
+
+<p>本文主要介绍Deep learning 和整理我所看到的一些资料，持续更新 (Keep updating, once I have time)。</p>
+
+<h3>深度学习的优势与不足</h3>
+
+<p>优点：</p>
+
+<ol>
+<li>在研究中可以发现，如果在原有的特征中加入这些自动学习得到的特征可以大大提高精确度，甚至在分类问题中比目前最好的分类算法效果还要好[3]</li>
+<li>非监督学习</li>
+</ol>
+
+
+<p>缺点：</p>
+
+<ol>
+<li>深度学习的一个主要优势在于可以利用海量训练数据（即大数据），但是依赖于反向传播算法，仍然对计算量有很高的要求。</li>
+<li>比起统计方法来说 那当然就是模型难以诠释，找出来的 Feature 对人而言并不直观。</li>
+</ol>
+
+
+<h3>Tensorflow</h3>
+
+<p>使用Tensorflow需要知道：</p>
+
+<blockquote><p>The central unit of data in TensorFlow is the <strong>tensor</strong>. Tensorflow基础数据单元，其rank就是训练数据的维度 (训练数据是几维的)</p>
+
+<p>A <strong>computational graph</strong> is a series of TensorFlow operations arranged into a graph of nodes. 计算图？</p>
+
+<p>To actually evaluate the nodes, we must run the computational graph within a session. <strong>A session</strong> encapsulates the control and state of the TensorFlow runtime. 计算评估模型需要一次会话</p>
+
+<p><strong>A placeholder</strong> is a promise to provide a value later. 就是说数据现在没有，以后有了再提供
+，先登记一下</p>
+
+<p><strong>A Variable</strong> tf.Variable变量， tf.constant常量，变量是没有初始化的，常量是一调用就被初始化了的，然后就不变了。变量如果需要初始化，需要调用</p></blockquote>
+
+<pre><code class="python">init = tf.global_variables_initializer()
+sess.run(init)
+</code></pre>
+
+<h4>Refs</h4>
+
+<p>[1] LeCun Y, Bengio Y, Hinton G. Deep learning[J]. Nature, 2015, 521(7553): 436-444.</p>
+
+<p>[2] 将Keras作为tensorflow的精简接口 https://keras-cn.readthedocs.io/en/latest/blog/keras_and_tensorflow/</p>
+
+<p>[3] http://blog.csdn.net/zouxy09/article/details/8775524</p>
+
+<p>[Cuda install guide ] https://www.tensorflow.org/versions/master/get_started/os_setup#optional-install-cuda-gpus-on-linux</p>
+
+
+  <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
+  <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2017-03-01</span><br>
+  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jasonzhuo.com"><strong>Jasonzhuo's Blog</strong></a></span>
+  </p>
+</div>
+
+<footer>
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_renren"></a>
+  <a href="http://www.jiathis.com/share?uid=1976264" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1976264" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
+<!-- UY END -->
+</footer>
+</div>
+</article>
+
+<section class="pageselect">
+<br/>
+<span class="pre-span">  
+  <a  href="/malwaretrafficanalysis/" class="pageNav" >上一篇&nbsp;-&nbsp;Malware traffic analysis  </a>
+</span>
+<span class="next-span">
+  <a  href="/golangrelated/" class="pageNav"  >下一篇&nbsp;-&nbsp;Docker and Go lang </a>
+</span>
+<span class="mobile-pre-span">  
+  <a  href="/malwaretrafficanalysis/" class="pageNav" >上一篇 </a>
+</span>
+<span class="mobile-next-span">
+  <a  href="/golangrelated/" class="pageNav"  >下一篇</a>
+</span>
+</section>
 
 
 
