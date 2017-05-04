@@ -5,7 +5,8 @@ description: “how to restart TeamViewer in Mac”
 categories: [new stuff]
 tags: [Trouble Shooting]
 group: archive
-path: comment
+comments: true
+path: comments
 music: []
 
 ---
