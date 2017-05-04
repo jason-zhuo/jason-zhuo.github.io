@@ -128,6 +128,8 @@ style="border-width:0" /></a>
                     
                     <a href="/tags/#flow hashing" title="flow hashing" rel="1">flow hashing</a>
                     
+                    <a href="/tags/#Trouble Shooting" title="Trouble Shooting" rel="1">Trouble Shooting</a>
+                    
                 </div>
             </div>
 
@@ -236,6 +238,10 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
 
 <p>几何解释及意义详见： https://www.zhihu.com/question/27821324</p>
 
+<h4>2.3 相关工作</h4>
+
+<p>本文所提出的技术与鲁棒散列方案（Robust Hashing）类似。 它们都通过短序列（鲁棒散列）表示输入信号，这个序列的性质可以让其抵抗输入上的小扰动。 在多媒体信号处理的运用中，即便原始信号收到干扰或者变化（例如压缩，次滤波等），鲁棒散列函数仍然能够识别和认证多媒体内容。</p>
+
 <h3>3.流量Sketch计算和表示方法</h3>
 
 <p>实时的流量关联：在网络边界上，记录出入的active流的信息。active流在文章中设置的是60s的超时时间。如果在时刻\(t\)，出去方向的第\(i\)号流\(E_i (t)\)，和进入方向的第\(j\)号流\(I_j (t)\), 满足\(Diff_t(E_i (t),I_j (t)) &lt; \epsilon \) 那么这两个流就被关联起来了。 Diff方法在文章中采用的汉明距离，然后两个流的sketches都是用binary的形式进行保存的。 采用新的表示方法，节约了保存空间，提高了计算效率。</p>
@@ -246,7 +252,7 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
 
 <p>一个例子：</p>
 
-<p><img src="/assets/images/FlowSketch.png" alt="image" /></p>
+<p><img src="/assets/images/2017-03-10FlowSketch.png" alt="image" /></p>
 
 <p>最后根据符号函数得到该流的sketch 为 101, 如何后续还有数据包进出的话，那么就在101的基础之上向后同理进行计算，如上图省略号所示。</p>
 
@@ -274,7 +280,41 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
 
 <h3>4.流量Sketch搜索</h3>
 
-<p>基本上文中采用的是空间换时间的方法，将原来的O(mn)算法，降低到 \(O(n +\sqrt{mn})\)</p>
+<p>本质上文中采用的是空间换时间的方法，将原来的O(mn)算法，降低到 \(O(n +\sqrt{mn})\)， 具体思路还是比较好理解的。这里不再赘述。</p>
+
+<hr />
+
+<h3>5. 流量关联攻击</h3>
+
+<p>流量关联攻击可以帮助我们找到两个相似的流。论文[2][3]创新地将[1]的方法运用到追踪溯源中，其具体做法如下图所示。</p>
+
+<p><img src="/assets/images/2017-03-10FlowcorrelationAttack.png" alt="image" /></p>
+
+<p>攻击者是passive listener，在入口和出口处对流量进行Hash(其实和[1]中的流量sketches很类似，有些小不同后面会介绍)，然后找到哪个user访问了target website，从而达到溯源目的。</p>
+
+<p>如何计算流的binary hash呢？</p>
+
+<p><strong>[3]的算法如下：</strong></p>
+
+<p><img src="/assets/images/2017-03-10binaryHash1.png" alt="image" /></p>
+
+<p>算法[3]和[2]的不同之处就在于，[3]的B增量是以字节大小表示的，[2]是以包的个数表示的，由于报文填充机制，所以[2]没有利用包的大小信息。</p>
+
+<p><strong>[2]的算法如下：</strong></p>
+
+<p><img src="/assets/images/2017-03-10binaryhash.png" alt="image" /></p>
+
+<ol>
+<li>Line 1: 初始化binary hash 向量</li>
+<li>Line 2: 为每个time window 提取该窗口的包数量</li>
+<li>Line 3: 对于每个窗口进行计算</li>
+<li>Line 4~6: 对于第一个窗口，计算稍微有些不同</li>
+<li>Line 7~10: 对于后续窗口如何进行Hash值计算，Line 8计算和前一个窗口的包数量差，Line 9, 用增量update H。那个加号其实就是向量加法，后面的中括号其实就是随机向量，这里的m应该和H的长度一样才行，也就是说随机数的个数要和binary hash长度一样。</li>
+<li>Line 11: 符号函数，如果H对应的bit位置的值大于0则编码为1， 如果小于等于0则编码为0。感觉应该可以放到for循环外。</li>
+</ol>
+
+
+<p>问题：如何得到窗口个数N？ Answer: 对于每个flow，N都是一样的。 N is decided on prior to computation，如果包数量比窗口数量还少，那么丢弃该流。</p>
 
 <h4>Refs</h4>
 
@@ -287,7 +327,7 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
 
   <p style="margin:20px 0; color:#9f9f9f; font-size:12px;">
   <span>Posted by <a style="color:#9f9f9f;" href="http://http://weibo.com/zhongliuzhuo316"><strong>灵犀一点00</strong></a> - 2017-03-10</span><br>
-  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jasonzhuo.com"><strong>Jasonzhuo's Blog</strong></a></span>
+  <span style="line-height:13px;">如需转载，请注明： 本文来自 <a style="color:#9f9f9f;" href="http://jason-zhuo.github.io/"><strong>Jasonzhuo's Blog</strong></a></span>
   </p>
 </div>
 
@@ -309,10 +349,7 @@ var jiathis_config = {data_track_clickback:'true'};
 <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1976264" charset="utf-8"></script>
 <!-- JiaThis Button END -->
 
-<!-- UY BEGIN -->
-<div id="uyan_frame"></div>
-<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1976264"></script>
-<!-- UY END -->
+
 </footer>
 </div>
 </article>
@@ -320,19 +357,47 @@ var jiathis_config = {data_track_clickback:'true'};
 <section class="pageselect">
 <br/>
 <span class="pre-span">  
-  <a  href="" >已经是第一篇 </a>
+  <a  href="/macteamviewer/" class="pageNav" >上一篇&nbsp;-&nbsp;Mac TeamViewer SSH 远程登录恢复  </a>
 </span>
 <span class="next-span">
   <a  href="/malwaretrafficanalysis/" class="pageNav"  >下一篇&nbsp;-&nbsp;Malware traffic analysis </a>
 </span>
 <span class="mobile-pre-span">  
-  <a  href="" >已经是第一篇 </a>
+  <a  href="/macteamviewer/" class="pageNav" >上一篇 </a>
 </span>
 <span class="mobile-next-span">
   <a  href="/malwaretrafficanalysis/" class="pageNav"  >下一篇</a>
 </span>
 </section>
 
+
+	
+	<div class="ds-thread" />
+		
+	<div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'jasonzhuo'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script type="text/javascript">
+    var disqus_shortname = 'jasonzhuo';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
 
 
 

@@ -5,17 +5,76 @@
   >
   <channel>
     <title>Jaosonzhuo's blog</title>
-    <link href="http://jasonzhuo.com//feed/" rel="self" />
-    <link href="http://jasonzhuo.com/" />
-    <lastBuildDate>2017-03-13T11:36:58-05:00</lastBuildDate>
+    <link href="http://jason-zhuo.github.io//feed/" rel="self" />
+    <link href="http://jason-zhuo.github.io/" />
+    <lastBuildDate>2017-05-04T16:40:28-05:00</lastBuildDate>
     <webMaster>jason_zhuo@iclould.com</webMaster>
     
     <item>
+      <title>Mac TeamViewer SSH 远程登录恢复</title>
+      <link href="http://jason-zhuo.github.io//macteamviewer/"/>
+      <pubDate>2017-04-03T00:00:00-05:00</pubDate>
+      <author></author>
+      <guid>http://jason-zhuo.github.io//MacTeamViewer</guid>
+      <content:encoded><![CDATA[<p><img src="/assets/images/TeamMac.png" alt="image" /></p>
+
+<p>Mac 上重新启动TeamViewer 以及Trouble Shooting。</p>
+
+<!-- more -->
+
+
+<h2>思路</h2>
+
+<p>有些时候出于未知原因，我们无法使用TeamViewer登录远程的Mac计算机。但是我们却可以通过SSH连接到Mac上，这样也可以通过SSH来重新启动和登录TeamViewer。</p>
+
+<p>总结起来就以下一些步骤：</p>
+
+<ol>
+<li>远程SSH到Mac电脑</li>
+<li>运用Mac自带的Apple script来重新启动 TeamViewer.</li>
+<li>将TeamViewer 显示到第一个窗口（为了防止密码被其他窗口遮挡）</li>
+<li>截屏</li>
+<li>用SCP 回传截屏图像</li>
+<li>用新的临时密码进行TeamViewer登录</li>
+</ol>
+
+
+<h2>具体步骤</h2>
+
+<p>具体命令行代码：</p>
+
+<pre><code class="python">停止TeamViewer 
+osascript -e 'tell application "TeamViewer" to quit'
+启动TeamViewer 
+osascript -e 'tell application "TeamViewer" to run'
+将TeamViewer移动到第一个窗口
+osascript -e 'tell application "TeamViewer" to activate'
+将TeamViewer重新打开到第一个窗口
+osascript -e 'tell application "TeamViewer" to reopen'
+截屏
+screencapture xxx.jpg
+回传用scp
+scp xx@host:(path to xxx.jpg) (path to save jpg)
+</code></pre>
+
+<h2><strong>Trouble Shooting:</strong></h2>
+
+<p>有的时候回出现如下的一些情况，比如新弹出的对话框挡住了密码。笔者尝试使用了各种办法来模拟用户单击对话框的“OK”都失败了。</p>
+
+<p>由于权限原因：System Events got an error: osascript is not allowed assistive access.</p>
+
+<p>这个时候可能真需要真人去一趟了。</p>
+
+<p><img src="/assets/images/050037934C0DDBBA196577D400A84DB7.jpg" alt="" /></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Flow sketching and traffic correlation attack</title>
-      <link href="http://jasonzhuo.com//flow-sketching-and-traceback/"/>
+      <link href="http://jason-zhuo.github.io//flow-sketching-and-traceback/"/>
       <pubDate>2017-03-10T00:00:00-06:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//Flow sketching and traceback</guid>
+      <guid>http://jason-zhuo.github.io//Flow sketching and traceback</guid>
       <content:encoded><![CDATA[<p><img src="/assets/images/2017-03-10IPtracebackandFlowsketch.png" alt="image" />
 Recent paper reading on traffic correlation attack and flow skeching, last update (2017.3.13)</p>
 
@@ -51,6 +110,10 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
 
 <p>几何解释及意义详见： https://www.zhihu.com/question/27821324</p>
 
+<h4>2.3 相关工作</h4>
+
+<p>本文所提出的技术与鲁棒散列方案（Robust Hashing）类似。 它们都通过短序列（鲁棒散列）表示输入信号，这个序列的性质可以让其抵抗输入上的小扰动。 在多媒体信号处理的运用中，即便原始信号收到干扰或者变化（例如压缩，次滤波等），鲁棒散列函数仍然能够识别和认证多媒体内容。</p>
+
 <h3>3.流量Sketch计算和表示方法</h3>
 
 <p>实时的流量关联：在网络边界上，记录出入的active流的信息。active流在文章中设置的是60s的超时时间。如果在时刻\(t\)，出去方向的第\(i\)号流\(E_i (t)\)，和进入方向的第\(j\)号流\(I_j (t)\), 满足\(Diff_t(E_i (t),I_j (t)) &lt; \epsilon \) 那么这两个流就被关联起来了。 Diff方法在文章中采用的汉明距离，然后两个流的sketches都是用binary的形式进行保存的。 采用新的表示方法，节约了保存空间，提高了计算效率。</p>
@@ -61,7 +124,7 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
 
 <p>一个例子：</p>
 
-<p><img src="/assets/images/FlowSketch.png" alt="image" /></p>
+<p><img src="/assets/images/2017-03-10FlowSketch.png" alt="image" /></p>
 
 <p>最后根据符号函数得到该流的sketch 为 101, 如何后续还有数据包进出的话，那么就在101的基础之上向后同理进行计算，如上图省略号所示。</p>
 
@@ -89,7 +152,41 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
 
 <h3>4.流量Sketch搜索</h3>
 
-<p>基本上文中采用的是空间换时间的方法，将原来的O(mn)算法，降低到 \(O(n +\sqrt{mn})\)</p>
+<p>本质上文中采用的是空间换时间的方法，将原来的O(mn)算法，降低到 \(O(n +\sqrt{mn})\)， 具体思路还是比较好理解的。这里不再赘述。</p>
+
+<hr />
+
+<h3>5. 流量关联攻击</h3>
+
+<p>流量关联攻击可以帮助我们找到两个相似的流。论文[2][3]创新地将[1]的方法运用到追踪溯源中，其具体做法如下图所示。</p>
+
+<p><img src="/assets/images/2017-03-10FlowcorrelationAttack.png" alt="image" /></p>
+
+<p>攻击者是passive listener，在入口和出口处对流量进行Hash(其实和[1]中的流量sketches很类似，有些小不同后面会介绍)，然后找到哪个user访问了target website，从而达到溯源目的。</p>
+
+<p>如何计算流的binary hash呢？</p>
+
+<p><strong>[3]的算法如下：</strong></p>
+
+<p><img src="/assets/images/2017-03-10binaryHash1.png" alt="image" /></p>
+
+<p>算法[3]和[2]的不同之处就在于，[3]的B增量是以字节大小表示的，[2]是以包的个数表示的，由于报文填充机制，所以[2]没有利用包的大小信息。</p>
+
+<p><strong>[2]的算法如下：</strong></p>
+
+<p><img src="/assets/images/2017-03-10binaryhash.png" alt="image" /></p>
+
+<ol>
+<li>Line 1: 初始化binary hash 向量</li>
+<li>Line 2: 为每个time window 提取该窗口的包数量</li>
+<li>Line 3: 对于每个窗口进行计算</li>
+<li>Line 4~6: 对于第一个窗口，计算稍微有些不同</li>
+<li>Line 7~10: 对于后续窗口如何进行Hash值计算，Line 8计算和前一个窗口的包数量差，Line 9, 用增量update H。那个加号其实就是向量加法，后面的中括号其实就是随机向量，这里的m应该和H的长度一样才行，也就是说随机数的个数要和binary hash长度一样。</li>
+<li>Line 11: 符号函数，如果H对应的bit位置的值大于0则编码为1， 如果小于等于0则编码为0。感觉应该可以放到for循环外。</li>
+</ol>
+
+
+<p>问题：如何得到窗口个数N？ Answer: 对于每个flow，N都是一样的。 N is decided on prior to computation，如果包数量比窗口数量还少，那么丢弃该流。</p>
 
 <h4>Refs</h4>
 
@@ -103,10 +200,10 @@ Recent paper reading on traffic correlation attack and flow skeching, last updat
     
     <item>
       <title>Malware traffic analysis</title>
-      <link href="http://jasonzhuo.com//malwaretrafficanalysis/"/>
+      <link href="http://jason-zhuo.github.io//malwaretrafficanalysis/"/>
       <pubDate>2017-03-01T00:00:00-06:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//MalwareTrafficAnalysis</guid>
+      <guid>http://jason-zhuo.github.io//MalwareTrafficAnalysis</guid>
       <content:encoded><![CDATA[<p><img src="http://ef67fc04ce9b132c2b32-8aedd782b7d22cfe0d1146da69a52436.r14.cf1.rackcdn.com/in-britain-malware-most-foul-showcase_image-5-a-8255.jpg" alt="image" />
 Nazca: Detecting Malware Distribution in Large-Scale Networks, last update (2017.3.3)</p>
 
@@ -212,10 +309,10 @@ Nazca: Detecting Malware Distribution in Large-Scale Networks, last update (2017
     
     <item>
       <title>Deep Learning</title>
-      <link href="http://jasonzhuo.com//deeplearning/"/>
+      <link href="http://jason-zhuo.github.io//deeplearning/"/>
       <pubDate>2017-03-01T00:00:00-06:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//Deeplearning</guid>
+      <guid>http://jason-zhuo.github.io//Deeplearning</guid>
       <content:encoded><![CDATA[<p><img src="https://www.gitbook.com/cover/book/deep-learning-cn/deep-learning-cn.jpg?build=1461768620204" alt="image" />
 Deep learning stuff, last update (2017.3.1)</p>
 
@@ -277,10 +374,10 @@ sess.run(init)
     
     <item>
       <title>Docker and Go lang</title>
-      <link href="http://jasonzhuo.com//golangrelated/"/>
+      <link href="http://jason-zhuo.github.io//golangrelated/"/>
       <pubDate>2017-02-23T00:00:00-06:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//GolangRelated</guid>
+      <guid>http://jason-zhuo.github.io//GolangRelated</guid>
       <content:encoded><![CDATA[<p><img src="https://cdn-images-1.medium.com/max/1800/1*3BB0kiPsh2ftMT9dKg9_GA.jpeg" alt="image" />
 Go language using and some thoughts, last update (2017.2.23)</p>
 
@@ -385,12 +482,12 @@ docker exec -it 12345 /bin/bash
     
     <item>
       <title>“On Tor DNS“</title>
-      <link href="http://jasonzhuo.com//tordns/"/>
+      <link href="http://jason-zhuo.github.io//tordns/"/>
       <pubDate>2017-02-19T00:00:00-06:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//TorDNS</guid>
+      <guid>http://jason-zhuo.github.io//TorDNS</guid>
       <content:encoded><![CDATA[<p><img src="https://nymity.ch/tor-dns/img/overview.png" alt="image" />
-The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.23)</p>
+The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.3.15)</p>
 
 <!-- more -->
 
@@ -419,13 +516,22 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.2
 
 <h4>Tor DNS解析过程</h4>
 
-<p>首先Tor的DNS都是从Tor网络中走的，这点是Tor client （web browser）预设值，目的是防止DNS外泄。因为Tor不能够代理UDP流量，所以Tor proxy将DNS request 包装进CELL中。 浏览器将解析地址传给Tor client proxy， 然后Tor client 选择一个可以用的出口节点，并与其建立连接（应该是3跳连接，不是1跳连接，参考Tor spec）, Tor出口节点解析后，才会与目地网站建立TCP连接，成功之后返回Relay_connected cell. 另外一种DNS解析方法是构建Relay_resolve cell, 这个不同在于没有后续的TCP连接。</p>
+<p>首先Tor的DNS都是从Tor网络中走的，这点是Tor client （web browser）预设值，目的是防止DNS外泄。因为Tor不能够代理UDP流量，所以Tor proxy将DNS request 包装进Tor CELL中。 浏览器将解析地址传给Tor client proxy， 然后Tor client 选择一个可以用的出口节点，并与其建立连接（应该是3跳连接，不是1跳连接，参考Tor spec）, Tor出口节点解析后，才会与目地网站建立TCP连接，成功之后返回Relay_connected cell. 另外一种DNS解析方法是构建Relay_resolve cell, 这个不同在于没有后续的TCP连接。</p>
 
 <p>Tor出口节点会根据其主机配置进行DNS解析，主机的DNS解析一般流程 参考这里：<a href="http://blog.csdn.net/wy5761/article/details/19485761">Linux DNS</a></p>
 
 <p>作者在文章中指出：大约4成的DNS流量都去了谷歌的DNS(8.8.8.8), 第二多的就是去本地DNS服务器解析。</p>
 
 <h4>Defctor 攻击模型</h4>
+
+<p>文章中的重要假设：</p>
+
+<ol>
+<li>每次网页访问只产生一个DNS请求，不考虑嵌套请求（embedded request）和 DNS caching</li>
+<li>出口节点的DNS请求和正常用Tor browser 但不经过Tor 网络访问网站的DNS请求一样（不太清楚）</li>
+<li>为了达到最好的关联攻击效果，用户选择的路径（出入口）被攻击者所控制。</li>
+</ol>
+
 
 <p><img src="http://i1-news.softpedia-static.com/images/news2/if-it-wanted-google-could-deanonymize-a-large-number-of-tor-connections-508863-3.png" alt="image" /></p>
 
@@ -447,13 +553,19 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.2
 
 <p><strong>3）Tor client 会缓存DNS请求，TTL最小为60s,最大为30分钟（目前统一为60s）。作者利用60s的滑动窗口，就可以发现所有的DNS请求，无论它是否缓存过。</strong></p>
 
-<p>作者使用的Tor浏览器来发送DNS请求，但不使流量通过Tor网络，其目的在于为了防止原来有些顶会所讨论的Tor拒绝服务情况。作者意图通过DNS来判断用户所访问的网站，实现了一个Naive classifer, 主要通过<strong>unique domains: domains that are unique to a particular website</strong>。 作者通过对DNS请求进行特征提取（extractdns），主要提取了observed domains, TTLs and IP-addresses这三个特征。然后利用dns2site（Go脚本代码）将生成的dns list map 到 具体的 site（具体算法是利用投票进行的）。</p>
+<p>作者使用的Tor浏览器来发送DNS请求，但不使流量通过Tor网络，其目的在于为了防止原来有些顶会所讨论的Tor拒绝服务情况。作者意图通过DNS来判断用户所访问的网站，实现了一个Naive classifer, 主要通过<strong>unique domains: domains that are unique to a particular website</strong>来进行关联。 作者通过对DNS请求进行特征提取（extractdns），主要提取了observed domains, TTLs and IP-addresses这三个特征。然后利用dns2site（Go脚本代码）将生成的dns list map 到 具体的 site（具体算法是利用投票进行的）。</p>
 
-<p>作者另外还根据DNS请求进行了额外的特征提取，从而可以利用Tao Wang 的 KNN算法进行分类。因此在这个实验中，作者利用了Tao Wang论文中所提出的一些特征，共1225个，然后利用Wa-KNN进行权重训练，最后进行分类。 我感觉入口节点处采用的是KNN，出口节点采用的是Naive classifer。</p>
+<p>这里总结一下，Naive classifer 主要分类依据是<strong>unique domains mapping</strong>, 作者使用的数据集是top one million alexa websites 每个主页访问5次的那个数据集。</p>
 
-<h4>分析作者搜集DNS流量的实验平台框架（工程）</h4>
+<p>作者另外还根据DNS请求进行了额外的特征提取，从而可以利用Tao Wang 的 KNN算法进行分类。因此在这个实验中，作者利用了Tao Wang论文中所提出的一些特征，共1225个，然后利用Wa-KNN进行权重训练，最后进行分类。 我感觉作者分了两次来做实验，一次是在出口节点搜集DNS流量，第二次是在入口节点根据Tor log信息（log incoming and outgoing cells）来搜集流量，因此入口节点处采用的是KNN，出口节点采用的是Naive classifer。</p>
 
-<p>作者搜集Alexa前100万的DNS流量，无论是从数量级还是工程难度来说都是具有一定挑战的。笔者饶有兴趣的看了一下大神们的做法，将一些要点记录在这里。</p>
+<p>这里再总结一下，KNN算法依据的是Wang et al.，作者使用的数据集是1000个（每个100个instances）网页， 和额外的100000个网页（每个1个instance）的数据集。 验证采用的是10折交叉验证方法。</p>
+
+<p>那么问题来了，<strong>作者如何是将这两个结果关联起来的呢？</strong> 作者在论文中还提到了一个叫做 <em>hp（high precision）</em> 的attack，这个attack应该就是起到关联作用的。 只有当<em>hp attack</em>成功观察到入口和出口节点有相同网站时，才进行汇报（关联），相当的simple和effective。 在这里因为Naive classifer采用的DNS mapping, 其效果能达到 94.7%的recall和98.4%的precision，因此作者有理由认为，如果我在入口节点看到了一个我检查的网页，并且我在出口处也看到了该网站，那么就有较大的可能性达到了溯源的目的。然而，作者在出口节点观察到的DNS请求并不一定来自该入口节点，有可能别的用户也在同一时间从相同出口处访问了这个网站， 这就有个概率比例问题了（攻击者能观察多少比例的出口流量？）。果然，作者后来又说: We conclude that DefecTor attacks are perfectly precise for <strong>unpopular sites</strong>（因为popular site 会有很多人访问） because it is <strong>unlikely that more than one person is browsing a monitored site within the timeframe determined by the window length</strong>. 这个感觉还是有点道理的，看读者怎么想了吧。</p>
+
+<h4>分析作者搜集DNS流量的实验平台框架（偏工程）</h4>
+
+<p>作者搜集Alexa前100万的DNS流量，无论是从数量级还是工程难度来说都是具有一定挑战的。笔者饶有兴趣的看了一下大神们的做法，将一些要点记录在<a href="http://jasonzhuo.com/GolangRelated/">这里</a>.</p>
 
 <h4>Refs</h4>
 
@@ -463,10 +575,10 @@ The effect of DNS on Tor’s Anonymity 论文阅读笔记, last update (2017.2.2
     
     <item>
       <title>PF_ring and Jnetpcap</title>
-      <link href="http://jasonzhuo.com//pfring-and-jnetpcap/"/>
+      <link href="http://jason-zhuo.github.io//pfring-and-jnetpcap/"/>
       <pubDate>2016-01-21T00:00:00-06:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//pfring-and-jnetpcap</guid>
+      <guid>http://jason-zhuo.github.io//pfring-and-jnetpcap</guid>
       <content:encoded><![CDATA[<h3>基于Jnetpcap使用Pf_ring（PF_ring and Jnetpcap）</h3>
 
 <hr />
@@ -667,10 +779,10 @@ Retried packets (EAGAIN):  0
     
     <item>
       <title>Dieharder and STS</title>
-      <link href="http://jasonzhuo.com//dieharder-and-sts/"/>
+      <link href="http://jason-zhuo.github.io//dieharder-and-sts/"/>
       <pubDate>2015-10-10T00:00:00-05:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//dieharder-and-sts</guid>
+      <guid>http://jason-zhuo.github.io//dieharder-and-sts</guid>
       <content:encoded><![CDATA[<h3>Random or not? Dieharder and STS</h3>
 
 <p><img src="http://i.stack.imgur.com/12L2d.gif" alt="image" />
@@ -784,10 +896,10 @@ Dieharder主要测试rng（随机数产生器）的性能，它里面整合了�
     
     <item>
       <title>Web Crawler Crawl4j</title>
-      <link href="http://jasonzhuo.com//web-crawler-crawl4j/"/>
+      <link href="http://jason-zhuo.github.io//web-crawler-crawl4j/"/>
       <pubDate>2015-07-12T00:00:00-05:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//web-crawler-crawl4j</guid>
+      <guid>http://jason-zhuo.github.io//web-crawler-crawl4j</guid>
       <content:encoded><![CDATA[<h3>基于Crawl4j的网页爬虫（Web crawler based on Crawl4j）</h3>
 
 <hr />
@@ -991,10 +1103,10 @@ public class Controller {
     
     <item>
       <title>Random forest clustering</title>
-      <link href="http://jasonzhuo.com//random-forest-clustering/"/>
+      <link href="http://jason-zhuo.github.io//random-forest-clustering/"/>
       <pubDate>2015-05-23T00:00:00-05:00</pubDate>
       <author></author>
-      <guid>http://jasonzhuo.com//random-forest-clustering</guid>
+      <guid>http://jason-zhuo.github.io//random-forest-clustering</guid>
       <content:encoded><![CDATA[<h3>随机森林聚类（Random forest clustering）</h3>
 
 <hr />
@@ -1107,75 +1219,6 @@ public class Controller {
 <p>[7]<a href="http://stats.stackexchange.com/questions/92725/unsupervised-random-forest-using-weka">http://stats.stackexchange.com/questions/92725/unsupervised-random-forest-using-weka</a></p>
 
 <p>[8]<a href="http://www.zilhua.com/629.html">http://www.zilhua.com/629.html</a></p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Software Define Network</title>
-      <link href="http://jasonzhuo.com//sdn/"/>
-      <pubDate>2015-05-14T00:00:00-05:00</pubDate>
-      <author></author>
-      <guid>http://jasonzhuo.com//sdn</guid>
-      <content:encoded><![CDATA[<h3>软件定义网络初探</h3>
-
-<hr />
-
-<p><img src="/assets/images/2015-05-14SDN1.png" alt="image" />
-软件定义网络Software Define Network(SDN:Still don't know)初探笔记，以及Mininet原理分析</p>
-
-<!-- more -->
-
-
-<h3>软件定义网络的定义</h3>
-
-<p>如果将网络中的所有网络设备视为被管理的资源，那么就像操作系统一样，软件定义网络SDN提供了同样的管理视图和编程接口。这样基于SDN这个平台，用户可以开发各种应用程序，通过软件来定义逻辑上的网络拓扑，以满足对网络资源的不同需求，二维无需关系底层网络的拓扑结构。</p>
-
-<h3>SDN交换机与控制器</h3>
-
-<p>SDN交换机只负责网络高速转发，保存的用于转发决策的转发表信息来自控制器，<strong>SDN交换机需要在远程控制器的管控下工作</strong>，与之相关的设备状态和控制指令都需要经由SDN的南向接口传达，从而实现集中化统一管理。控制指令标准和状态需要满足SDN协议规范。
-下图说明了SDN与交换机的工作流程</p>
-
-<p><img src="/assets/images/2015-05-15sdn2.png" alt="image" /></p>
-
-<p>控制器目前有很多，根据知乎网友的推荐[link][http://www.zhihu.com/question/22599089], 控制器如果选择Python 的话，推荐 POX 或者 Ryu，更推荐 Ryu 一些，Java 的话就是 Floodlight 了。</p>
-
-<h3>术语区分</h3>
-
-<p><strong>Mininet</strong>: 主要是虚拟出Openflow交换机以及host节点，并且可以自定义拓扑结构，是一个网络仿真平台。支持Openflow，OpenvSwitch等软件定义网络布局。
-<strong>Open vSwitch（OVS）</strong>:是由 Nicira Networks 主导的，运行在虚拟化平台（例如 KVM，Xen）上的虚拟交换机。
-<strong>Opendaylight（ODL）</strong>: 属于控制器的一种，开源项目，整体SDN解决方案，包含一系列组件，支持多种协议包括了openflow。是现在主流的控制器项目，功能比较完善
-<strong>floodlight</strong>: 属于控制器的一种，开源项目，文档齐全，图形化界面管理。简而言之，Floodlight提供了用户友好的图形化界面，来控制管理支持Openflow协议的交换机。
-<strong>Openflow</strong>: 是用于管理交换机流表的协议，起源于斯坦福大学的Clean Slate项目组，属于SDN协议的一种（其他的例如ForCES、PCE-P等等）。Openflow应用最广，现已成为了SDN的代言词。OpenFlow协议是描述控制器和交换机之间交互信息的南向接口标准。控制器和交换机之间通过这SDN协议进行连接建立，流表下发和信息交换，实现对网络中所有OpenFlow交换机的控制。</p>
-
-<h3>私有云与SDN的关系</h3>
-
-<p>私有云(Private Clouds)是为特定客户单独使用而构建的一个资源服务网络。特定用户拥有基础设施，并可以控制在此基础设施上部署需求的应用程序和服务。私有云的核心属性是专有资源。</p>
-
-<p>网络是私有云中的瓶颈问题。现在，服务器和存储技术已经发展成共享资源，云管理员可以自由地调用这些资源，但是网络却仍然是手动的。为了提高灵活性，私有云网络必须进行虚拟化，而软件定义网络（SDN）是一个性价比不错的方法。</p>
-
-<p>根据<a href="https://www.opennetworking.org/solution-brief-how-openflow-based-sdn-transform-private-cloud">ONF</a>介绍，SDN是私有云的基础。SDN使得私有云可以分享设备资源，按需分配，自动操作，处理动态变化的事务更加灵活有效，最大化资源利用。</p>
-
-<h3>Mininet运行原理</h3>
-
-<p>Mininet通过Linux内置的Network Namespace来达到主机之间通信的隔离效果。这个Namespace和C++中的Namespace感觉差不多，不过C++Namespace达到的效果是函数的隔离。我觉得这篇blog介绍Linux Network namespace比较清楚，<a href="http://neokentblog.blogspot.hk/2014/07/linux-network-namespace.html">Network Namespace 介绍</a>,通过这个介绍，Mininet理解起来就方便多了。</p>
-
-<p>在Mininet中我们不单可以在主机上面运行ping命令，每一条 Linux下的命令或者程序都可以在 Mininet 中的虚拟主机中运行。但是每个虚拟主机 h1，h2，s1三个进程列表是完全相同的。其实完全可以做到各个主机完全独立，就想 LXC 那样，但是目前 Mininet 并没有这么做。在 Mininet 中所有的进程都放在 root 下面，这样你可以在 Linux的 shell 中直接用kill或者ps这些命令查看或者杀死进程。<a href="http://segmentfault.com/a/1190000000669218">参考外链</a></p>
-
-<p><img src="http://ww4.sinaimg.cn/large/65c83a2bjw1dwmvastgo4j.jpg" alt="Mininet原理" /></p>
-
-<h3>其它</h3>
-
-<p>通过mininet可以在本机迅速搭建任意拓扑结构的虚拟网络。然后利用控制器可以控制和管理所构建的虚拟网络，增加设备，删除设备等等。</p>
-
-<p>最简单的配置就是只有一台主机即可，如下图所示：</p>
-
-<p><img src="/assets/images/2015-05-15sdn3.png" alt="image" /></p>
-
-<p>当然复杂一点可以利用多台主机，比如这样：</p>
-
-<p><img src="/assets/images/2015-05-15SDN4.png" alt="image" /></p>
-
-<p>最近实验室采购设备，调研至此感觉SDN好像不需要特殊设备呢？我们只需要在不同host上运行不同的程序，甚至不同的操作系统，以方便网络安全实验。不过现在有很多厂家在做SDN控制器，还有支持Openflow协议的交换机，但都还不成熟。目前业界尚未发布完全符合 OpenFlow 协议规范的芯片，所以说感觉没必要买一些不成熟的产品。就多买几台性能还行的服务器，交换机，其余硬件资源没必要，在剩下的就是手动搭建工作了。</p>
 ]]></content:encoded>
     </item>
     

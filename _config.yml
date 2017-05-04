@@ -5,7 +5,7 @@ permalink: /:title/
 #url: http://jason-zhuo.github.io/
 name:         Jaosonzhuo's blog
 description:  Jasonzhuo's blog
-url:          http://jasonzhuo.com/
+url:          http://jason-zhuo.github.io/
 
 
 email: jason_zhuo@iclould.com
@@ -21,3 +21,5 @@ paginate: 8
 
 about: "About me。"
 
+disqus: true
+youyan: false

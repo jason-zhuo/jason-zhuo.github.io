@@ -25,7 +25,7 @@
 	<div id="disqus_thread"></div>
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'zzl'; // required: replace example with your forum shortname
+        var disqus_shortname = 'jasonzhuo'; // required: replace example with your forum shortname
 
         /* * * DON'T EDIT BELOW THIS LINE * * */
         (function() {
@@ -37,7 +37,7 @@
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
     <script type="text/javascript">
-    var disqus_shortname = 'zzl';
+    var disqus_shortname = 'jasonzhuo';
 
     (function () {
         var s = document.createElement('script'); s.async = true;
