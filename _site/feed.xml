@@ -7,6 +7,107 @@
     <atom:link href="http://jason-zhuo.github.io//feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>“Tor and autonomous system”</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/assets/images/TorAs.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Tor 在自治域（As-level）上面的一些论文阅读和相关知识介绍&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+
+&lt;h2&gt;引言&lt;/h2&gt;
+
+&lt;p&gt;近年来越来越多的顶会和文章在做Tor匿名网络相关的攻防工作，其中比较出名的就是Raptor[1]和 Counter Raptor[2]
+这两篇文章所讨论的对象是(AS-level)自治域级别上的攻防。自治域上的Tor攻防最早是由[3]在2004年提出的。此后在AS-level上进行攻防研究的论文就很多，本篇就不一一列举了，读者可以翻看论文参考文献和相关工作。这些攻防内容的基本原理不变：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;AS-level上的攻击的基本原理是：无论采用主动或者被动手段，使得如果Tor选择的链路，用户到入口段和出口到目的地段都在同一个AS内，那么该AS就可以利用流量分析和简单的统计关联技术将用户和目的地关联起来。&lt;/li&gt;
+&lt;li&gt;As-level上的防御基本原理是：既然用户选路在同一个AS内部存在风险，那么就进行As-aware的选路吧，使得用户选择的路径尽量通过不同的AS。&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;h3&gt;BGP协议的基本概念&lt;/h3&gt;
+
+&lt;p&gt;BGP协议是运行在AS之间的路由协议，大多数互联网服务提供商（ISP）必须使用BGP来与其他ISP创建路由连接。BGP属于矢量路由协议，采用TCP协议，端口号为179。BGP路由器会周期地发送19字节的保持存活keep-alive消息来维护连接（默认周期为60秒）。在路由协议中，只有BGP使用TCP作为传输层协议。&lt;/p&gt;
+
+&lt;h3&gt;Raptor&lt;/h3&gt;
+
+&lt;p&gt;Raptor[1]和之前的AS-level的文章不同，之前AS-level的文章都是假设网络上的的路由都是对称的。这篇文章从&lt;strong&gt;asymmetric nature of Internet routing&lt;/strong&gt;，&lt;strong&gt;BGP Churn&lt;/strong&gt;, &lt;strong&gt;BGP Hijack&lt;/strong&gt;, &lt;strong&gt;BGP Interception&lt;/strong&gt;四种新的方法讨论对Tor的攻击。Raptor攻击的基本思想是，首先利用之前论文的一些方法锁定用户的入口位置（AS号），然后再利用BGP interception或者hijack来进行流关联分析（对比用户到入口和出口到目标网站之间的流量，主要利用TCP ack和sequence number来进行关联对比），最终达到用户关联溯源目的。&lt;/p&gt;
+
+&lt;h4&gt;非对称性路由&lt;/h4&gt;
+
+&lt;p&gt;互联网路由的非对称性在该文章中表现在，1）Tor出口节点到网站的所经过的路由可能和网站到出口节点所经过的路由不同。2）用户到入口节点所经过的路由和从入口节点返回Tor用户所经过的路由不同。&lt;/p&gt;
+
+&lt;h4&gt;Natural Churn&lt;/h4&gt;
+
+&lt;p&gt;引起Natural Churn的原因是网络底层链路变化，例如，链路失效，增加减少新的路由设备，ISP直接的新合作等等。这些变化可以给恶意AS提供溯源优势，因为可能链路变化后AS之间的传输路径就恰好通过了恶意AS。&lt;/p&gt;
+
+&lt;p&gt;作者在文章中是利用某一时期的BGP update数据，以及同一时期的Tor链路数据，进行仿真计算出来链路的变化。&lt;/p&gt;
+
+&lt;h4&gt;BGP Hijack 和BGP Interception&lt;/h4&gt;
+
+&lt;p&gt;BGP Hijack可以参考[4]。这里简单总结一下，BGP劫持的基本原理是，BGP协议会选择两种路径作为AS通信的下一跳，第一种是路径最短的，如果路径相同那么就选择一条前缀更具体的链路。 BGP 劫持后，Tor用户会感受到断路，因为Tor用户最后去向的入口节点的数据包会被丢弃。但是BGP劫持攻击已经可以缩小和暴露用户的IP地址集合，从而破坏了匿名性。&lt;/p&gt;
+
+&lt;p&gt;BGP Interception本质上类似于中间人攻击，让攻击者能够成为Tor用户到Tor入口节点之间的AS，换句话说就是BGP interception会将traffic重新发送给入口节点，而不会将traffic丢弃，这样攻击方式更隐蔽，因为Tor用户不会体会到断路现象。 BGP Interception 和 BGP攻击原理类似，不同就是恶意AS声明的也是前缀同样具体的自治域。BGP Hijack, BGP Interception还有一点不同就是，BGP Hijack发出的错误路由信息会影响整个网络，从而导致恶意AS不能将traffic重新传送到消息原来发出的地方。值得注意的是，即便声明和自治域相同的前缀也不一定能够部分或者全部截取流量到恶意自治域，这里面考虑的因素包括IGP metrics以及运营商自定义的优先处理规则等，可以参考下图和参考文献[6]。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/bgpfail.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;/assets/images/fraction.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在[5]中作者比较了BGP Hijack 和BGP Interception成功概率的大小。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/bgphi.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图表现了由于ASes之间的相互关系（Costomer-to-provider, peer, Provider-to-comstomer）在不同层级AS上BGP Hijack 和BGP Interception成功概率。如图所示，最高T1级AS成功概率最大，因为这一级的AS只有peer, Provider-to-comstomer之间的通信关系。文章重要结论之一是：&lt;strong&gt;Invalid routes advertised by ASes lower down in the hierarchy wouldn’t have as significant an impact.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h4&gt;Counter Raptor&lt;/h4&gt;
+
+&lt;p&gt;Counter Raptor的基本思想是，文章提出一个算法来对AS抗攻击属性进行量化，然后利用这个指标来辅佐原来的Tor选路算法进行选路，从而降低链路被BGP hijack或intercetption的概率。具体如何计算的，参考[2]。&lt;/p&gt;
+
+&lt;h4&gt;Interception检测&lt;/h4&gt;
+
+&lt;p&gt;检测方法包括检测routing advertisements的错误，判断hop count changes等都不能实时检测Interception。还有其他大多数的方案都是基于前缀劫持的以下两个重要特征来研究相关检测技术[7]：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;MOAS 冲突:即一个 prefix 匹配多个 origin AS 的行为。这是前缀劫持之于路由控制平面最重要的一个特征&lt;/li&gt;
+&lt;li&gt;IP 地址冲突: 在数据平面层次上,前缀劫持直接导致了一个目的 IP 地址(被劫持的前缀)存在多个不同
+的路由目的地的问题.也就是说:假设 16.1.0.0/16 为 AS 1 所有,但被 AS 2 劫持,则目的地址为 16.1.0.0/
+16 的数据包可能分别从 AS 1 和 AS 2 返回.或者,源地址为 16.1.0.0/16 的数据包可能有去无回(返回
+数据包被路由到 AS 2).&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;h5&gt;内部网关协议OSPF和RIP&lt;/h5&gt;
+
+&lt;p&gt;OSPF协议同时使用单播（Unicast）和组播（Multicast）来发送Hello包和链路状态更新（Link State Updates），使用的组播地址为224.0.0.5和224.0.0.6。与RIP和BGP不同的是，OSPF协议不使用TCP或者UDP协议而是承载在IP协议之上，IP协议号为89，工作在OSI模型的传输层。OSPF协议将不同路由划分为不同区域，相同区域内的所有路由器都维护一份相同的链路状态数据库（LSDB），如果一台路由器属于多个区域，那么它将为每一个区域维护一份LSDB。&lt;/p&gt;
+
+&lt;p&gt;RIP是距离向量算法，在实际使用中已经较少适用。RIP使用UDP端口号为520。&lt;/p&gt;
+
+&lt;p&gt;这里总结内部网关协议的目的，是为了探索内部选路的是否可以对Tor造成一定影响，不过目前来看好像影响不大，除非用户选路都在同一个AS中的情况或许还有可能进行追踪。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3&gt;参考（Refs）&lt;/h3&gt;
+
+&lt;p&gt;[1] Sun Y, Edmundson A, Vanbever L, et al. RAPTOR: Routing Attacks on Privacy in Tor[C]//USENIX Security. 2015: 271-286.&lt;/p&gt;
+
+&lt;p&gt;[2] Sun Y, Edmundson A, Feamster N, et al. Counter-RAPTOR: Safeguarding Tor Against Active Routing Attacks[J]. arXiv preprint arXiv:1704.00843, 2017 S&amp;amp;P accepted.&lt;/p&gt;
+
+&lt;p&gt;[3] Feamster N, Dingledine R. Location diversity in anonymity networks[C]//Proceedings of the 2004 ACM workshop on Privacy in the electronic society. ACM, 2004: 66-76.&lt;/p&gt;
+
+&lt;p&gt;[4] http://www.freebuf.com/articles/network/75305.html&lt;/p&gt;
+
+&lt;p&gt;[5] Ballani H, Francis P, Zhang X. A study of prefix hijacking and interception in the Internet[C]//ACM SIGCOMM Computer Communication Review. ACM, 2007, 37(4): 265-276.&lt;/p&gt;
+
+&lt;p&gt;[6] http://www.h3c.com.cn/MiniSite/Technology_Circle/Net_Reptile/The_Tthree/Home/Catalog/201010/696835_97665_0.htm&lt;/p&gt;
+
+&lt;p&gt;[7]黎松, 诸葛建伟, 李星. BGP 安全研究[J]. 软件学报, 2013, 24(1).&lt;/p&gt;
+</description>
+        <pubDate>Wed, 03 May 2017 00:00:00 -0500</pubDate>
+        <link>http://jason-zhuo.github.io///astor/</link>
+        <guid isPermaLink="true">http://jason-zhuo.github.io///astor/</guid>
+      </item>
+    
+      <item>
         <title>Mac TeamViewer SSH 远程登录恢复</title>
         <description>&lt;p&gt;&lt;img src=&quot;/assets/images/TeamMac.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -1086,126 +1187,6 @@ public class Controller {
         <pubDate>Sun, 12 Jul 2015 00:00:00 -0500</pubDate>
         <link>http://jason-zhuo.github.io///web-crawler-crawl4j/</link>
         <guid isPermaLink="true">http://jason-zhuo.github.io///web-crawler-crawl4j/</guid>
-      </item>
-    
-      <item>
-        <title>Random forest clustering</title>
-        <description>&lt;h3&gt;随机森林聚类（Random forest clustering）&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-23-randforest.png&quot; alt=&quot;image&quot; /&gt;
-随机森林聚类分析&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-
-&lt;h3&gt;1.起因&lt;/h3&gt;
-
-&lt;p&gt;网络上现存的很多资料都是关于随机森林的分类和回归分析，但很少有材料讲解随机森林的聚类分析过程。
-随机森林以及随机森林的分类回归过程我就不做详细介绍了，你可以参考网络上的其他资料 [1]，[2], [3], [8]。&lt;/p&gt;
-
-&lt;p&gt;分析随机森林聚类算法还有如下的原因：&lt;/p&gt;
-
-&lt;blockquote&gt;&lt;p&gt;GBDT和随机森林在ESL书里面说是目前最优的两种算法&lt;/p&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;然后呢，最近也在研究一些新的聚类算法，就顺带研究一些随机森林是如何用了聚类的吧。&lt;/p&gt;
-
-&lt;h3&gt;2.随机森林聚类&lt;/h3&gt;
-
-&lt;p&gt;随机森林聚类算法的最核心思想：&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1. 将非监督学习转换为监督学习&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2. 相似度矩阵的计算&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;合成数据集（synthetic dataset）中包括的样本是通过样本合成算法产生新的样本的集合。最常用的就是合成算法就是生成和原始数据集（Orignial dataset）样本数量一致，相同特征的集合。&lt;/p&gt;
-
-&lt;p&gt;举个网上的例子[7]来说吧：
-假设有两个特征\(x_1\),\(x_2\).其中，\(x_1\)是连续变量服从\(Normal(0,1)\),\(x_2\)是0，1分布。一种合成数据的方法是根据每个特征的分布进行估计，值得注意的是随机生成的数据是各自独立的。另外一种合成方法是根据样本的概率进行随机选择，例如在样本中\(P(male)=0.4\),\(P(female)=0.6\)，那么合成的\(x_1\)的值就从原始数据集里面随机选择一个，合成的\(x_2\)的值就按照上述概率生成0或1。&lt;/p&gt;
-
-&lt;p&gt;新的训练样本集合多了一个新的特征，该特征用来区分该样本是合成的还是原始的，用二进制表示即可。&lt;/p&gt;
-
-&lt;blockquote&gt;&lt;p&gt;新的训练样本集合（多一个类标签特征）=合成样本数据集合+原始数据集合&lt;/p&gt;&lt;/blockquote&gt;
-
-&lt;h4&gt;2.1相似度矩阵&lt;/h4&gt;
-
-&lt;p&gt;随机森林在建模的同时，还提供了样本相似性度量，即相似度矩阵(简记为 Prox 矩阵)。当用一棵树对所有数据进行判别时，这些数据最终都将达到该树的某个叶节点上.可以用两个样本在每棵树的同一个节点上出现的频率大小，来衡量这两个样本之间的相似程度，或两个样本属于同一类的概率大小。&lt;/p&gt;
-
-&lt;p&gt;Prox矩阵\(P=p_{ij} \)生成过程如下：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;对于样本数为N的训练集合，首先生成一个\(N\times N\)的矩阵，\(p_{ii}=1\)，其他元素为0。&lt;/li&gt;
-&lt;li&gt;对于任意两个样本\(x_i\),\(x_j\),若他们出现在生成的同一棵树上的同一个叶节点上，则$$p[i][j]= 1+p[i][j]$$&lt;/li&gt;
-&lt;li&gt;重复上述过程直到m棵树全部生成，得到相应的矩阵&lt;/li&gt;
-&lt;li&gt;进行归一化处理$$p[i][j]= \frac{p[i][j]}{N}$$&lt;/li&gt;
-&lt;/ol&gt;
-
-
-&lt;p&gt;在随机森林进行聚类的过程中，运用到到了两个样本之间的相似度进行计算。我们知道在聚类算法中存在很多衡量两个样本之间距离的方法，欧几里得距离等等。但是在随机森林中的距离是如下计算的[5]:&lt;/p&gt;
-
-&lt;p&gt;$$DISSIM[i][j]= \sqrt{1-p[i][j]}$$&lt;/p&gt;
-
-&lt;h4&gt;2.2随机森林聚类计算过程&lt;/h4&gt;
-
-&lt;p&gt;随机森林聚类算法：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;生成合成样本集合&lt;/li&gt;
-&lt;li&gt;生成新的带类新标签的训练集合N，样本只包括两类：合成的数据，原始的数据&lt;/li&gt;
-&lt;li&gt;根据N生成相似度矩阵P&lt;/li&gt;
-&lt;li&gt;将P中被我们标记为合成数据的行和列删除&lt;/li&gt;
-&lt;li&gt;运用其他聚类算法进行聚类&lt;/li&gt;
-&lt;/ol&gt;
-
-
-&lt;p&gt;为啥我们要生产合成数据集，然后还要将其加入原始训练集合呢？我直观地认为直接在原始数据集上算相似性不就ok啦。后来我反应过来，但是原始数据是不带类标签的（非监督学习）。产生合成数据集的目的就是和原始数据进行类标记，将非监督学习转换为监督学习。&lt;/p&gt;
-
-&lt;p&gt;步骤5中居然采用还是其他的聚类算法，只不过替换了距离测量方法，这点感觉有点那个啥&lt;img src=&quot;/assets/smilies/30.gif&quot; id=&quot;similey&quot;&gt;。&lt;/p&gt;
-
-&lt;h4&gt;2.3随机森林聚类应用&lt;/h4&gt;
-
-&lt;p&gt;文献[3]和文献[4]主要是用随机森林对医疗疾病属性的聚类，文献[3][4]用的是PAM（Partitioning around medoids）聚类算法。
-随机森林的Prox矩阵可以作为多个基于不相似度聚类算法的输入，例如文献[5]中同样利用的是K-Medoids聚类算法PAM。作者将其应用到网络流量的聚类上，还比较创新。&lt;/p&gt;
-
-&lt;h4&gt;2.4随机森林聚类Case study&lt;/h4&gt;
-
-&lt;p&gt;利用R语言中的函数&lt;code&gt;rfClustering(model,noClusters=4)&lt;/code&gt;进行聚类分析，这个例子中没有体现出合成数据集合的生成的，因为iris数据集是带类标签的。&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;code&gt;set&amp;lt;-iris&lt;/code&gt; 载入iris数据集，iris数据集是带类标签的&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;md&amp;lt;-CoreModel(Species ~., set,model=&quot;rf&quot;,rfNoTrees=30)&lt;/code&gt; 利用随机森林得到模型，模型md中包括了相似度矩阵&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;mdCluster&amp;lt;-rfClustering(md,3)&lt;/code&gt;聚成3类&lt;/li&gt;
-&lt;/ol&gt;
-
-
-&lt;p&gt;&lt;code&gt;rfClustering&lt;/code&gt;这个函数根据作者介绍，内在是调用的PAM聚类算法的。&lt;/p&gt;
-
-&lt;p&gt;聚类结果：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/2015-05-23rfresult.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h3&gt;参考文献&lt;/h3&gt;
-
-&lt;p&gt;[1]&lt;a href=&quot;http://www.cnblogs.com/leftnoteasy/archive/2011/03/07/random-forest-and-gbdt.html&quot;&gt;http://www.cnblogs.com/leftnoteasy/archive/2011/03/07/random-forest-and-gbdt.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;[2]&lt;a href=&quot;http://blog.sciencenet.cn/blog-661364-615921.html&quot;&gt;http://blog.sciencenet.cn/blog-661364-615921.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;[3]&lt;a href=&quot;http://blog.csdn.net/songzitea/article/details/10035757&quot;&gt;http://blog.csdn.net/songzitea/article/details/10035757&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;[4]Shi T, Seligson D, Belldegrun A S, et al. Tumor classification by tissue microarray profiling: random forest clustering applied to renal cell carcinoma[J]. Modern Pathology, 2005, 18(4): 547-557.&lt;/p&gt;
-
-&lt;p&gt;[5]Shi T, Horvath S. Unsupervised learning with random forest predictors[J]. Journal of Computational and Graphical Statistics, 2006, 15(1).&lt;/p&gt;
-
-&lt;p&gt;[6]Wang Y, Xiang Y, Zhang J. Network traffic clustering using Random Forest proximities[C]//Communications (ICC), 2013 IEEE International Conference on. IEEE, 2013: 2058-2062.&lt;/p&gt;
-
-&lt;p&gt;[7]&lt;a href=&quot;http://stats.stackexchange.com/questions/92725/unsupervised-random-forest-using-weka&quot;&gt;http://stats.stackexchange.com/questions/92725/unsupervised-random-forest-using-weka&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;[8]&lt;a href=&quot;http://www.zilhua.com/629.html&quot;&gt;http://www.zilhua.com/629.html&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Sat, 23 May 2015 00:00:00 -0500</pubDate>
-        <link>http://jason-zhuo.github.io///random-forest-clustering/</link>
-        <guid isPermaLink="true">http://jason-zhuo.github.io///random-forest-clustering/</guid>
       </item>
     
   </channel>
