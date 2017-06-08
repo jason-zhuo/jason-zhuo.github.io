@@ -13,13 +13,13 @@ music: []
 ![image](/assets/images/2015-07-12webcrawler.png)
 基于Crawl4j的网页爬虫简单实现以及运用。
 <!-- more -->
-###1.起因
+### 1.起因
 最近老师叫我去下载一个“核武器”，但是这个核武器一共有400G大小，包括2万多个目录，10多万个文件。如果一个一个去下载，明显是不靠谱的。网上也有人放出了这些文件的BT文件，可惜BT文件太大(23MB)，我电脑一打开就卡顿得不行。后来打开了，但是下载进度一直卡在0.0%，最快速度也就20KB/s。老师又叮嘱**一定**要下载下来，于是我就停下了手上论文的工作，开始解决这个问题。一开始我没想太多，因为最近事情确实有点多，白天的事情忙不完，晚上还有兼职工作... 后来花了周六一下午时间，问题解决了,或多或少有些收获，又想到这篇blog或许不仅可以帮助他人学习进步，而且看到牛博士下载开源代码逐个目录的下载，很是辛苦。于是就又了这篇Blog.
 
 另外，关于这个“核武器”，我就简单介绍一下，一开始我也是不知道的，后来老师通知我才晓得。
 >可以说这次事件和斯诺登事件的影响力是不相上下的，但HT(Hacking Team)被黑不光光是让公众知道有这回事，随之而来还有整整415G的泄漏资料！里面有Flash 0day, Windows字体0day, iOS enterprise backdoor app, Android selinux exploit, WP8 trojan等等核武级的漏洞和工具。
 
-###2.方案思路
+### 2.方案思路
 既然迅雷BT下载速度奇慢无比，那就只好用基本HTTP去下载公布在网络上的镜像文件了。如果像牛博士那样一条条链接去另存为的话，肯定不行。之前看过通过Wget做全站镜像的命令
 > wget -mk -c http://target.com
 
@@ -32,7 +32,7 @@ music: []
 
 后期，打算采用迅雷离线空间来下载上述链接，估计会比较快一点，唯一不足的就是没有文件目录结构，后期按照目录来下载估计就行了。
 
-###3.Crawl4J简介
+### 3.Crawl4J简介
 Crawl4J是一个开源的Java爬虫程序，总共才三十多个类，比较简单，非常适合爬虫入门的学习。
 
 下载地址：[https://github.com/yasserg/crawler4j](https://github.com/yasserg/crawler4j)
@@ -40,7 +40,7 @@ Crawl4J是一个开源的Java爬虫程序，总共才三十多个类，比较简
 下载crawler4j-4.1-jar-with-dependencies.jar，然后将其导入外部依赖库。
 
 
-###4. 源代码
+### 4. 源代码
 Mycrawler主要对每条链接进行处理。Controller里面设置了Java使用代理（链接到远程VPS）。代码是仿照官网给出的实例改编的，具体方法说明参考Crawl4j说明文档。
 ####4.1.Mycrawler class
 
@@ -139,7 +139,7 @@ public class Mycrawler extends WebCrawler {
 
 ```
 
-####4.2.Controller class
+#### 4.2.Controller class
 ```
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;

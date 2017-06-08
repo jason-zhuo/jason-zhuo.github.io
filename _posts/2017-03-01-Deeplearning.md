@@ -13,11 +13,11 @@ music: []
 Deep learning stuff, last update (2017.3.1)
 <!-- more -->
 
-###本文概要
+### 本文概要
 本文主要介绍Deep learning 和整理我所看到的一些资料，持续更新 (Keep updating, once I have time)。
 
 
-###深度学习的优势与不足
+### 深度学习的优势与不足
 
 优点：
 
@@ -31,7 +31,7 @@ Deep learning stuff, last update (2017.3.1)
 2. 比起统计方法来说 那当然就是模型难以诠释，找出来的 Feature 对人而言并不直观。
 
 
-###Tensorflow
+### Tensorflow
 使用Tensorflow需要知道：
 
 >The central unit of data in TensorFlow is the **tensor**. Tensorflow基础数据单元，其rank就是训练数据的维度 (训练数据是几维的)
@@ -55,7 +55,7 @@ sess.run(init)
 
 
 
-####Refs
+#### Refs
 [1] LeCun Y, Bengio Y, Hinton G. Deep learning[J]. Nature, 2015, 521(7553): 436-444.
 
 [2] 将Keras作为tensorflow的精简接口 https://keras-cn.readthedocs.io/en/latest/blog/keras_and_tensorflow/

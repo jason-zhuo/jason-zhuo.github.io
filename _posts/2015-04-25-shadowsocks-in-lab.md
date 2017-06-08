@@ -10,7 +10,7 @@ music: []
 ![image](https://dn-teddysun.qbox.me/wp-content/uploads/2015/shadowsocks_logo.png)
 好多童鞋搞不清楚我在实验室搭建的Shadowsocks如何使用，在这里给你们科普一下，知道原理之后使用起来就更加顺心了，保证一口气科研就到天亮哦~
 <!-- more -->
-####注明：以下高能内容转载自[vc2tea的博客](http://vc2tea.com/whats-shadowsocks/)
+#### 注明：以下高能内容转载自[vc2tea的博客](http://vc2tea.com/whats-shadowsocks/)
 
 在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户.
    
@@ -32,7 +32,7 @@ music: []
 
 这时候**shadowsocks**横空出世。简单看来，shadowsocks是将原来 ssh 创建的 Socks5 协议拆开成 server 端和 client 端，所以下面这个原理图基本上和利用 ssh tunnel 大致类似。
 
-####shadowsocks工作原理
+#### shadowsocks工作原理
 1、6) 客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题
 
 2、5) ss-local 和 ss-server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的TCP包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密

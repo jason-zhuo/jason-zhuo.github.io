@@ -7,7 +7,7 @@ tags: [Network]
 music: []
 
 ---
-###基于Jnetpcap使用Pf\_ring（PF\_ring and Jnetpcap）
+### 基于Jnetpcap使用Pf\_ring（PF\_ring and Jnetpcap）
 ---
 ![image](/assets/images/Pfringjnetpcap.png)
 基于Jnetpcap的Pfring使用，以及网络数据包处理流程机制分析。
@@ -15,7 +15,7 @@ music: []
 1. last update 2016.3.5  修正l句子不通顺的地方。
 
 
-##1.PF ring 简介
+## 1.PF ring 简介
 PF\_RING是Luca Deri发明的提高内核处理数据包效率的网络数据包捕获程序，如Libpcap和TCPDUMP等。PF\_RING是一种新型的网络socket，它可以极大的改进包捕获的速度。
 
 ####1.1 本文中的一些术语
@@ -30,7 +30,7 @@ PF\_RING是Luca Deri发明的提高内核处理数据包效率的网络数据包
 **Linux 网络栈**：如下图所示，它简单地为用户空间的应用程序提供了一种访问内核网络子系统的方法。
 ![enter image description here](https://www.ibm.com/developerworks/cn/linux/l-linux-networking-stack/figure2.gif)
 
-##2. Libpcap抓包原理
+## 2. Libpcap抓包原理
 Libpcap的包捕获机制就是在数据链路层加一个旁路处理。当一个数据包到达网络接口时，libpcap首先利用已经创建的Socket从链路层驱动程序中获得该数据包的拷贝，再通过Tap函数将数据包发给BPF过滤器。BPF过滤器根据用户已经定义好的过滤规则对数据包进行逐一匹配，匹配成功则放入内核缓冲区(一次拷贝)，并传递给用户缓冲区（又一次拷贝），匹配失败则直接丢弃。如果没有设置过滤规则，所有数据包都将放入内核缓冲区，并传递给用户层缓冲区。
 
 ![image](/assets/images/Libpcap.jpg)
@@ -40,16 +40,16 @@ Libpcap的包捕获机制就是在数据链路层加一个旁路处理。当一�
 1. Cpu处于频繁中断状态，造成接收数据包效率低下。
 2. 数据包被多次拷贝，浪费了大量时间和资源。从网卡驱动到内核，再从内核到用户空间。
 
-####为啥用Pfring呢
+#### 为啥用Pfring呢
 随着信息技术的发展，1 Gbit/s，10 Gbit/s 以及 100 Gbit/s 的网络会越来越普及，那么零拷贝技术也会变得越来越普及，这是因为网络链接的处理能力比 CPU 的处理能力的增长要快得多。高速网络环境下， CPU 就有可能需要花费几乎所有的时间去拷贝要传输的数据，而没有能力再去做别的事情，这就产生了性能瓶颈。
 
 
-##3.PF_RING驱动家族
+## 3.PF_RING驱动家族
 这些驱动（在PF_RING/driver/PF_RING-aware中可用）设计用于提高数据包捕获，它把
 数据包直接放入到PF_RING中，不经过标准Linux数据包分发机制。
 
 
-###3.1 DNA
+### 3.1 DNA
 
 对于那些希望在CPU利用率为0%（拷贝包到主机）情况下需要最大数据包捕获速度的用户来说，可以使用DNA(Direct NIC Access)驱动，它允许数据直接从网络接口上读取，它以零拷贝的方式同时绕过Linux 内核和 PF_RING模块。
 
@@ -71,16 +71,16 @@ and transmission limited to 0 day(s) 00:05:00
 下图展示的是传统数据发送的整个过程，图片引用自[ibm.com](http://www.ibm.com/developerworks/cn/linux/l-cn-zerocopy1/)。
 ![传统使用 read 和 write 系统调用的数据传输](http://www.ibm.com/developerworks/cn/linux/l-cn-zerocopy1/image001.jpg)
 
-###3.2 PF_RING-aware (ZC support)
+### 3.2 PF_RING-aware (ZC support)
 这个模块在路径 PF_RING/driver/PF_RING-aware下（带有zc后缀）。根据官方手册介绍，An interface in ZC mode provides the same performance as DNA. Zero Copy(ZC)。ZC和DNA实际上都是绕过Linux 内核和 PF_RING模块，这些模式下Linux内核将看不到任何数据包。
 
 ![PFring](http://i2.wp.com/www.ntop.org/wp-content/uploads/2011/08/pfring_mod.png?w=80%25)
 
 
-###3.3 ZC
+### 3.3 ZC
 PF ring 还有一个ZC模块。什么ZC，DNA，pfring-aware是有点乱，不好分清楚。ZC模块可以看做是DNA的后续版本（“It can be considered as the successor of DNA/LibZero that offers a single and consistent API implementing simple building blocks (queue, worker and pool) that can be used from threads, applications and virtual machines.”）。PF_RING ZC comes with a **new generation of PF_RING aware drivers**。感觉这个ZC新模块与DNA差别不大。
 
-##4. Libpfring and Libpcap and Jnetpcap
+## 4. Libpfring and Libpcap and Jnetpcap
 怎么让我们的其他应用程序使用pfring的高速特性呢？官方文档中说，Legacy statically-linked pcap-based applications need to be recompiled against the new PF_RING-enabled libpcap.a in order to take advantage of PF_RING. Do not expect to use PF_RING without recompiling your existing application. 也就是说需要和 PF_RING-enabled的 libpcap.a 进行重新编译应用程序才能够使用pfring的高速特性。 
 
 项目运用中，我打算使用JAVA程序来写一个高速的网络数据包处理程序。由于JAVA采用的是Jnetpcap，Jnetpcap是Libpcap的封装。而原本Libpcap本来不是支持Pfring的。因此，如果要用Java调用Pfring，就必须采用支持Pfring的Libpcap，而不是原本安装的Libpcap。所以，需要把原来的Libpcap卸载，安装Pfring的Libpcap。
@@ -181,7 +181,7 @@ PF\_RING有3中工作模式：	 pf\_ring有三种透明模式（transparent\_mo
 - transparent=1（使用于vanila和PF_RING-aware驱动程序），数据包分别拷贝到PF_RING和标准linux网络协议栈各一份
 - transparent=2（PF_RING-aware驱动程序），数据包近拷贝到PF_RING,而不会拷贝到标准的linux网络协议栈（tcpdump不会看到任何数据包）。
 - 不要同时使用模式1和模式2到vanila驱动，否则将会抓到任何数据包。
-###4.2 Pf ring 包过滤
+### 4.2 Pf ring 包过滤
 pf_ring 普通模式下支持传统的BPF过滤器，由于DNA模式下，不再使用NAPI Poll，所以PF_RING的数据包过滤功能就不支持了，目前可以使用硬件层的数据包过滤，但只有intel的 82599网卡支持。Jnetpcap只能在pf_ring 普通模式下工作，因此只能够用BPF过滤器。
 
 
