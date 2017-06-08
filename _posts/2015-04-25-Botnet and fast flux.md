@@ -9,13 +9,13 @@ music: []
 ---
 Botnet and fast flux 特征介绍；Botminer论文初看,僵尸网络论文阅读笔记（last update:2015.8.10）
 <!-- more -->
-##Botnet and fast flux
+## Botnet and fast flux
 
 last update: 2016.3.5  增加了Fast flux 和 CDN之间的区别
 
 
 -----
-###1.几个定义
+### 1.几个定义
 
 **NS（Name Server）**：记录是权威域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析。
  
@@ -32,7 +32,7 @@ last update: 2016.3.5  增加了Fast flux 和 CDN之间的区别
 
 
 ------
-###2.Fast flux特征
+### 2.Fast flux特征
 1. **不重复的IP地址数量**：通常情况来说合法DNS查询不重复的IP地址为1~3个，而fast flux查询结果中会有5~6个，以确保至少有一个IP可以连接。
 2. **NS数量**：NS数量是指在单一次DNS 查询中所得到的NS （Name server）数量。客户端与DNS 主机进行查询时,可能透过快速变动网域技术掩护DNS 主机,因此NS Records 与NS 的A Records 可能有多笔记录,相较之下,合法的FQDN 其NS Records 与NS 的A Records比较少。
 3. **ASN数量与注册时间**：指对ASN进行查询时，主机使用的IP所属的ASN是否属于同一个单位。由于CDN主机使用的IP所属的ASN多属于同一个单位，而fast flux主机大多分散在世界各地，与CDN向比较之下，主机使用的IP所属的ASN属于不同单位。注册时间能够缩小选取范围。
@@ -40,7 +40,7 @@ last update: 2016.3.5  增加了Fast flux 和 CDN之间的区别
 
 
 
-####2.1 关于Fast flux的第一篇论文[3]
+#### 2.1 关于Fast flux的第一篇论文[3]
 Fastflux网络和普通网络对比：
 
 ![image](/assets/images/fastflux.png)
@@ -62,7 +62,7 @@ Single flux网络和Double flux网络对比（Double flux比Single flux更加复
 
 在真实网络中的Fast flux技术主要使用在基于HTTP协议的botnet[3]。 
 
-####常见僵尸网络检测程序
+#### 常见僵尸网络检测程序
 | Name        |TYPE                       |Protocols |
 | ------------- |:-----------------------:| :-----:| 
 |BotSniffer     | centralized servers     |   IRC,HTTP |  
@@ -70,13 +70,13 @@ Single flux网络和Double flux网络对比（Double flux比Single flux更加复
 | Botminer | structure independent  |    Protocol independent       |
 
 
-###3.BotMiner 初看
+### 3.BotMiner 初看
 
 #####BotMiner的系统架构
 ![Structure of Botminer](/assets/images/2015-04-19-botminer.png)
 
 
-####论文中的一些定义
+#### 论文中的一些定义
 **A平面**
 : 主要检测恶意行为模型,文章用Snort检测某主机的行为,主机的扫描行为用的是Bothunter的SCADE，下载地址：[Cyber-TA.BotHunter Free Internet Distribution Page, 2008. ](http://www.bothunter.net/)。文章采用两种异常检测模式，一种是高频率异常扫描次数，另外一种是带加权的失败连接次数。
 
@@ -97,7 +97,7 @@ Single flux网络和Double flux网络对比（Double flux比Single flux更加复
  3. BPP: the average number of bytes per packets 
  4. BPS: the average number of bytes per second
  
-###4.论文[2]阅读笔记
+### 4.论文[2]阅读笔记
 该论文和之前僵尸网络研究的不同之处在于，之前的survey文章主要集中研究不同僵尸网络的技术细节，例如架构，通信协议，检测方法。这些研究只是僵尸网络某一方面的partial understanding，很难从全面的角度来了解问题。
 
 文章根据僵尸网络的生命周期对僵尸网络进行建模。僵尸网络的生命周期（线性）如下图所示：每个状态都可以额外引入隐藏操作（Complementary Hidding Mechanism):例如 
@@ -121,18 +121,18 @@ Single flux网络和Double flux网络对比（Double flux比Single flux更加复
 5. 攻击执行：攻击包括DDoS,Spam,click fraud（Search engine spam）, phishing，Data stealing等。
 6. 攻击成功
  
-#####常见僵尸网络程序及其时间
+##### 常见僵尸网络程序及其时间
 
 ![image](/assets/images/botnetyear.png)
 
 
-###补充内容
+### 补充内容
 
 Fast-Flux网络比較多的NS，故其数量会比一般的DNS查詢所得到还多，而查询ASN（自治域）的原因主要是因为这些IP大多是分散在世界各地的受害主机，与CDN相比之下，会有明显的差异，因为CDN使用的IP所屬ASN多属于同一个单位，而Fast flux不是。此外Holz et al.不使用TTL作为特征理由是其不容易將Fast-Flux网络与CDN做区别，因为CDN也使用了很短的TTL。
 
 
 
-####参考文献
+#### 参考文献
 [[1]BotMiner: Clustering Analysis of Network Traffic for 
 Protocol- and Structure-Independent Botnet Detection](https://www.usenix.org/legacy/event/sec08/tech/full_papers/gu/gu_html/)
 

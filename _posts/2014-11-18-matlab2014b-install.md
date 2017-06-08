@@ -19,11 +19,11 @@ music: []
 
 首先给出[Matlab2014b全部平台的下载链接](http://bbs.feng.com/read-htm-tid-8467093.html)
 
-####问题：
+#### 问题：
 1. 作者好不容易下载完成，然后解压运行，发现matlab mac版本提示powerpc应用程序不再被支持。
 2. 载入镜像安装，输入密钥后发现产品列表里面只有几个基本插件，其他功能都不在了
 
-####解决办法：
+#### 解决办法：
 1. 下载的iso文件千万别用the unarchiever解压，右键iso文件，注意是iso不是解压出来的那个图标，用DiskImageMounter打开。![image](/assets/images/2014-11-18-matlab1.png)
 2. 使用UltraISO编辑下载的matlab的ISO文件，[UltraISO下载](http://www.downxia.com/downinfo/659.html)
 
@@ -53,4 +53,4 @@ music: []
 
 然后在应用程序中找到刚刚安装完成的Matlab.app，右键进入包内容，将/Applications/MATLAB_R2014b/bin/maci64/libmwservices.dylib 用破解的该文件进行替换即可
 
-####最后就可以愉快地进行科研活动啦~！
+#### 最后就可以愉快地进行科研活动啦~！
