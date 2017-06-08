@@ -15,8 +15,8 @@ Mac 上重新启动TeamViewer 以及Trouble Shooting。
 
 <!-- more -->
 
-思路
---
+## 思路
+
 
 有些时候出于未知原因，我们无法使用TeamViewer登录远程的Mac计算机。但是我们却可以通过SSH连接到Mac上，这样也可以通过SSH来重新启动和登录TeamViewer。
 
@@ -29,8 +29,8 @@ Mac 上重新启动TeamViewer 以及Trouble Shooting。
 5. 用SCP 回传截屏图像
 6. 用新的临时密码进行TeamViewer登录
 
-具体步骤
-----
+### 具体步骤
+
 
 具体命令行代码：
 
@@ -51,8 +51,8 @@ scp xx@host:(path to xxx.jpg) (path to save jpg)
 
 
 
-**Trouble Shooting:**
----------------------
+### **Trouble Shooting:**
+
 
 有的时候回出现如下的一些情况，比如新弹出的对话框挡住了密码。笔者尝试使用了各种办法来模拟用户单击对话框的“OK”都失败了。
 
