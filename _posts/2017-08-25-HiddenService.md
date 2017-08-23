@@ -20,7 +20,7 @@ music: []
 > Dark Net: Private overlay network. 
 > Dark Web: WWW hosted on Dark Nets.
 
-####1.1 Hidden Service Popularity
+#### 1.1 Hidden Service Popularity
  The goal in [this post](https://blog.torproject.org/blog/some-statistics-about-onions) has been published to answer the following questions:
 
 > "Approximately how many hidden services are there?"
@@ -28,7 +28,7 @@ music: []
 
 ![image](/assets/images/uniqueHiddenService.png)
 
-###2. Who?
+### 2. Who?
 Tor: United States Naval Research Laboratory
 I2P: Small group of people spread around several continents
 
@@ -64,7 +64,7 @@ database store message作用:
 
 
 
-###4. Tor Directory and I2P NetDB compare 
+### 4. Tor Directory and I2P NetDB compare 
 
 ![image](/assets/images/TorI2pCompare.png)
  
