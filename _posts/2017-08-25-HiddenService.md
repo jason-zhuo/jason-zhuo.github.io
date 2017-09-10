@@ -16,8 +16,11 @@ music: []
 <!-- more -->
 ### 1. What?
 > Tor 和 I2P 都是目前最常用的低延迟匿名通信系统。 
+> 
 > Deep Web: Internet not indexed by traditional search engines. 
+> 
 > Dark Net: Private overlay network. 
+> 
 > Dark Web: WWW hosted on Dark Nets.
 
 #### 1.1 Hidden Service Popularity
@@ -30,6 +33,7 @@ music: []
 
 ### 2. Who?
 Tor: United States Naval Research Laboratory
+
 I2P: Small group of people spread around several continents
 
 ### 3. How?
@@ -56,7 +60,7 @@ I2P hidden service(eepsite) is claimed to be faster than Tor Hidden service.
 2. Bob 将 Hidden service 的密钥和名字(xyz.i2p)添加进主地址簿
 3. 发布过程：Bob 将自己的eepsite的名称(xyz.i2p)和密钥加入到其它网站的I2P地址簿（比如stats.i2p 或no.i2p）
 4. Bob 为其Hidden service 维护新的 inbound and outbound tunnel 并将该信息（lease set）告诉NetDB.
-4. Alice 想要访问Bob, 如果Bob没有发布自己的eepsite地址，那么Alice将不知道Bob的xyz.i2p就是Bob，假设Alice从各个更新源处获取当前最新的地址簿。Alice则知道xyz.i2p就是Bob的路由，因此Alice从NetDB查找Bob的inbound
+4. Alice 想要访问Bob, 如果Bob没有发布自己的eepsite地址，那么Alice将不知道Bob的xyz.i2p就是Bob，假设Alice从各个更新源处获取当前最新的地址簿。Alice则知道xyz.i2p就是Bob的路由，因此Alice从NetDB查找Bob的inbound tunnel.
 5. Alice 从 outbound tunnel连接到Bob的inbound tunnel，双方进行通信。
 
 database store message作用:
@@ -148,7 +152,7 @@ An attacker can operate several hidden service directories and collect hidden se
 
 ### 6. Hidden Service address resolving
 
-#### 6.1 Tor Onion address
+#### 6.1 Tor Onion address resolve
 
 **Q:** Tor 当中没有DNS，如何进行地址解析呢？Tor and I2P has no DNS like the Internet. How to resolve the .onion address in Tor? 
 
@@ -156,12 +160,12 @@ An attacker can operate several hidden service directories and collect hidden se
 
 ![image](/assets/images/DHTtor.png)
 
-For example, Bob's service descriptor is calculated as Desc FP then its Desc FP is stored in HSDir_k and so on.  Alice wants to connect to Bob, only needs to find whether the xyz.onion is in that DHT. 
+For example, Bob's service descriptor is calculated as Desc FP then its Desc FP is stored in HSDir_k and so on.  Alice wants to connect to Bob, she only needs to find whether the xyz.onion is in that DHT. 
 
-#### 6.2 I2P address
+#### 6.2 I2P address resolve
 **Q:** I2P 当中没有DNS，如何进行地址解析呢？Tor and I2P has no DNS like the Internet. How to resolve the .i2p address in I2P? 
 
-**A:** DNS in I2P is called "susidns", where a hostname is translated into its actual base32- or base64-encoded address, called ”destination”. 
+**A:** DNS in I2P is called **”susidns”**, where a hostname is translated into its actual base32- or base64-encoded address, called ”destination”. 
 
 All destinations in I2P are 516-byte (or longer) keys.
 
@@ -175,7 +179,9 @@ czxMM1GWFoieQ8Ysfuxq−j8keEtaYmyUQme6TcviCEvQsxyVirr ̃dTC−F8aZ ̃y2AlG5IJz5K
 kI2fgjHhv9OZ9nskh−I2jxAzFP6Is1kyAAAA
 ```
 
-If an application (i2ptunnel or the HTTP proxy) wishes to access a destination by name, the router does a very simple local lookup to resolve that name. The check order is private, master and then public.  
+If an application (i2ptunnel or the HTTP proxy) wishes to access a destination by name, the router does a very simple local lookup to resolve that name. The check order is private address book, master address book and then public address book.  
+
+![image](/assets/images/i2paddressBook.png)
 
 **The address book** which contains three parts: public, master and private. 
 
