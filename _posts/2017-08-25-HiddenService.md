@@ -72,6 +72,8 @@ database store message作用:
 
 ![image](/assets/images/TorI2pCompare.png)
  
+The table below shows what we facilities we have in both network and how we called them in each system.
+ 
 | Tor | I2P |
 | :-: | :-: |
 | 10 directories servers  | DHT based NetDB |
